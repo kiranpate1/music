@@ -1,0 +1,197 @@
+html {
+  background: #000;
+  color: #fff
+}
+a {color:#00a3ff}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* current */
+
+.parent {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  grid-template-rows: 1fr 64px;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+#nav {
+  grid-area: 1 / 1 / 2 / 2;
+  border: 1px solid red;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+#nav > div {
+  display: flex;
+  flex-direction: column;
+}
+#main {
+  grid-area: 1 / 2 / 2 / 3;
+  border: 1px solid blue;
+}
+#banner {
+  grid-area: 2 / 1 / 3 / 3;
+  border: 1px solid green;
+}
+
+.search-container {
+  display; flex;
+  flex-direction: row;
+}
+
+.nextprev {
+  display; flex;
+  flex-direction: row;
+}
+
+
+
+
+/* past */
+.button-container {
+  display: grid;
+  width: 100%;
+  height: 40px;
+  grid-template-columns: repeat(34,1fr);
+  grid-template-rows: 100%;
+}
+.songcover, .video, .cover {
+  background-color: #111;
+  background-size: cover;
+  background-position: center;
+}
+.songcover {
+  width: 300px;
+  height: 300px;
+}
+.video, #videos {
+  width: 350px;
+  height: 150px;
+}
+.cover, .covers {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
+#videos, #covers {
+  position: relative;
+}
+#video1, #cover1 {
+  position: absolute;
+  z-index: 1
+}
+#video2, #cover2 {
+  position: absolute;
+  z-index: 2
+}
+#video3, #cover3 {
+  position: absolute;
+  z-index: 1
+}
+.top10 {
+  height: 200px;
+}
+.top10 > div {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  transition: 0.4s ease;
+}
+.no01 {
+  transform: translateY(0);
+}
+.no02 {
+  transform: translateY(16px);
+}
+.no03 {
+  transform: translateY(32px);
+}
+.no04 {
+  transform: translateY(48px);
+}
+.no05 {
+  transform: translateY(64px);
+}
+.no06 {
+  transform: translateY(80px);
+}
+.no07 {
+  transform: translateY(96px);
+}
+.no08 {
+  transform: translateY(112px);
+}
+.no09 {
+  transform: translateY(128px);
+}
+.no10 {
+  transform: translateY(144px);
+}
+.debut {
+  opacity: 0;
+  z-index: -1;
+}
+.out {
+  opacity: 0;
+  transform: translateY(160px);
+}
+.artistsgenres {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr;
+}
+.genres {
+  display: flex;
+  flex-direction: column;
+}
+.genres li {
+  display: grid;
+  grid-template-columns: 16px 250px auto;
+  grid-auto-rows: auto;
+  transition: 1s;
+}
+.bar {
+  display: inline-block;
+  height:16px;
+  width: 100%;
+  transition: 0.4s ease;
+}
+#map-labels {
+  display: flex;
+  flex-direction: row;
+}
+#map {
+  position: relative;
+  height: 40px;
+}
+.map-component {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.gdfskgf {
+  display: grid;
+  width: 100%;
+  height: 4px;
+  grid-template-rows: 100%;
+}
+.gdfskgf div {
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+}
+#modalsongs > div {
+  display: flex;
+  flex-direction: row;
+}

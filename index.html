@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="style.css">
+    <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">-->
+  </head>
+  <body>
+    <div class="parent">
+      <div id="nav">
+        <div>
+          <a onClick="homeInitialize()">home</a>
+          <a onClick="browseInitialize()">browse</a>
+          <div style="display:inline-block;">
+            <input type="text" id="termSearch" placeholder="Search" onkeydown="termSearch();">
+            <button id="" onclick="termSearch()">Go!</button>
+          </div>
+          <ul id="searchResults"></ul>
+        </div>
+        <div>
+          <a>credits</a>
+          <a>theme</a>
+        </div>
+      </div>
+      <div id="main">
+        <!-- <div id="map-labels">
+
+        </div>
+        <div id="map">
+
+        </div> -->
+
+          <!-- <div class="covers">
+            <div id="cover1" class="cover"></div>
+            <div id="cover2" class="cover"></div>
+            <div id="cover3" class="cover"></div>
+          </div> -->
+
+          <!-- <div id="palette" style="display:flex;flex-direction:row;height:20px;width:100px;">
+            <div style="width:100%"></div>
+            <div style="width:100%"></div>
+            <div style="width:100%"></div>
+            <div style="width:100%"></div>
+            <div style="width:100%"></div>
+          </div> -->
+
+        <div class="artistsgenres">
+          <div>
+            Top songs of the year:<div class="songs" id="songs"></div>
+          </div>
+          <div>
+            Top artists of the year:<div class="artists" id="artists"></div>
+          </div>
+          <div>
+            Top genres of the year:<div class="genres" id="genres"></div>
+          </div>
+        </div>
+
+
+
+      </div>
+      <div id="banner"></div>
+      <div id="modal" style="visibility:hidden;position:fixed;z-index:2;background:rgba(255,255,255,0.2);width:100%;height:100%;top:0;left:0;display:flex;align-items:center;justify-content:center;">
+        <div style="position:relative;width:50%;height:50%;background:#000;">
+          <div style="display:flex;">
+            <div class="videos">
+              <div id="videomodal" class="video"></div>
+            </div>
+            <div class="covers">
+              <div id="covermodal" class="cover"></div>
+            </div>
+          </div>
+          <div id="modalname"></div>
+          <div id="modalstats"></div>
+          <div id="modalsongs"></div>
+          <button style="position:absolute;top:0;right:0;" id="close">x</button>
+          <button style="position:absolute;top:0;left:0;" id="back">back</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="vibrant.js-master/dist/Vibrant.js"></script>
+    <script src="script.js"></script>
+
+  </body>
+</html>

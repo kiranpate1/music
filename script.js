@@ -1,0 +1,963 @@
+
+var test1
+var browseHistory = []
+
+homeInitialize()
+function homeInitialize() {
+  test1 = false;
+  document.querySelector("#main").innerHTML = ''
+
+  const yeah = document.createElement("div");
+  yeah.innerHTML = "Hello and welcome!"
+  document.querySelector("#main").appendChild(yeah);
+}
+async function browseInitialize() {
+  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
+  const response = await fetch(api_url);
+  const data = await response.json();
+
+  document.querySelector("#main").innerHTML = ''
+  const years = []
+  for (var i = 0; i < data.length; i++) {
+    years.push(data[i].week.slice(0,4))
+  }
+  var uniqueYears = years.filter(function(item, pos){
+    return years.indexOf(item)== pos;
+  });
+
+  const buttonContainer = document.createElement("div");
+  buttonContainer.classList.add('button-container')
+  document.querySelector("#main").appendChild(buttonContainer);
+
+  uniqueYears.forEach((item, i) => {
+    const years = document.createElement("button");
+    years.innerHTML = item
+    years.setAttribute("id", 'year-'+item);
+    years.setAttribute('onclick', 'chartInitialize();yearButton('+item+',0)');
+    document.querySelector(".button-container").appendChild(years);
+
+  });
+  const chartWrapper = document.createElement("div")
+  chartWrapper.classList.add('chart-wrapper')
+  document.querySelector("#main").appendChild(chartWrapper)
+
+  if (browseHistory.length !== 0) {
+    chartInitialize()
+    findWeek(browseHistory[browseHistory.length - 1])
+  }
+
+}
+
+// document.querySelector('#close').onclick = function(){
+//   modal('hidden')
+//   modalHistory = []
+// };
+function testHistory(term) {
+  browseHistory.push(term)
+  console.log(browseHistory)
+}
+
+async function chartInitialize() {
+  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
+  const response = await fetch(api_url);
+  const data = await response.json();
+
+
+  if (!test1) {
+
+    //document.querySelector(".chart-wrapper").innerHTML = ''
+
+    const searchWeek = document.createElement("div")
+    searchWeek.classList.add('search-container')
+    document.querySelector(".chart-wrapper").appendChild(searchWeek)
+
+    const yyyy = document.createElement("input")
+    yyyy.setAttribute("type", 'text')
+    yyyy.setAttribute("id", 'yearSearch')
+    yyyy.setAttribute("placeholder", 'YYYY')
+    yyyy.setAttribute("maxlength", '4')
+    document.querySelector(".search-container").appendChild(yyyy)
+
+    const mm = document.createElement("input")
+    mm.setAttribute("type", 'text')
+    mm.setAttribute("id", 'monthSearch')
+    mm.setAttribute("placeholder", 'MM')
+    mm.setAttribute("maxlength", '2')
+    document.querySelector(".search-container").appendChild(mm)
+
+    const dd = document.createElement("input")
+    dd.setAttribute("type", 'text')
+    dd.setAttribute("id", 'daySearch')
+    dd.setAttribute("placeholder", 'DD')
+    dd.setAttribute("onkeypress", 'return searchEnter(event)')
+    dd.setAttribute("maxlength", '2')
+    document.querySelector(".search-container").appendChild(dd)
+
+    const searchWeekButton = document.createElement("button")
+    searchWeekButton.setAttribute("id", 'search-button')
+    searchWeekButton.setAttribute("onclick", 'search()')
+    searchWeekButton.innerHTML = "search"
+    document.querySelector(".search-container").appendChild(searchWeekButton)
+
+    const nextprev = document.createElement("div")
+    nextprev.classList.add('nextprev')
+    document.querySelector(".chart-wrapper").appendChild(nextprev)
+
+    const prev = document.createElement("button")
+    prev.setAttribute("id", 'previous')
+    prev.innerHTML = "<"
+    document.querySelector(".nextprev").appendChild(prev)
+
+    const next = document.createElement("button")
+    next.setAttribute("id", 'next')
+    next.innerHTML = ">"
+    document.querySelector(".nextprev").appendChild(next)
+
+    const chartTitle = document.createElement("div")
+    chartTitle.classList.add('chart-title')
+    document.querySelector(".chart-wrapper").appendChild(chartTitle)
+
+    const weekTitle = document.createElement("div")
+    weekTitle.setAttribute("id", 'weektitle')
+    document.querySelector(".chart-title").appendChild(weekTitle)
+
+    const chartIntel = document.createElement("div")
+    chartIntel.classList.add('chart-intel')
+    document.querySelector(".chart-title").appendChild(chartIntel)
+
+    const videoPic = document.createElement("div")
+    videoPic.setAttribute("id", 'videos')
+    document.querySelector(".chart-wrapper").appendChild(videoPic)
+
+    const video1 = document.createElement("div")
+    video1.setAttribute("id", 'video1')
+    video1.classList.add('video')
+    document.querySelector("#videos").appendChild(video1)
+
+    const video2 = document.createElement("div")
+    video2.setAttribute("id", 'video2')
+    video2.classList.add('video')
+    document.querySelector("#videos").appendChild(video2)
+
+    const video3 = document.createElement("div")
+    video3.setAttribute("id", 'video3')
+    video3.classList.add('video')
+    document.querySelector("#videos").appendChild(video3)
+
+    const top10 = document.createElement("div")
+    top10.setAttribute("id", 'top10')
+    top10.classList.add('top10')
+    document.querySelector(".chart-wrapper").appendChild(top10)
+  }
+  test1 = true; //when user switches tab, set false
+}
+
+//old
+
+var mapObj = {' ft. ':"</a>&nbspft.&nbsp<a>",' / ':"</a>&nbsp/&nbsp<a>",', ':"</a>,&nbsp<a>"};
+var mapObj1 = {' ft. ':"separator",' / ':"separator",', ':"separator"};
+var re = new RegExp(Object.keys(mapObj).join("|"),"gi");
+var genrePool = ['#de7eea','#a16fd9','#9a82c8','#c295c8','#d700ff','#854d76','#ba2c8e','#ba3d3d','#b65f5f','#603232','#1a1a1a','#413630','#935b4a','#3ca33f','#308532','#638559','#6a9d32','#8eb371','#4aca4e','#97be9d','#a4d685','#c4c800','#a7ab00','#d5eb20','#ddf3a8','#c6ccae','#ceb8ae','#7085ef','#5666b8','#4d95b8','#623aff','#73e6e0','#3eadef','#ff6900','#f6b26b','#b3997a','#d49875','#c7cc86','#ffe381','#f5d8d8']
+genrePool.forEach((item, i) => {
+  const li = document.createElement("li");
+  li.setAttribute("id", 'id' + item.slice(-6));
+  //li.style.order = i + 1;
+  //li.innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item + ';"></div>'
+  //document.querySelector("#genres").appendChild(li);
+});
+function searchEnter(e) {
+  if (e.keyCode == 13) {
+    search();
+    return false;
+  }
+}
+function search() {
+  document.querySelector('#songs').innerHTML = "";
+  searchWeek(document.getElementById("yearSearch").value + "/" + document.getElementById("monthSearch").value + "/" + document.getElementById("daySearch").value);
+}
+async function searchWeek(searchRequest) {
+  var yearRequest = searchRequest.substring(4, 0);
+  var weekRequest = getNumberOfWeek(searchRequest);
+
+  function getNumberOfWeek(date) {
+    const today = new Date(date);
+    const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
+    const pastDaysOfYear = (today - firstDayOfYear) / 86400000;
+    if (yearRequest == '2018') {
+      return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+    } else {
+      return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7) - 1;
+    }
+  }
+  yearButton(yearRequest,weekRequest)
+}
+async function yearButton(year,week) {
+  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
+  const response = await fetch(api_url);
+  const data = await response.json();
+
+  var yearList = []
+  data.forEach((item, i) => {
+    if (item.week.includes(year)) {
+      yearList.push(item)
+    }
+  });
+
+  if (week == yearList.length) {
+    year++
+    week = 0;
+    var yearList = []
+    data.forEach((item, i) => {
+      if (item.week.includes(year)) {
+        yearList.push(item)
+      }
+    });
+  }
+  var counter = +yearList[week].no
+
+  document.getElementById('next').onclick = async function() {
+    counter=counter + 1;
+    findWeek(counter)
+    findYear(data[counter].week.substring(0, 3)) //for month - substring(0, 7)
+  }
+  document.getElementById('previous').onclick = function() {
+    counter=counter - 1;
+    findWeek(counter)
+    findYear(data[counter].week.substring(0, 3))
+  }
+  document.querySelector('#top10').innerHTML = '';
+  findWeek(counter)
+  findYear(data[counter].week.substring(0, 3))
+}
+ async function findYear(yearno) {
+  // const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
+  // const response = await fetch(api_url);
+  // const data = await response.json();
+  //
+  // document.querySelector('#songs').innerHTML = '';
+  // document.querySelector('#artists').innerHTML = '';
+  // for (let i = 0; i < genrePool.length; i++) {
+  //   document.querySelector('#id' + genrePool[i].slice(-6)).style.width = '266px'
+  //   document.querySelector('#id' + genrePool[i].slice(-6)).innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + genrePool[i] + ';"></div>' + decode(genrePool[i].slice(-7)) + ": 0" + "</div><div class='bar' style='background:" + genrePool[i].slice(-7) + "'></div>"
+  //   document.querySelector('#id' + genrePool[i].slice(-6)).style.order = '500'
+  //   document.querySelector('#id' + genrePool[i].slice(-6)).style.opacity = '0.3'
+  // }
+  // var songList = []
+  // var artistList = []
+  // var genreList = []
+  // for (let i = 1; i <= 10; i++) {
+  //   searchYearly(i)
+  // }
+  // function searchYearly(pos) {
+  //   for (let i = 0; i < data.length; i++) {
+  //     if (data[i].week.includes(yearno)) {
+  //       songList.push(data[i]?.['no'+pos+'name'] + " " + data[i]?.['no'+pos+'genre'])
+  //       var separators = [' ft. ', ' / ', ', '];
+  //       var tokens = data[i]?.['no'+pos+'artist'].split(new RegExp(separators.join('|'), 'g'));
+  //       artistList.push(tokens)
+  //       genreList.push(data[i]?.['no'+pos+'genre'])
+  //     }
+  //   }
+  // }
+  // var combinedSong = songList.flat(1)
+  // var combinedArtist = artistList.flat(1)
+  // function group(type) {
+  //   let reducedArray = type.reduce( (acc, curr, _, arr) => {
+  //       if (acc.length == 0) acc.push({item: curr, count: 1})
+  //       else if (acc.findIndex(f => f.item === curr ) === -1) acc.push({item: curr, count: 1})
+  //       else ++acc[acc.findIndex(f => f.item === curr)].count
+  //       return acc
+  //   }, []);
+  //   var results = reducedArray.sort((a,b) => b.count - a.count )
+  //   return results;
+  // }
+  //
+  // console.log(group(combinedArtist))
+  // group(combinedSong).forEach((item, i) => {
+  //   const li = document.createElement("li");
+  //   li.innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + group(combinedSong)[i].item.slice(-7) + ';"></div>' + group(combinedSong)[i].item.slice(0, -8) + ": " + group(combinedSong)[i].count;
+  //   document.querySelector("#songs").appendChild(li);
+  // });
+  // group(combinedArtist).forEach((item, i) => {
+  //   const li = document.createElement("li");
+  //   li.innerHTML = "<a href='#'>" + group(combinedArtist)[i].item + "</a>: " + group(combinedArtist)[i].count;
+  //   document.querySelector("#artists").appendChild(li);
+  // });
+  // group(genreList).forEach((item, i) => {
+  //     document.querySelector('#id' + item.item.slice(-6)).style.order = i + 1
+  //     document.querySelector('#id' + item.item.slice(-6)).style.width = [[group(genreList)[i].count / group(genreList)[0].count] * 100 + 266] + 'px';
+  //     document.querySelector('#id' + item.item.slice(-6)).innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + group(genreList)[i].item + ';"></div><div>' + decode(group(genreList)[i].item) + ": " + group(genreList)[i].count + "</div><div class='bar' style='background:" + group(genreList)[i].item + "'></div>"
+  //     document.querySelector('#id' + item.item.slice(-6)).style.opacity = '1'
+  // });
+  // document.querySelectorAll('#artists li a').forEach((item, i) => {
+  //   item.setAttribute('onClick', 'map("' + item.innerHTML + '");');
+  // });
+ }
+
+async function findWeek(weekno) {
+  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
+  const response = await fetch(api_url);
+  const data = await response.json();
+
+  testHistory(weekno)
+
+  var currentWeek = data[weekno];
+  var lastWeek = data[weekno - 1];
+  var nextWeek = data[weekno + 1];
+
+  var no1Count = 0
+  for (let i = 0; i <= weekno; i++) {
+    if (data[i].no1id.includes(currentWeek.no1id)) {
+      no1Count++
+    }
+  }
+
+  if (currentWeek.no1id.includes(lastWeek.no1id)) {
+    document.querySelector('.chart-intel').innerHTML = data[weekno].no1name + " remains at #1 for " + no1Count + " weeks"
+  } else if (!currentWeek.no1id.includes(lastWeek.no1id) && no1Count > 1) {
+    document.querySelector('.chart-intel').innerHTML = data[weekno].no1name + " returns to #1 for " + no1Count + " weeks"
+  } else if (no1Count = 1) {
+    document.querySelector('.chart-intel').innerHTML = data[weekno].no1name + " hits #1"
+  }
+
+  var newList = [];
+  var newIdList = [];
+  var repeatIdList = [];
+  var exitList = [];
+  var exitIdList = [];
+  var enterList = [];
+  var enterIdList = [];
+
+  for (let y = 1; y <= 10; y++) {
+    for (let z = 1; z <= 10; z++) {
+      if(lastWeek?.['no'+y+'name'] !== currentWeek?.['no'+z+'name']){
+        const exits = lastWeek?.['no'+y+'direction']+'<div style="width:16px;height:16px;background: '+lastWeek?.['no'+y+'genre']+';"></div>'+'<a class="songname" id="'+lastWeek?.['no'+y+'id']+'">'+lastWeek?.['no'+y+'name']+'</a>&nbsp'+"-"+"&nbsp<div class='artistname'><a>"+lastWeek?.['no'+y+'artist'].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
+        const exitsId = lastWeek?.['no'+y+'id']
+        exitList.push(exits);
+        exitIdList.push(exitsId);
+      }
+      if(nextWeek?.['no'+y+'name'] !== currentWeek?.['no'+z+'name']){
+        const enters = nextWeek?.['no'+y+'direction']+'<div style="width:16px;height:16px;background: '+nextWeek?.['no'+y+'genre']+';"></div>'+'<a class="songname" id="'+nextWeek?.['no'+y+'id']+'">'+nextWeek?.['no'+y+'name']+'</a>&nbsp'+"-"+"&nbsp<div class='artistname'><a>"+nextWeek?.['no'+y+'artist'].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
+        const entersId = nextWeek?.['no'+y+'id']
+        enterList.push(enters);
+        enterIdList.push(entersId);
+      }
+      if(currentWeek?.['no'+y+'name'] !== lastWeek?.['no'+z+'name']){
+        //const news = currentWeek?.['no'+y+'direction']+'<div style="width:16px;height:16px;background: '+currentWeek?.['no'+y+'genre']+';"></div>'+'<a onClick="modal(`visible`,`'+currentWeek?.['no'+y+'artist']+'`,`'+currentWeek?.['no'+y+'name']+'`,`modal`)">'+currentWeek?.['no'+y+'name']+'</a>&nbsp'+"-"+"&nbsp<a>"+currentWeek?.['no'+y+'artist'].replace(re, function(matched){return mapObj[matched]})+"</a>"
+        const news = currentWeek?.['no'+y+'direction']+'<div style="width:16px;height:16px;background: '+currentWeek?.['no'+y+'genre']+';"></div>'+'<a class="songname" id="'+currentWeek?.['no'+y+'id']+'">'+currentWeek?.['no'+y+'name']+'</a>&nbsp'+"-"+"&nbsp<div class='artistname'><a>"+currentWeek?.['no'+y+'artist'].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
+        const newsId = currentWeek?.['no'+y+'id']
+        newList.push(news);
+        newIdList.push(newsId);
+      }
+    }
+  }
+
+  const valWhichRepeat = (arr,count) =>
+           [...new Set(arr)].filter(x =>
+                arr.filter(a => a === x).length == count
+           );
+
+  var exitSongList = valWhichRepeat(exitList,10); //from last week
+  var exitSongIdList = valWhichRepeat(exitIdList,10); //from last week
+  var enterSongList = valWhichRepeat(enterList,10); //before next week
+  var enterSongIdList = valWhichRepeat(enterIdList,10); //before next week
+  var newSongList = valWhichRepeat(newList,10); //for this week
+  var newSongIdList = valWhichRepeat(newIdList,10); //for this week
+  var repeatSongList = valWhichRepeat(newList,9); //from any week
+  var repeatSongIdList = valWhichRepeat(newIdList,9); //from any week
+
+  exitSongList.forEach((element, i) => { //from last week
+    var exits = document.querySelector("#" + exitSongIdList[i] + "")
+    if(exits){
+      exits.className = "";
+      exits.classList.add('out')
+      addToAttribute(exits, "pos", "out")
+    } else {
+      const div = document.createElement("div");
+      div.setAttribute("id", exitSongIdList[i]);
+      div.setAttribute("pos", "out")
+      div.innerHTML = exitSongList[i];
+      div.className = "";
+      div.classList.add('out')
+      document.querySelector('#top10').appendChild(div);
+    }
+  });
+  enterSongList.forEach((element, i) => { //before next week
+    var exists = document.querySelector("#" + enterSongIdList[i] + "");
+    if(exists) {
+      exists.className = "";
+      if (enterSongList[i].includes('★')) {
+        exists.classList.add('no'+enterSongList[i].slice(0, 2), 'debut')
+      } else {
+        exists.classList.add('out')
+      }
+      addToAttribute(exists, "pos", enterSongList[i].slice(0, 3))
+    } else {
+      const div = document.createElement("div");
+      div.setAttribute("id", enterSongIdList[i]);
+      div.setAttribute("pos", enterSongList[i].slice(0, 3))
+      div.innerHTML = enterSongList[i];
+      div.className = "";
+      if (enterSongList[i].includes('★')) {
+        div.classList.add('no'+enterSongList[i].slice(0, 2), 'debut')
+      } else {
+        div.classList.add('out')
+      }
+      document.querySelector('#top10').appendChild(div);
+    }
+  });
+  newSongList.forEach((element, i) => { //this week
+    console.log(newSongIdList[i] + " enters top 10")
+    var exists = document.querySelector("#" + newSongIdList[i] + "");
+    if(exists) {
+      addToAttribute(exists, "pos", newSongList[i].slice(0, 3))
+      exists.innerHTML = newSongList[i];
+      exists.className = "";
+      exists.classList.add('no'+newSongList[i].slice(0, 2))
+    }else {
+      const div = document.createElement("div");
+      div.setAttribute("id", newSongIdList[i]);
+      div.setAttribute("pos", newSongList[i].slice(0, 3))
+      div.innerHTML = newSongList[i];
+      div.className = "";
+      div.classList.add('no'+newSongList[i].slice(0, 2))
+      document.querySelector('#top10').appendChild(div);
+    }
+  });
+  repeatSongList.forEach((element, i) => { //this week
+    var repeats = document.querySelector("#" + repeatSongIdList[i] + "");
+    if(repeats !== null){
+      addToAttribute(repeats, "pos", repeatSongList[i].slice(0, 3))
+      repeats.innerHTML = repeatSongList[i];
+      repeats.className = "";
+      repeats.classList.add('no'+repeatSongList[i].slice(0, 2));
+    }else {
+      const div = document.createElement("div");
+      div.setAttribute("id", repeatSongIdList[i]);
+      div.setAttribute("pos", repeatSongList[i].slice(0, 3))
+      div.innerHTML = repeatSongList[i];
+      div.className = "";
+      div.classList.add('no'+repeatSongList[i].slice(0, 2))
+      document.querySelector('#top10').appendChild(div);
+    }
+  });
+
+  document.querySelector('#weektitle').innerHTML = data[weekno].week;
+  function addToAttribute(element, attributeName, value) {
+    element.setAttribute(attributeName, value + (element.getAttribute(attributeName) || ''));
+  }
+
+  document.querySelectorAll('#top10 a.songname').forEach((item, i) => {
+    item.setAttribute('href', '#')
+    item.setAttribute('onClick', 'modal(`visible`);searchSong(`'+item.getAttribute("id")+'`)')
+    //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
+  });
+  document.querySelectorAll('#top10 .artistname a').forEach((item, i) => {
+    item.setAttribute('href', '#')
+    item.setAttribute('onClick', 'modal(`visible`);searchArtist(`'+item.innerHTML+'`)')
+    //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
+  });
+
+  pic(lastWeek.no1artist, lastWeek.no1name, '1')
+  pic(currentWeek.no1artist, currentWeek.no1name, '2')
+  pic(nextWeek.no1artist, nextWeek.no1name, '3')
+}
+
+function modal(visibility) {
+  document.querySelector("#videomodal").style.backgroundImage = ''
+  document.querySelector("#covermodal").style.backgroundImage = ''
+  document.querySelector("#modalsongs").innerHTML = ''
+  document.querySelector('#modalstats').innerHTML = ''
+  document.querySelector("#modal").style.visibility = visibility
+}
+var modalHistory = []
+document.querySelector('#close').onclick = function(){
+  modal('hidden')
+  modalHistory = []
+};
+function history(term) {
+  modalHistory.push(term)
+}
+document.querySelector('#back').onclick = function(){
+  modalHistory.pop()
+  var recent = modalHistory.length - 1
+  if (!modalHistory[recent]) {
+    modal('hidden')
+    modalHistory.pop()
+  } else if (modalHistory[recent].slice(0, 2) == 'ix') {
+    modal(`visible`)
+    searchSong(modalHistory[recent])
+    modalHistory.pop()
+  } else {
+    modal(`visible`)
+    searchArtist(modalHistory[recent])
+    modalHistory.pop()
+  }
+};
+
+async function searchSong(id) {
+  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
+  const response = await fetch(api_url);
+  const data = await response.json();
+  var artist = decode(id)[0][4]
+  var name = decode(id)[0][3]
+  document.querySelector("#modalname").innerHTML = name+" by <a>"+artist.replace(re, function(matched){return mapObj[matched]})+"</a>"
+
+  list('id').then(function (val) {
+    val.forEach((item, i) => {
+      if (item.artist == id) {
+        document.querySelector('#modalstats').innerHTML = "#"+[i+1]+" all time • #"+decode(id)[0][1]+" peak • "+item.count+" weeks"
+        return
+      }
+    });
+  });
+  function decode(input) {
+    const output = []
+    for (let x = 1; x <= 10; x++) {
+      for (var a = 0; a < data.length; a++) {
+        if (data[a]?.['no'+x+'id'] == input) {
+          output.push(new Array(data[a]?.week,data[a]?.['no'+x+'direction'].slice(0, 2),data[a]?.['no'+x+'genre'],data[a]?.['no'+x+'name'],data[a]?.['no'+x+'artist']))
+          return output
+        }
+      }
+    }
+  }
+  document.querySelectorAll('#modalname a').forEach((item, i) => {
+    item.setAttribute('href', '#')
+    item.setAttribute('onClick', 'modal(`visible`);searchArtist(`'+item.innerHTML+'`)')
+  });
+  pic(artist,name,'modal')
+  history(id)
+}
+
+async function searchArtist(artist) {
+  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
+  const response = await fetch(api_url);
+  const data = await response.json();
+  document.querySelector("#modalname").innerHTML = artist
+
+  var fullList = []
+  for (let x = 1; x <= 10; x++) {
+    data.forEach((item, i) => {
+      if (item?.['no'+x+'artist'].includes(artist)) {
+        var artistCell = item?.['no'+x+'artist'].replace(re, function(matched){return mapObj1[matched]}).split("separator")
+        if (artistCell.includes(artist)) {
+          fullList.push(item?.['no'+x+'id'])
+        }
+      }
+    });
+  }
+  combinedUnique = [...new Set(fullList)];
+  var totalList = group(fullList)[0]
+  var no1Count = 0
+  list('artist').then(function (val) {
+    val.forEach((item, i) => {
+      if (item.artist == artist) {
+        document.querySelector('#modalstats').innerHTML = "#"+[i+1]+" all time • "+no1Count+" #1s • "+[combinedUnique.length]+" top 10s"
+        return
+      }
+    });
+  });
+  combinedUnique.forEach((item, i) => {
+    if (decode(item)[0][1] == '01') {
+      no1Count++
+    }
+    const div = document.createElement("div");
+    div.innerHTML = decode(item)[0][1]+'<div style="width:16px;height:16px;background: '+decode(item)[0][2]+';"></div>'+'<a class="songname" id="'+item+'">'+decode(item)[0][3]+'</a>&nbsp'+"-"+"&nbsp<div class='artistname'><a>"+decode(item)[0][4].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
+    document.querySelector("#modalsongs").appendChild(div);
+  });
+  document.querySelectorAll('#modalsongs a.songname').forEach((item, i) => {
+    item.setAttribute('href', '#')
+    item.setAttribute('onClick', 'modal(`visible`);searchSong(`'+item.getAttribute("id")+'`)')
+  });
+  document.querySelectorAll('#modalsongs .artistname a').forEach((item, i) => {
+    item.setAttribute('href', '#')
+    item.setAttribute('onClick', 'modal(`visible`);searchArtist(`'+item.innerHTML+'`)')
+  });
+  function decode(input) {
+    const output = []
+    for (let x = 1; x <= 10; x++) {
+      for (var a = 0; a < data.length; a++) {
+        if (data[a]?.['no'+x+'id'] == input) {
+          output.push(new Array(data[a]?.week,data[a]?.['no'+x+'direction'].slice(0, 2),data[a]?.['no'+x+'genre'],data[a]?.['no'+x+'name'],data[a]?.['no'+x+'artist']))
+          return output
+        }
+      }
+    }
+  }
+  var filteredDecode = combinedUnique.filter(function(item){
+    var leadArtist = decode(item)[0][4].replace(re, function(matched){return mapObj1[matched]}).split("separator")
+    if (leadArtist[0] == artist) {
+      return item !== undefined;
+    }
+  });
+  var dfsgfeg = filteredDecode.concat(combinedUnique)[0]
+  // decode(dfsgfeg).then(results => {
+  //   pic(results[0][4], results[0][3], 'modal')
+  // })
+  pic(decode(dfsgfeg)[0][4], decode(dfsgfeg)[0][3], 'modal')
+  //pic(decode(totalList.artist)[0][4], decode(totalList.artist)[0][3], 'modal')
+  history(artist)
+}
+function group(type) {
+  let reducedArray = type.reduce( (acc, curr, _, arr) => {
+      if (acc.length == 0) acc.push({artist: curr, count: 1})
+      else if (acc.findIndex(f => f.artist === curr ) === -1) acc.push({artist: curr, count: 1})
+      else ++acc[acc.findIndex(f => f.artist === curr)].count
+      return acc
+  }, []);
+  var results = reducedArray.sort((a,b) => b.count - a.count )
+  return results;
+}
+
+async function termSearch() {
+  document.querySelector("#searchResults").innerHTML = ''
+  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
+  const response = await fetch(api_url);
+  const data = await response.json();
+  function decode(input) {
+    const output = []
+    for (let x = 1; x <= 10; x++) {
+      for (var a = 0; a < data.length; a++) {
+        if (data[a]?.['no'+x+'id'] == input) {
+          output.push(new Array(data[a]?.week,data[a]?.['no'+x+'direction'].slice(0, 2),data[a]?.['no'+x+'genre'],data[a]?.['no'+x+'name'],data[a]?.['no'+x+'artist']))
+          return output
+        }
+      }
+    }
+  }
+  var searchValue = document.getElementById("termSearch").value.toLowerCase();
+  if (document.querySelector("#termSearch") !== null && document.querySelector("#termSearch").value === ""){
+    document.querySelector("#searchResults").innerHTML = ''
+    return
+  }
+    document.querySelector("#searchResults").innerHTML = ''
+  //for songs
+  list('name','id').then(function (val) {
+    val.forEach((item, i) => {
+      if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
+        const line = document.createElement("li");
+        line.innerHTML = decode(item.artist.slice(-10))[0][3] + ' - ' + decode(item.artist.slice(-10))[0][4];
+        document.querySelector("#searchResults").appendChild(line);
+      }
+    })
+  }) //for artists
+  list('artist').then(function (val) {
+    val.forEach((item, i) => {
+      if (item.artist.toLowerCase().includes(searchValue)) {
+        const line = document.createElement("li");
+        line.innerHTML = item.artist
+        document.querySelector("#searchResults").appendChild(line);
+      }
+    })
+  }) //for songs by artist
+  list('artist','id').then(function (val) {
+    val.forEach((item, i) => {
+      if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
+        const line = document.createElement("li");
+        line.innerHTML = decode(item.artist.slice(-10))
+        document.querySelector("#searchResults").appendChild(line);
+      }
+    })
+  })
+
+
+}
+
+async function list(component,comp2) {
+  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
+  const response = await fetch(api_url);
+  const data = await response.json();
+
+  var list = []
+  for (let i = 1; i <= 10; i++) {
+    searchYearly(i)
+  }
+  function searchYearly(pos) {
+    data.forEach((item, i) => {
+      var separators = [' ft. ', ' / ', ', '];
+      if (comp2) {
+        var tokens = item?.['no'+pos+component].split(new RegExp(separators.join('|'), 'g')) + ' ' + item?.['no'+pos+comp2];
+      } else {
+        var tokens = item?.['no'+pos+component].split(new RegExp(separators.join('|'), 'g'));
+      }
+      list.push(tokens)
+    });
+  }
+  var combinedList = list.flat(1)
+  return group(combinedList)
+}
+
+function pic(termArtist, termSong, order) {
+  var allArtists = termArtist.replace(' ft. ',' ').toLowerCase()
+  var artists = termArtist;
+
+  const artistsList = artists.replace(re, function(matched){return mapObj1[matched]}).split("separator");
+
+  termArtist = artistsList[0].toLowerCase()
+  termSong = termSong.toLowerCase()
+  var term = termArtist + ' - ' + termSong
+  const url0 = `https://itunes.apple.com/search?term=${term}`;
+  const url1 = `https://itunes.apple.com/search?term=${allArtists + ' - ' + termSong}&media=musicVideo`;
+  const url2 = `https://itunes.apple.com/search?term=${term}&media=musicVideo`;
+
+  var coverList = []
+  var videoList = []
+  fetch(url0)
+      .then((Response) => Response.json())
+      .then((data) => {
+        findPic()
+        function findPic() {
+          for (var i = 0; i < data.results.length; i++) {
+            if (termArtist.includes(data.results[i].artistName.toLowerCase()) && data.results[i].trackName.toLowerCase().includes(termSong))  {
+              coverList.push(data.results[i]);
+              return
+            }
+          }
+          for (var i = 0; i < data.results.length; i++) {
+            if (termArtist.indexOf(data.results[i].artistName.toLowerCase()) || data.results[i].trackName.toLowerCase().indexOf(termSong))  {
+              coverList.push(data.results[i]);
+              return
+            }
+          }
+        }
+        //let str = coverList[0].artworkUrl100.replace('100x100', '200x200')
+        //document.querySelector('#cover'+order).style.backgroundImage = 'url(' + str + ')'
+  })
+  fetch(url1)
+      .then((Response) => Response.json())
+      .then((data) => {
+        findPic()
+        function findPic() {
+          for (var i = 0; i < data.results.length; i++) {
+            if (termSong.includes(data.results[i].trackName.toLowerCase()))  {
+              videoList.push(data.results[i]);
+              return
+            }
+          }
+          for (var i = 0; i < data.results.length; i++) {
+            videoList.push(data.results[i])
+            return
+          }
+        }
+        let con = videoList.concat(coverList)
+        if (con.length == 0) {
+          console.log("no")
+          setTimeout(() => {
+            let str = coverList[0].artworkUrl100.replace('100x100', '800x800')
+            document.querySelector('#video'+order).style.backgroundImage = 'url(' + str + ')'
+            color(str)
+          }, 2000);
+        } else {
+          let str = con[0].artworkUrl100.replace('100x100', '800x800')
+          document.querySelector('#video'+order).style.backgroundImage = 'url(' + str + ')'
+          color(str)
+        }
+
+  })
+  // var video2 = fetch(url2)
+  //     .then((Response) => Response.json())
+  //     .then((data) => {
+  //       var authList = []
+  //       findPic()
+  //       function findPic() {
+  //         for (var i = 0; i < data.results.length; i++) {
+  //           if (termSong.includes(data.results[i].trackName.toLowerCase()))  {
+  //             authList.push(data.results[i]);
+  //             return
+  //           }
+  //         }
+  //       }
+  //       return authList
+  // })
+  // Promise.all([video1, songCover]).then(function(valArray) {
+  //   const videoList = valArray[0].concat(valArray[1],valArray[2])
+  //   let str = videoList[0].artworkUrl100.replace('100x100', '800x800')
+  //   document.querySelector('#video'+order).style.backgroundImage = 'url(' + str + ')'
+  // });
+  //
+  // songCover.then(function (val) {
+  //   let str = val[0].artworkUrl100.replace('100x100', '300x300')
+  //   document.querySelector('#cover'+order).style.backgroundImage = 'url(' + str + ')'
+  //   //console.log(str + ', done loading')
+  // });
+  function color(pic) {
+    var img = document.createElement('img');
+    img.setAttribute('src', pic)
+    img.crossOrigin = "Anonymous";
+
+    // img.addEventListener('load', function() {
+    //     var vibrant = new Vibrant(img);
+    //     new Vibrant(
+    //         img,
+    //         64, /* amount of colors in initial palette from which the swatches will be generated, defaults to 64 */
+    //         5 /* quality. 0 is highest, but takes way more processing. defaults to 5. */
+    //     )
+    //     var swatches = vibrant.swatches()
+    //     for (var swatch in swatches)
+    //     //if (swatches['DarkVibrant']) {
+    //     //  document.querySelector('html').style.background = swatches['DarkVibrant'].getHex()
+    //     //  //WRITE FUNCTION TO REMOVE HUE OR SATURATION WHEN TOO EXTREME
+    //     //} else {
+    //     //  document.querySelector('html').style.background = swatches['DarkMuted'].getHex()
+    //     //}
+    //     document.querySelectorAll('#palette div')[0].style.background = swatches['Vibrant'].getHex()
+    //     document.querySelectorAll('#palette div')[1].style.background = swatches['Muted'].getHex()
+    //     document.querySelectorAll('#palette div')[2].style.background = swatches['DarkVibrant'].getHex()
+    //     document.querySelectorAll('#palette div')[3].style.background = swatches['DarkMuted'].getHex()
+    //     document.querySelectorAll('#palette div')[4].style.background = swatches['LightVibrant'].getHex()
+    // });
+  }
+}
+
+
+//map('');
+// const artistSearch = [];
+// async function map(artist) {
+//   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
+//   const response = await fetch(api_url);
+//   const data = await response.json();
+//   const dfgdfg = formList(artist, '');
+//   dfgdfg.forEach((item, i) => {
+//     const button = document.createElement("button");
+//     button.innerHTML = item;
+//     button.setAttribute("onClick", 'formList(``,"'+item+'")');
+//     document.querySelector("#map-labels").appendChild(button);
+//   });
+//
+//   for (let i = 1; i <= 10; i++) {
+//     const li = document.createElement("div");
+//     li.setAttribute("id", 'id' + i);
+//     li.classList.add('gdfskgf')
+//     li.style.gridTemplateColumns = "repeat(" + data.length + ", 1fr)";
+//     document.querySelector("#map").appendChild(li);
+//     createLine(i);
+//   }
+//   function createLine(pos) {
+//
+//     for (let z = 0; z < data.length; z++) {
+//       const tile = document.createElement("div");
+//       tile.style.backgroundColor = data[z]?.['no'+pos+'genre'];
+//       var separators = [' ft. ', ' / ', ', '];
+//       const tokens = data[z]?.['no'+pos+'artist'].split(new RegExp(separators.join('|'), 'g'));
+//
+//       if (tokens.some(r=> dfgdfg.includes(r))) {
+//         tile.style.opacity = '1';
+//       } else {
+//         //tile.style.opacity = '0';
+//       }
+//       document.querySelector('#id' + pos).appendChild(tile);
+//     }
+//   }
+// }
+//
+// function formList(artistAdd, artistRemove) {
+//   artistAdd = artistAdd.replace("&amp;", "&");
+//   document.querySelector("#map").innerHTML = '';
+//   artistSearch.push(artistAdd);
+//
+//   if (artistRemove !== '') {
+//     console.log(artistRemove)
+//     // const index = artistSearch.indexOf(artistRemove);
+//     // if (index > -1) {
+//     //   artistSearch.splice(index, 1);
+//     // }
+//     var i = 0;
+//     while (i < artistSearch.length) {
+//       if (artistSearch[i] === artistRemove) {
+//           artistSearch.splice(i, 1);
+//       } else {
+//           ++i;
+//       }
+//     }
+//   }
+//   document.querySelector("#map-labels").innerHTML = '';
+//   console.log(artistSearch)
+//   return artistSearch;
+// }
+
+function decode(input) {
+
+  if (input == '#de7eea') {
+    output = 'Pop'
+  } else if (input == '#a16fd9') {
+    output = 'Pop (Synth, Dance, etc)'
+  } else if (input == '#9a82c8') {
+    output = 'Pop (Indie, etc)'
+  } else if (input == '#c295c8') {
+    output = 'Pop Rock (Soft, etc)'
+  } else if (input == '#d700ff') {
+    output = 'Disco'
+  } else if (input == '#854d76') {
+    output = 'Funk'
+  } else if (input == '#ba2c8e') {
+    output = 'Pop Rap, Rap Rock, etc'
+  } else if (input == '#ba3d3d') {
+    output = 'R&B'
+  } else if (input == '#b65f5f') {
+    output = 'R&B (New Jack, Doo Wop, etc)'
+  } else if (input == '#603232') {
+    output = 'Hip Hop'
+  } else if (input == '#1a1a1a') {
+    output = 'Hip Hop (Trap, Dirty, etc)'
+  } else if (input == '#413630') {
+    output = 'Hip Hop (Regional)'
+  } else if (input == '#935b4a') {
+    output = 'Hip Hop (alt)'
+  } else if (input == '#3ca33f') {
+    output = 'Rock'
+  } else if (input == '#308532') {
+    output = 'Rock (Metal, Hard, etc)'
+  } else if (input == '#638559') {
+    output = 'Rock (Grunge, etc)'
+  } else if (input == '#6a9d32') {
+    output = 'Rock (Funk, Blues, etc)'
+  } else if (input == '#8eb371') {
+    output = 'Rock (Punk, New Wave, etc)'
+  } else if (input == '#4aca4e') {
+    output = 'Rock and Roll, etc'
+  } else if (input == '#97be9d') {
+    output = 'Alternative Rock'
+  } else if (input == '#a4d685') {
+    output = 'Folk Rock'
+  } else if (input == '#c4c800') {
+    output = 'Soul'
+  } else if (input == '#a7ab00') {
+    output = 'Blues'
+  } else if (input == '#d5eb20') {
+    output = 'Jazz'
+  } else if (input == '#ddf3a8') {
+    output = 'Calypso, Soca, etc'
+  } else if (input == '#c6ccae') {
+    output = 'Gospel, Worship, etc'
+  } else if (input == '#ceb8ae') {
+    output = 'World, New Age, etc'
+  } else if (input == '#7085ef') {
+    output = 'Electronic, EDM, Club, etc'
+  } else if (input == '#5666b8') {
+    output = 'Electronic (Dubstep, etc)'
+  } else if (input == '#4d95b8') {
+    output = 'Electronic (Electro Rock)'
+  } else if (input == '#623aff') {
+    output = 'Reggae, Dancehall, etc'
+  } else if (input == '#73e6e0') {
+    output = 'Eurodance, Trance, etc'
+  } else if (input == '#3eadef') {
+    output = 'House'
+  } else if (input == '#ff6900') {
+    output = 'Country'
+  } else if (input == '#f6b26b') {
+    output = 'Country Pop'
+  } else if (input == '#b3997a') {
+    output = 'Country Rock'
+  } else if (input == '#d49875') {
+    output = 'Country Rap'
+  } else if (input == '#c7cc86') {
+    output = 'Folk, Bluegrass, etc'
+  } else if (input == '#ffe381') {
+    output = 'Latin'
+  } else if (input == '#f5d8d8') {
+    output = 'Tango, Polka, etc'
+  }
+  return output;
+}
