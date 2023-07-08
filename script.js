@@ -307,7 +307,7 @@ async function findYear(yearno) {
   group(genreList).forEach((item, i) => {
     console.log(item)
       document.querySelector('#id' + item.key.slice(-6)).style.order = i + 1
-      document.querySelector('#id' + item.key.slice(-6)).style.width = [[item.key / 1000] * 100 + 266] + 'px'
+      document.querySelector('#id' + item.key.slice(-6)).style.width = [[item.score / 1000] * 100 + 266] + 'px'
       document.querySelector('#id' + item.key.slice(-6)).innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item.key + ';"></div><div>' + decode(item.key) + ": " + item.score + "</div><div class='bar' style='background:" + item.key + "'></div>"
       document.querySelector('#id' + item.key.slice(-6)).style.opacity = '1'
   })
