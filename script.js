@@ -161,9 +161,9 @@ var genrePool = ['#de7eea','#a16fd9','#9a82c8','#c295c8','#d700ff','#854d76','#b
 genrePool.forEach((item, i) => {
   const li = document.createElement("li");
   li.setAttribute("id", 'id' + item.slice(-6));
-  //li.style.order = i + 1;
-  //li.innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item + ';"></div>'
-  //document.querySelector("#genres").appendChild(li);
+  li.style.order = i + 1;
+  li.innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item + ';"></div>'
+  document.querySelector("#genres").appendChild(li);
 });
 function searchEnter(e) {
   if (e.keyCode == 13) {
@@ -218,81 +218,103 @@ async function yearButton(year,week) {
   document.getElementById('next').onclick = async function() {
     counter=counter + 1;
     findWeek(counter)
-    findYear(data[counter].week.substring(0, 3)) //for month - substring(0, 7)
+    findYear(data[counter].week.substring(0, 4)) //for month - substring(0, 7)
   }
   document.getElementById('previous').onclick = function() {
     counter=counter - 1;
     findWeek(counter)
-    findYear(data[counter].week.substring(0, 3))
+    findYear(data[counter].week.substring(0, 4))
   }
   document.querySelector('#top10').innerHTML = '';
   findWeek(counter)
-  findYear(data[counter].week.substring(0, 3))
+  findYear(data[counter].week.substring(0, 4))
 }
- async function findYear(yearno) {
-  // const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
-  // const response = await fetch(api_url);
-  // const data = await response.json();
-  //
-  // document.querySelector('#songs').innerHTML = '';
-  // document.querySelector('#artists').innerHTML = '';
-  // for (let i = 0; i < genrePool.length; i++) {
-  //   document.querySelector('#id' + genrePool[i].slice(-6)).style.width = '266px'
-  //   document.querySelector('#id' + genrePool[i].slice(-6)).innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + genrePool[i] + ';"></div>' + decode(genrePool[i].slice(-7)) + ": 0" + "</div><div class='bar' style='background:" + genrePool[i].slice(-7) + "'></div>"
-  //   document.querySelector('#id' + genrePool[i].slice(-6)).style.order = '500'
-  //   document.querySelector('#id' + genrePool[i].slice(-6)).style.opacity = '0.3'
-  // }
-  // var songList = []
-  // var artistList = []
-  // var genreList = []
-  // for (let i = 1; i <= 10; i++) {
-  //   searchYearly(i)
-  // }
-  // function searchYearly(pos) {
-  //   for (let i = 0; i < data.length; i++) {
-  //     if (data[i].week.includes(yearno)) {
-  //       songList.push(data[i]?.['no'+pos+'name'] + " " + data[i]?.['no'+pos+'genre'])
-  //       var separators = [' ft. ', ' / ', ', '];
-  //       var tokens = data[i]?.['no'+pos+'artist'].split(new RegExp(separators.join('|'), 'g'));
-  //       artistList.push(tokens)
-  //       genreList.push(data[i]?.['no'+pos+'genre'])
-  //     }
-  //   }
-  // }
-  // var combinedSong = songList.flat(1)
-  // var combinedArtist = artistList.flat(1)
-  // function group(type) {
-  //   let reducedArray = type.reduce( (acc, curr, _, arr) => {
-  //       if (acc.length == 0) acc.push({item: curr, count: 1})
-  //       else if (acc.findIndex(f => f.item === curr ) === -1) acc.push({item: curr, count: 1})
-  //       else ++acc[acc.findIndex(f => f.item === curr)].count
-  //       return acc
-  //   }, []);
-  //   var results = reducedArray.sort((a,b) => b.count - a.count )
-  //   return results;
-  // }
-  //
-  // console.log(group(combinedArtist))
-  // group(combinedSong).forEach((item, i) => {
-  //   const li = document.createElement("li");
-  //   li.innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + group(combinedSong)[i].item.slice(-7) + ';"></div>' + group(combinedSong)[i].item.slice(0, -8) + ": " + group(combinedSong)[i].count;
-  //   document.querySelector("#songs").appendChild(li);
-  // });
-  // group(combinedArtist).forEach((item, i) => {
-  //   const li = document.createElement("li");
-  //   li.innerHTML = "<a href='#'>" + group(combinedArtist)[i].item + "</a>: " + group(combinedArtist)[i].count;
-  //   document.querySelector("#artists").appendChild(li);
-  // });
-  // group(genreList).forEach((item, i) => {
-  //     document.querySelector('#id' + item.item.slice(-6)).style.order = i + 1
-  //     document.querySelector('#id' + item.item.slice(-6)).style.width = [[group(genreList)[i].count / group(genreList)[0].count] * 100 + 266] + 'px';
-  //     document.querySelector('#id' + item.item.slice(-6)).innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + group(genreList)[i].item + ';"></div><div>' + decode(group(genreList)[i].item) + ": " + group(genreList)[i].count + "</div><div class='bar' style='background:" + group(genreList)[i].item + "'></div>"
-  //     document.querySelector('#id' + item.item.slice(-6)).style.opacity = '1'
-  // });
-  // document.querySelectorAll('#artists li a').forEach((item, i) => {
-  //   item.setAttribute('onClick', 'map("' + item.innerHTML + '");');
-  // });
- }
+async function findYear(yearno) {
+  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
+  const response = await fetch(api_url);
+  const data = await response.json();
+  
+  document.querySelector('#songs').innerHTML = '';
+  document.querySelector('#artists').innerHTML = '';
+  for (let i = 0; i < genrePool.length; i++) {
+    document.querySelector('#id' + genrePool[i].slice(-6)).style.width = '266px'
+    document.querySelector('#id' + genrePool[i].slice(-6)).innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + genrePool[i] + ';"></div>' + decode(genrePool[i].slice(-7)) + ": 0" + "</div><div class='bar' style='background:" + genrePool[i].slice(-7) + "'></div>"
+    document.querySelector('#id' + genrePool[i].slice(-6)).style.order = '500'
+    document.querySelector('#id' + genrePool[i].slice(-6)).style.opacity = '0.3'
+  }
+  var songList = []
+  var artistList = []
+  var genreList = []
+  for (let i = 1; i <= 10; i++) {
+    searchYearly(i)
+  }
+  function searchYearly(pos) {
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].week.includes(yearno)) {
+        var name = data[i]?.['no'+pos+'name']
+        var artist = data[i]?.['no'+pos+'artist']
+        var genre = data[i]?.['no'+pos+'genre']
+        var object = [genre,name,artist]
+        var score = 11 - pos
+        songList.push({object,score})
+        var separators = [' ft. ', ' / ', ', '];
+        var tokens = artist.split(new RegExp(separators.join('|'), 'g'))
+        var fuck = []
+        tokens.forEach((object, i) => {
+          //score = (score + 10) * (1/(tokens.length)) + (5 / (i+1))
+          fuck.push({object,score})
+        })
+        artistList.push(fuck)
+        object = genre
+        genreList.push({object,score})
+      }
+    }
+  }
+
+  var combinedArtist = artistList.flat(1)
+
+  function group(type) {
+    // let reducedArray = type.reduce( (acc, curr, _, arr) => {
+    //     if (acc.length == 0) acc.push({item: curr, count: 1})
+    //     else if (acc.findIndex(f => f.item === curr ) === -1) acc.push({item: curr, count: 1})
+    //     else ++acc[acc.findIndex(f => f.item === curr)].count
+    //     return acc
+    // }, []);
+    // console.log(reducedArray)
+    // var results = reducedArray.sort((a,b) => b.count - a.count )
+    // return results;
+    var reducedArray = Object.values(type.reduce((hash, item) => {
+      if (!hash[item.object]) {
+          hash[item.object] = { key: item.object, score: 0 };
+      }
+      hash[item.object].score += item.score;
+      
+      return hash;
+    }, {}))
+    var results = reducedArray.sort((a,b) => b.score - a.score )
+    return results
+  }
+  group(songList).forEach((item, i) => {
+    const li = document.createElement("li")
+    li.innerHTML = item.score + ' <div style="display:inline-block;width:16px;height:16px;background: ' + item.key[0] + ';"></div>' + item.key[1] + " - " + item.key[2]
+    document.querySelector("#songs").appendChild(li)
+  })
+  group(combinedArtist).forEach((item, i) => {
+    const li = document.createElement("li")
+    li.innerHTML = item.score + " " + item.key
+    document.querySelector("#artists").appendChild(li)
+  })
+  group(genreList).forEach((item, i) => {
+    console.log(item)
+      document.querySelector('#id' + item.key.slice(-6)).style.order = i + 1
+      document.querySelector('#id' + item.key.slice(-6)).style.width = [[item.key / 1000] * 100 + 266] + 'px'
+      document.querySelector('#id' + item.key.slice(-6)).innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item.key + ';"></div><div>' + decode(item.key) + ": " + item.score + "</div><div class='bar' style='background:" + item.key + "'></div>"
+      document.querySelector('#id' + item.key.slice(-6)).style.opacity = '1'
+  })
+  document.querySelectorAll('#artists li a').forEach((item, i) => {
+    item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
+  })
+}
 
 async function findWeek(weekno) {
   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
@@ -493,7 +515,7 @@ document.querySelector('#back').onclick = function(){
     searchArtist(modalHistory[recent])
     modalHistory.pop()
   }
-};
+}
 
 async function searchSong(id) {
   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
@@ -609,6 +631,8 @@ function group(type) {
   var results = reducedArray.sort((a,b) => b.count - a.count )
   return results;
 }
+
+//CHANGE SEARCH TO CALCULATE RESULTS AT ONCE AND THEN APPEND RATHER THAN APPEND ONE BY ONE
 
 async function termSearch() {
   document.querySelector("#searchResults").innerHTML = ''
