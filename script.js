@@ -1,6 +1,11 @@
 
 var test1
 var browseHistory = []
+var mapObj = {' ft. ':"</a>&nbspft.&nbsp<a>",' / ':"</a>&nbsp/&nbsp<a>",', ':"</a>,&nbsp<a>"};
+var mapObj1 = {' ft. ':"separator",' / ':"separator",', ':"separator"};
+var re = new RegExp(Object.keys(mapObj).join("|"),"gi");
+var genrePool = ['#de7eea','#a16fd9','#9a82c8','#c295c8','#d700ff','#854d76','#ba2c8e','#ba3d3d','#b65f5f','#603232','#1a1a1a','#413630','#935b4a','#3ca33f','#308532','#638559','#6a9d32','#8eb371','#4aca4e','#97be9d','#a4d685','#c4c800','#a7ab00','#d5eb20','#ddf3a8','#c6ccae','#ceb8ae','#7085ef','#5666b8','#4d95b8','#623aff','#73e6e0','#3eadef','#ff6900','#f6b26b','#b3997a','#d49875','#c7cc86','#ffe381','#f5d8d8']
+
 
 homeInitialize()
 function homeInitialize() {
@@ -11,56 +16,202 @@ function homeInitialize() {
   yeah.innerHTML = "Hello and welcome!"
   document.querySelector("#main").appendChild(yeah);
 }
+
+function testHistory(term) {
+  browseHistory.push(term)
+  console.log(browseHistory)
+}
+
 async function browseInitialize() {
   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
   const response = await fetch(api_url);
   const data = await response.json();
 
   document.querySelector("#main").innerHTML = ''
+  const decades = []
   const years = []
+  const months = []
+  const weeks = []
   for (var i = 0; i < data.length; i++) {
+    decades.push(data[i].week.slice(0,3) + "0s")
     years.push(data[i].week.slice(0,4))
+    months.push(data[i].week.slice(0,7))
+    weeks.push(data[i].week)
   }
+  var uniqueDecades = decades.filter(function(item, pos){
+    return decades.indexOf(item)== pos
+  })
   var uniqueYears = years.filter(function(item, pos){
-    return years.indexOf(item)== pos;
-  });
+    return years.indexOf(item)== pos
+  })
+  var uniqueMonths = months.filter(function(item, pos){
+    return months.indexOf(item)== pos
+  })
+  var uniqueWeeks = weeks.filter(function(item, pos){
+    return weeks.indexOf(item)== pos
+  })
 
-  const buttonContainer = document.createElement("div");
+  const buttonContainer = document.createElement("div")
   buttonContainer.classList.add('button-container')
-  document.querySelector("#main").appendChild(buttonContainer);
+  buttonContainer.setAttribute("id", 'decade-container')
+  buttonContainer.style.gridTemplateColumns = 'repeat('+uniqueDecades.length+', 1fr)'
+  document.querySelector("#main").appendChild(buttonContainer)
 
-  uniqueYears.forEach((item, i) => {
-    const years = document.createElement("button");
-    years.innerHTML = item
-    years.setAttribute("id", 'year-'+item);
-    years.setAttribute('onclick', 'chartInitialize();yearButton('+item+',0)');
-    document.querySelector(".button-container").appendChild(years);
+  uniqueDecades.forEach((item, i) => {
+    const decades = document.createElement("button")
+    decades.innerHTML = item
+    decades.setAttribute("id", 'decade-'+item)
+    decades.onclick = function(){
+      yearButton(decades.innerHTML.slice(0,4),0,3)
+      document.querySelector("#year-container").innerHTML = ''
+      document.querySelector("#month-container").innerHTML = ''
+      document.querySelector("#week-container").innerHTML = ''
+      for (let i = 0; i < document.querySelectorAll('#decade-container > button').length; i++) {
+        document.querySelectorAll('#decade-container > button')[i].style.opacity = '1'
+      }
+      document.querySelector('#decade-'+item).style.opacity = '0.5'
+      uniqueYears.forEach((item, i) => {
+        if (item.slice(0,3) == decades.innerHTML.slice(0,3)) {
+          const years = document.createElement("button")
+          years.innerHTML = item
+          years.setAttribute("id", 'year-'+item)
+          years.onclick = function(){
+            yearButton(item,0,4)
+            document.querySelector("#month-container").innerHTML = ''
+            document.querySelector("#week-container").innerHTML = ''
+            for (let i = 0; i < document.querySelectorAll('#year-container > button').length; i++) {
+              document.querySelectorAll('#year-container > button')[i].style.opacity = '1'
+            }
+            document.querySelector('#year-'+item).style.opacity = '0.5'
+            uniqueMonths.forEach((item, i) => {
+              if (item.slice(0,4) == years.innerHTML.slice(0,4)) {
+                const months = document.createElement("button")
+                months.innerHTML = item
+                months.setAttribute("id", 'month-'+item.slice(0,4)+'-'+item.slice(5,7))
+                months.onclick = function(){
+                  yearButton(item,0,7)
+                  document.querySelector("#week-container").innerHTML = ''
+                  console.log(item)
+                  for (let i = 0; i < document.querySelectorAll('#month-container > button').length; i++) {
+                    document.querySelectorAll('#month-container > button')[i].style.opacity = '1'
+                  }
+                  document.querySelector('#month-'+item.slice(0,4)+'-'+item.slice(5,7)).style.opacity = '0.5'
+                  uniqueWeeks.forEach((item, i) => {
+                    if (item.slice(0,7) == months.innerHTML.slice(0,7)) {
+                      const weeks = document.createElement("button")
+                      weeks.innerHTML = item
+                      weeks.setAttribute("id", 'week-'+item.slice(0,4)+'-'+item.slice(5,7)+'-'+item.slice(8,10))
+                      weeks.onclick = function(){
+                        yearButton(item,0,10)
+                        for (let i = 0; i < document.querySelectorAll('#week-container > button').length; i++) {
+                          document.querySelectorAll('#week-container > button')[i].style.opacity = '1'
+                        }
+                        document.querySelector('#week-'+item.slice(0,4)+'-'+item.slice(5,7)+'-'+item.slice(8,10)).style.opacity = '0.5'
+                      }
+                      document.querySelector("#week-container").appendChild(weeks)
+                    }
+                  })
+                }
+                document.querySelector("#month-container").appendChild(months)
+              }
+            })
+          }
+          document.querySelector("#year-container").appendChild(years)
+        }
+      })
+    }
+    document.querySelector("#decade-container").appendChild(decades)
+  })
 
-  });
+  const yearContainer = document.createElement("div")
+  yearContainer.classList.add('button-container')
+  yearContainer.setAttribute("id", 'year-container')
+  yearContainer.style.gridTemplateColumns = 'repeat(10, 1fr)'
+  document.querySelector("#decade-container").appendChild(yearContainer)
+
+  const monthContainer = document.createElement("div")
+  monthContainer.classList.add('button-container')
+  monthContainer.setAttribute("id", 'month-container')
+  monthContainer.style.gridTemplateColumns = 'repeat(12, 1fr)'
+  document.querySelector("#decade-container").appendChild(monthContainer)
+  
+  const weekContainer = document.createElement("div")
+  weekContainer.classList.add('button-container')
+  weekContainer.setAttribute("id", 'week-container')
+  weekContainer.style.gridTemplateColumns = 'repeat(53, 1fr)'
+  document.querySelector("#decade-container").appendChild(weekContainer)
+
+  // uniqueYears.forEach((item, i) => {
+  //   const years = document.createElement("button")
+  //   years.innerHTML = item
+  //   years.setAttribute("id", 'year-'+item)
+  //   years.setAttribute('onclick', 'chartInitialize();yearButton('+item+',0)')
+  //   document.querySelector(".button-container").appendChild(years)
+  // })
   const chartWrapper = document.createElement("div")
   chartWrapper.classList.add('chart-wrapper')
   document.querySelector("#main").appendChild(chartWrapper)
 
   if (browseHistory.length !== 0) {
-    chartInitialize()
+    // chartInitialize()
     findWeek(browseHistory[browseHistory.length - 1])
   }
 
-}
+  function yearButton(year,week,searchRequest) {
+  
+    var yearList = []
+    data.forEach((item, i) => {
+      if (item.week.includes(year)) {
+        yearList.push(item)
+      }
+    })
+  
+    if (week == yearList.length) {
+      year++
+      week = 0;
+      var yearList = []
+      data.forEach((item, i) => {
+        if (item.week.includes(year)) {
+          yearList.push(item)
+        }
+      })
+    }
+    var counter = +yearList[week].no
+    var sdffsd = false
+    if (sdffsd == true) {
+      document.getElementById('next').onclick = async function() {
+        counter=counter + 1
+        findWeek(counter)
+        findYear(data[counter].week.substring(0, searchRequest)) //for month - substring(0, 7)
+        testHistory(counter)
+      }
+      document.getElementById('previous').onclick = function() {
+        counter=counter - 1
+        findWeek(counter)
+        findYear(data[counter].week.substring(0, searchRequest))
+        testHistory(counter)
+      }
+    }
+  
+    
+    document.querySelector('#top10').innerHTML = ''
+    findWeek(counter)
+    findYear(data[counter].week.substring(0, searchRequest))
+    testHistory(counter)
+  }
+
+// }
 
 // document.querySelector('#close').onclick = function(){
 //   modal('hidden')
 //   modalHistory = []
 // };
-function testHistory(term) {
-  browseHistory.push(term)
-  console.log(browseHistory)
-}
 
-async function chartInitialize() {
-  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
-  const response = await fetch(api_url);
-  const data = await response.json();
+
+// async function chartInitialize() {
+//   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
+//   const response = await fetch(api_url);
+//   const data = await response.json();
 
 
   if (!test1) {
@@ -102,6 +253,26 @@ async function chartInitialize() {
     const nextprev = document.createElement("div")
     nextprev.classList.add('nextprev')
     document.querySelector(".chart-wrapper").appendChild(nextprev)
+
+    const browseWeek = document.createElement("button")
+    browseWeek.setAttribute("id", 'week')
+    browseWeek.innerHTML = "Week"
+    document.querySelector(".nextprev").appendChild(browseWeek)
+
+    const browseMonth = document.createElement("button")
+    browseMonth.setAttribute("id", 'month')
+    browseMonth.innerHTML = "Month"
+    document.querySelector(".nextprev").appendChild(browseMonth)
+
+    const browseYear = document.createElement("button")
+    browseYear.setAttribute("id", 'year')
+    browseYear.innerHTML = "Year"
+    document.querySelector(".nextprev").appendChild(browseYear)
+
+    const browseDecade = document.createElement("button")
+    browseDecade.setAttribute("id", 'decade')
+    browseDecade.innerHTML = "Decade"
+    document.querySelector(".nextprev").appendChild(browseDecade)
 
     const prev = document.createElement("button")
     prev.setAttribute("id", 'previous')
@@ -148,23 +319,47 @@ async function chartInitialize() {
     top10.setAttribute("id", 'top10')
     top10.classList.add('top10')
     document.querySelector(".chart-wrapper").appendChild(top10)
+
+    const nonweeklychart = document.createElement("div")
+    nonweeklychart.classList.add('nonweeklychart')
+    document.querySelector(".chart-wrapper").appendChild(nonweeklychart)
+
+    const topsongs = document.createElement("div")
+    topsongs.setAttribute("id", 'songs')
+    topsongs.classList.add('songs')
+    document.querySelector(".nonweeklychart").appendChild(topsongs)
+
+    const topartists = document.createElement("div")
+    topartists.setAttribute("id", 'artists')
+    topartists.classList.add('artists')
+    document.querySelector(".nonweeklychart").appendChild(topartists)
+
+    const topgenres = document.createElement("div")
+    topgenres.setAttribute("id", 'genres')
+    topgenres.classList.add('genres')
+    document.querySelector(".chart-wrapper").appendChild(topgenres)
+
+    genrePool.forEach((item, i) => {
+      const li = document.createElement("li");
+      li.setAttribute("id", 'id' + item.slice(-6));
+      li.style.order = i + 1;
+      li.innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item + ';"></div>'
+      document.querySelector("#genres").appendChild(li);
+    });
+
+    // document.querySelector('#week').onclick = function(){
+    //   console.log("hi!")
+    // }
   }
   test1 = true; //when user switches tab, set false
 }
 
+
+
+
+
 //old
 
-var mapObj = {' ft. ':"</a>&nbspft.&nbsp<a>",' / ':"</a>&nbsp/&nbsp<a>",', ':"</a>,&nbsp<a>"};
-var mapObj1 = {' ft. ':"separator",' / ':"separator",', ':"separator"};
-var re = new RegExp(Object.keys(mapObj).join("|"),"gi");
-var genrePool = ['#de7eea','#a16fd9','#9a82c8','#c295c8','#d700ff','#854d76','#ba2c8e','#ba3d3d','#b65f5f','#603232','#1a1a1a','#413630','#935b4a','#3ca33f','#308532','#638559','#6a9d32','#8eb371','#4aca4e','#97be9d','#a4d685','#c4c800','#a7ab00','#d5eb20','#ddf3a8','#c6ccae','#ceb8ae','#7085ef','#5666b8','#4d95b8','#623aff','#73e6e0','#3eadef','#ff6900','#f6b26b','#b3997a','#d49875','#c7cc86','#ffe381','#f5d8d8']
-genrePool.forEach((item, i) => {
-  const li = document.createElement("li");
-  li.setAttribute("id", 'id' + item.slice(-6));
-  li.style.order = i + 1;
-  li.innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item + ';"></div>'
-  document.querySelector("#genres").appendChild(li);
-});
 function searchEnter(e) {
   if (e.keyCode == 13) {
     search();
@@ -191,51 +386,15 @@ async function searchWeek(searchRequest) {
   }
   yearButton(yearRequest,weekRequest)
 }
-async function yearButton(year,week) {
-  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
-  const response = await fetch(api_url);
-  const data = await response.json();
 
-  var yearList = []
-  data.forEach((item, i) => {
-    if (item.week.includes(year)) {
-      yearList.push(item)
-    }
-  });
 
-  if (week == yearList.length) {
-    year++
-    week = 0;
-    var yearList = []
-    data.forEach((item, i) => {
-      if (item.week.includes(year)) {
-        yearList.push(item)
-      }
-    });
-  }
-  var counter = +yearList[week].no
-
-  document.getElementById('next').onclick = async function() {
-    counter=counter + 1;
-    findWeek(counter)
-    findYear(data[counter].week.substring(0, 4)) //for month - substring(0, 7)
-  }
-  document.getElementById('previous').onclick = function() {
-    counter=counter - 1;
-    findWeek(counter)
-    findYear(data[counter].week.substring(0, 4))
-  }
-  document.querySelector('#top10').innerHTML = '';
-  findWeek(counter)
-  findYear(data[counter].week.substring(0, 4))
-}
 async function findYear(yearno) {
   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
   const response = await fetch(api_url);
   const data = await response.json();
   
-  document.querySelector('#songs').innerHTML = '';
-  document.querySelector('#artists').innerHTML = '';
+  document.querySelector('#songs').innerHTML = ''
+  document.querySelector('#artists').innerHTML = ''
   for (let i = 0; i < genrePool.length; i++) {
     document.querySelector('#id' + genrePool[i].slice(-6)).style.width = '266px'
     document.querySelector('#id' + genrePool[i].slice(-6)).innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + genrePool[i] + ';"></div>' + decode(genrePool[i].slice(-7)) + ": 0" + "</div><div class='bar' style='background:" + genrePool[i].slice(-7) + "'></div>"
@@ -305,7 +464,6 @@ async function findYear(yearno) {
     document.querySelector("#artists").appendChild(li)
   })
   group(genreList).forEach((item, i) => {
-    console.log(item)
       document.querySelector('#id' + item.key.slice(-6)).style.order = i + 1
       document.querySelector('#id' + item.key.slice(-6)).style.width = [[item.score / 1000] * 100 + 266] + 'px'
       document.querySelector('#id' + item.key.slice(-6)).innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item.key + ';"></div><div>' + decode(item.key) + ": " + item.score + "</div><div class='bar' style='background:" + item.key + "'></div>"
@@ -320,8 +478,6 @@ async function findWeek(weekno) {
   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
   const response = await fetch(api_url);
   const data = await response.json();
-
-  testHistory(weekno)
 
   var currentWeek = data[weekno];
   var lastWeek = data[weekno - 1];
@@ -470,12 +626,12 @@ async function findWeek(weekno) {
   }
 
   document.querySelectorAll('#top10 a.songname').forEach((item, i) => {
-    item.setAttribute('href', '#')
+    //item.setAttribute('href', '#')
     item.setAttribute('onClick', 'modal(`visible`);searchSong(`'+item.getAttribute("id")+'`)')
     //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
   });
   document.querySelectorAll('#top10 .artistname a').forEach((item, i) => {
-    item.setAttribute('href', '#')
+    //item.setAttribute('href', '#')
     item.setAttribute('onClick', 'modal(`visible`);searchArtist(`'+item.innerHTML+'`)')
     //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
   });
@@ -545,7 +701,7 @@ async function searchSong(id) {
     }
   }
   document.querySelectorAll('#modalname a').forEach((item, i) => {
-    item.setAttribute('href', '#')
+    //item.setAttribute('href', '#')
     item.setAttribute('onClick', 'modal(`visible`);searchArtist(`'+item.innerHTML+'`)')
   });
   pic(artist,name,'modal')
@@ -589,11 +745,11 @@ async function searchArtist(artist) {
     document.querySelector("#modalsongs").appendChild(div);
   });
   document.querySelectorAll('#modalsongs a.songname').forEach((item, i) => {
-    item.setAttribute('href', '#')
+    //item.setAttribute('href', '#')
     item.setAttribute('onClick', 'modal(`visible`);searchSong(`'+item.getAttribute("id")+'`)')
   });
   document.querySelectorAll('#modalsongs .artistname a').forEach((item, i) => {
-    item.setAttribute('href', '#')
+    //item.setAttribute('href', '#')
     item.setAttribute('onClick', 'modal(`visible`);searchArtist(`'+item.innerHTML+'`)')
   });
   function decode(input) {
