@@ -157,7 +157,7 @@ async function browseInitialize() {
     findWeek(browseHistory[browseHistory.length - 1])
   }
 
-  function yearButton(year,week,searchRequest) {
+  function yearButton(year,week,request) {
   
     var yearList = []
     data.forEach((item, i) => {
@@ -177,27 +177,65 @@ async function browseInitialize() {
       })
     }
     var counter = +yearList[week].no
-    var sdffsd = false
-    if (sdffsd == true) {
+
+    if (request == '3') {
+      document.getElementById('next').onclick = async function() {
+        counter=counter + 1
+        findYear(data[counter].week.substring(0, request))
+        testHistory(counter)
+      }
+      document.getElementById('previous').onclick = function() {
+        counter=counter - 1
+        findYear(data[counter].week.substring(0, request))
+        testHistory(counter)
+      }
+      document.querySelector('#top10').innerHTML = ''
+      findYear(data[counter].week.substring(0, request))
+      testHistory(counter)
+    } else if (request == '4') {
+      document.getElementById('next').onclick = async function() {
+        counter=counter + 1
+        findYear(data[counter].week.substring(0, request))
+        testHistory(counter)
+      }
+      document.getElementById('previous').onclick = function() {
+        counter=counter - 1
+        findYear(data[counter].week.substring(0, request))
+        testHistory(counter)
+      }
+      document.querySelector('#top10').innerHTML = ''
+      findYear(data[counter].week.substring(0, request))
+      testHistory(counter)
+    } else if (request == '7') {
+      document.getElementById('next').onclick = async function() {
+        counter=counter + 1
+        findYear(data[counter].week.substring(0, request))
+        testHistory(counter)
+      }
+      document.getElementById('previous').onclick = function() {
+        counter=counter - 1
+        findYear(data[counter].week.substring(0, request))
+        testHistory(counter)
+      }
+      document.querySelector('#top10').innerHTML = ''
+      findYear(data[counter].week.substring(0, request))
+      testHistory(counter)
+    } else if (request == '10') {
       document.getElementById('next').onclick = async function() {
         counter=counter + 1
         findWeek(counter)
-        findYear(data[counter].week.substring(0, searchRequest)) //for month - substring(0, 7)
         testHistory(counter)
       }
       document.getElementById('previous').onclick = function() {
         counter=counter - 1
         findWeek(counter)
-        findYear(data[counter].week.substring(0, searchRequest))
         testHistory(counter)
       }
+      document.querySelector('#top10').innerHTML = ''
+      findWeek(counter)
+      testHistory(counter)
     }
-  
     
-    document.querySelector('#top10').innerHTML = ''
-    findWeek(counter)
-    findYear(data[counter].week.substring(0, searchRequest))
-    testHistory(counter)
   }
 
 // }
@@ -478,6 +516,10 @@ async function findWeek(weekno) {
   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
   const response = await fetch(api_url);
   const data = await response.json();
+
+  document.querySelector('#artists').innerHTML = ''
+  document.querySelector('#songs').innerHTML = ''
+  document.querySelector('#genres').style.display = "none"
 
   var currentWeek = data[weekno];
   var lastWeek = data[weekno - 1];
