@@ -63,13 +63,23 @@ async function browseInitialize() {
     decades.setAttribute("id", 'decade-'+item)
     decades.onclick = function(){
       yearButton(decades.innerHTML.slice(0,4),0,3)
-      document.querySelector("#year-container").innerHTML = ''
-      document.querySelector("#month-container").innerHTML = ''
-      document.querySelector("#week-container").innerHTML = ''
-      for (let i = 0; i < document.querySelectorAll('#decade-container > button').length; i++) {
-        document.querySelectorAll('#decade-container > button')[i].style.opacity = '1'
+      var requestIndex = Number(item.slice(0,4))
+      testfml(requestIndex,'decade')
+      document.getElementById('next').onclick = async function() {
+        requestIndex = Number(uniqueDecades[(uniqueDecades.findIndex(element => element.includes(requestIndex)))+1].slice(0,4))
+        testfml(requestIndex,'decade')
       }
-      document.querySelector('#decade-'+item).style.opacity = '0.5'
+      document.getElementById('previous').onclick = function() {
+        requestIndex = Number(uniqueDecades[(uniqueDecades.findIndex(element => element.includes(requestIndex)))-1].slice(0,4))
+        testfml(requestIndex,'decade')
+      }
+      // document.querySelector("#year-container").innerHTML = ''
+      // document.querySelector("#month-container").innerHTML = ''
+      // document.querySelector("#week-container").innerHTML = ''
+      // for (let i = 0; i < document.querySelectorAll('#decade-container > button').length; i++) {
+      //   document.querySelectorAll('#decade-container > button')[i].style.opacity = '1'
+      // }
+      // document.querySelector('#decade-'+item).style.opacity = '0.5'
       uniqueYears.forEach((item, i) => {
         if (item.slice(0,3) == decades.innerHTML.slice(0,3)) {
           const years = document.createElement("button")
@@ -77,12 +87,22 @@ async function browseInitialize() {
           years.setAttribute("id", 'year-'+item)
           years.onclick = function(){
             yearButton(item,0,4)
-            document.querySelector("#month-container").innerHTML = ''
-            document.querySelector("#week-container").innerHTML = ''
-            for (let i = 0; i < document.querySelectorAll('#year-container > button').length; i++) {
-              document.querySelectorAll('#year-container > button')[i].style.opacity = '1'
+            requestIndex = Number(item)
+            testfml(requestIndex,'year')
+            document.getElementById('next').onclick = async function() {
+              requestIndex = uniqueYears[(uniqueYears.findIndex(element => element.includes(requestIndex)))+1]
+              testfml(requestIndex,'year')
             }
-            document.querySelector('#year-'+item).style.opacity = '0.5'
+            document.getElementById('previous').onclick = function() {
+              requestIndex = uniqueYears[(uniqueYears.findIndex(element => element.includes(requestIndex)))-1]
+              testfml(requestIndex,'year')
+            }
+            // document.querySelector("#month-container").innerHTML = ''
+            // document.querySelector("#week-container").innerHTML = ''
+            // for (let i = 0; i < document.querySelectorAll('#year-container > button').length; i++) {
+            //   document.querySelectorAll('#year-container > button')[i].style.opacity = '1'
+            // }
+            // document.querySelector('#year-'+item).style.opacity = '0.5'
             uniqueMonths.forEach((item, i) => {
               if (item.slice(0,4) == years.innerHTML.slice(0,4)) {
                 const months = document.createElement("button")
@@ -90,12 +110,21 @@ async function browseInitialize() {
                 months.setAttribute("id", 'month-'+item.slice(0,4)+'-'+item.slice(5,7))
                 months.onclick = function(){
                   yearButton(item,0,7)
-                  document.querySelector("#week-container").innerHTML = ''
-                  console.log(item)
-                  for (let i = 0; i < document.querySelectorAll('#month-container > button').length; i++) {
-                    document.querySelectorAll('#month-container > button')[i].style.opacity = '1'
+                  requestIndex = item
+                  testfml(requestIndex,'month')
+                  document.getElementById('next').onclick = async function() {
+                    requestIndex = uniqueMonths[(uniqueMonths.findIndex(element => element.includes(requestIndex)))+1]
+                    testfml(requestIndex,'month')
                   }
-                  document.querySelector('#month-'+item.slice(0,4)+'-'+item.slice(5,7)).style.opacity = '0.5'
+                  document.getElementById('previous').onclick = function() {
+                    requestIndex = uniqueMonths[(uniqueMonths.findIndex(element => element.includes(requestIndex)))-1]
+                    testfml(requestIndex,'month')
+                  }
+                  // document.querySelector("#week-container").innerHTML = ''
+                  // for (let i = 0; i < document.querySelectorAll('#month-container > button').length; i++) {
+                  //   document.querySelectorAll('#month-container > button')[i].style.opacity = '1'
+                  // }
+                  // document.querySelector('#month-'+item.slice(0,4)+'-'+item.slice(5,7)).style.opacity = '0.5'
                   uniqueWeeks.forEach((item, i) => {
                     if (item.slice(0,7) == months.innerHTML.slice(0,7)) {
                       const weeks = document.createElement("button")
@@ -103,10 +132,20 @@ async function browseInitialize() {
                       weeks.setAttribute("id", 'week-'+item.slice(0,4)+'-'+item.slice(5,7)+'-'+item.slice(8,10))
                       weeks.onclick = function(){
                         yearButton(item,0,10)
-                        for (let i = 0; i < document.querySelectorAll('#week-container > button').length; i++) {
-                          document.querySelectorAll('#week-container > button')[i].style.opacity = '1'
+                        requestIndex = item
+                        testfml(requestIndex,'week')
+                        document.getElementById('next').onclick = async function() {
+                          requestIndex = uniqueWeeks[(uniqueWeeks.findIndex(element => element.includes(requestIndex)))+1]
+                          testfml(requestIndex,'week')
                         }
-                        document.querySelector('#week-'+item.slice(0,4)+'-'+item.slice(5,7)+'-'+item.slice(8,10)).style.opacity = '0.5'
+                        document.getElementById('previous').onclick = function() {
+                          requestIndex = uniqueWeeks[(uniqueWeeks.findIndex(element => element.includes(requestIndex)))-1]
+                          testfml(requestIndex,'week')
+                        }
+                        // for (let i = 0; i < document.querySelectorAll('#week-container > button').length; i++) {
+                        //   document.querySelectorAll('#week-container > button')[i].style.opacity = '1'
+                        // }
+                        // document.querySelector('#week-'+item.slice(0,4)+'-'+item.slice(5,7)+'-'+item.slice(8,10)).style.opacity = '0.5'
                       }
                       document.querySelector("#week-container").appendChild(weeks)
                     }
@@ -157,6 +196,36 @@ async function browseInitialize() {
     findWeek(browseHistory[browseHistory.length - 1])
   }
 
+  function testfml(input, request) {
+    for (let i = 0; i < document.querySelectorAll('#'+request+'-container > button').length; i++) {
+      document.querySelectorAll('#'+request+'-container > button')[i].style.opacity = '1'
+    }
+    if (request == 'decade') {
+      document.querySelector('#'+request+'-'+input+'s').style.opacity = '0.5'
+      document.querySelector("#year-container").innerHTML = ''
+      document.querySelector("#month-container").innerHTML = ''
+      document.querySelector("#week-container").innerHTML = ''
+    }
+    if (request == 'year') {
+      document.querySelector('#'+request+'-'+input).style.opacity = '0.5'
+      document.querySelector("#month-container").innerHTML = ''
+      document.querySelector("#week-container").innerHTML = ''
+    }
+    if (request == 'month') {
+      document.querySelector('#'+request+'-'+input.slice(0,4)+'-'+input.slice(5,7)).style.opacity = '0.5'
+      document.querySelector("#week-container").innerHTML = ''
+    }
+    if (request == 'week') {
+      document.querySelector('#'+request+'-'+input.slice(0,4)+'-'+input.slice(5,7)+'-'+input.slice(8,10)).style.opacity = '0.5'
+    }
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].week.includes(input)) {
+        console.log(input + ": " + i)
+        return
+      }
+    }
+  }
+
   function yearButton(year,week,request) {
   
     var yearList = []
@@ -179,16 +248,16 @@ async function browseInitialize() {
     var counter = +yearList[week].no
 
     if (request == '3') {
-      document.getElementById('next').onclick = async function() {
-        counter=counter + 1
-        findYear(data[counter].week.substring(0, request))
-        testHistory(counter)
-      }
-      document.getElementById('previous').onclick = function() {
-        counter=counter - 1
-        findYear(data[counter].week.substring(0, request))
-        testHistory(counter)
-      }
+      // document.getElementById('next').onclick = async function() {
+      //   counter=counter + 1
+      //   findYear(data[counter].week.substring(0, request))
+      //   testHistory(counter)
+      // }
+      // document.getElementById('previous').onclick = function() {
+      //   counter=counter - 1
+      //   findYear(data[counter].week.substring(0, request))
+      //   testHistory(counter)
+      // }
       document.querySelector('#top10').innerHTML = ''
       findYear(data[counter].week.substring(0, request))
       testHistory(counter)
