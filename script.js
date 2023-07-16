@@ -52,10 +52,14 @@ async function browseInitialize() {
   })
 
   const buttonContainer = document.createElement("div")
-  buttonContainer.classList.add('button-container')
-  buttonContainer.setAttribute("id", 'decade-container')
-  buttonContainer.style.gridTemplateColumns = 'repeat('+uniqueDecades.length+', 1fr)'
+  buttonContainer.setAttribute("id", 'button-container')
   document.querySelector("#main").appendChild(buttonContainer)
+
+  const decadeContainer = document.createElement("div")
+  decadeContainer.classList.add('button-container')
+  decadeContainer.setAttribute("id", 'decade-container')
+  decadeContainer.style.gridTemplateColumns = 'repeat('+uniqueDecades.length+', 1fr)'
+  document.querySelector("#button-container").appendChild(decadeContainer)
 
   uniqueDecades.forEach((item, i) => {
     drawCalendar(item,'decade',uniqueDecades)
@@ -177,19 +181,19 @@ async function browseInitialize() {
   yearContainer.classList.add('button-container')
   yearContainer.setAttribute("id", 'year-container')
   yearContainer.style.gridTemplateColumns = 'repeat(10, 1fr)'
-  document.querySelector("#decade-container").appendChild(yearContainer)
+  document.querySelector("#button-container").appendChild(yearContainer)
 
   const monthContainer = document.createElement("div")
   monthContainer.classList.add('button-container')
   monthContainer.setAttribute("id", 'month-container')
   monthContainer.style.gridTemplateColumns = 'repeat(12, 1fr)'
-  document.querySelector("#decade-container").appendChild(monthContainer)
+  document.querySelector("#button-container").appendChild(monthContainer)
   
   const weekContainer = document.createElement("div")
   weekContainer.classList.add('button-container')
   weekContainer.setAttribute("id", 'week-container')
   weekContainer.style.gridTemplateColumns = 'repeat(53, 1fr)'
-  document.querySelector("#decade-container").appendChild(weekContainer)
+  document.querySelector("#button-container").appendChild(weekContainer)
 
   // uniqueYears.forEach((item, i) => {
   //   const years = document.createElement("button")
@@ -209,37 +213,36 @@ async function browseInitialize() {
 
   function drawCalendar(input,request,requestArray) {
     const token = document.createElement("button")
-    token.innerHTML = input + 's'
-    token.setAttribute("id", request+'-'+input.replace('/','-'))
+    token.innerHTML = input
+    token.setAttribute("id", request+'-'+input.replaceAll('/','-'))
     token.onclick = function(){
       //yearButton(decades.innerHTML.slice(0,4),0,3)
       var requestIndex = input
-      testfml(requestIndex,request)
+      testfml(requestIndex.replaceAll('/','-'),request)
       document.getElementById('next').onclick = async function() {
         requestIndex = requestArray[(requestArray.findIndex(element => element.includes(requestIndex)))+1]
-        console.log(input,request)
-        testfml(requestIndex,request)
+        testfml(requestIndex.replaceAll('/','-'),request)
       }
       document.getElementById('previous').onclick = function() {
         requestIndex = requestArray[(requestArray.findIndex(element => element.includes(requestIndex)))-1]
-        testfml(requestIndex,request)
+        testfml(requestIndex.replaceAll('/','-'),request)
       }
       if (request == 'decade') {
         uniqueYears.forEach((item, i) => {
           if (item.slice(0,3) == token.innerHTML.slice(0,3)) {
-            drawCalendar(item,'year',requestArray)
+            drawCalendar(item,'year',uniqueYears)
           }
         })
       } else if (request == 'year') {
         uniqueMonths.forEach((item, i) => {
           if (item.slice(0,4) == token.innerHTML.slice(0,4)) {
-            drawCalendar(item,'month',uniqueYears)
+            drawCalendar(item,'month',uniqueMonths)
           }
         })
       } else if (request == 'month') {
         uniqueWeeks.forEach((item, i) => {
           if (item.slice(0,7) == token.innerHTML.slice(0,7)) {
-            drawCalendar(item,'week',uniqueMonths)
+            drawCalendar(item,'week',uniqueWeeks)
           }
         })
       }
@@ -248,67 +251,92 @@ async function browseInitialize() {
   }
 
   function testfml(input, request) {
+    console.log(input)
+    
+    
+    if (request == 'decade') {
+      // document.querySelectorAll("#decade-container").innerHTML = ''
+      // uniqueDecades.forEach((item, i) => {
+      //   drawCalendar(item,'decade',uniqueDecades)
+      // })
+    } else if (request == 'year') {
+      // uniqueYears.forEach((item, i) => {
+      //   if (item.slice(0,3) == input.slice(0,3)) {
+      //     drawCalendar(item,'year',uniqueYears)
+      //   }
+      // })
+    } else if (request == 'month') {
+      // uniqueMonths.forEach((item, i) => {
+      //   if (item.slice(0,4) == input.slice(0,4)) {
+      //     drawCalendar(item,'month',uniqueMonths)
+      //   }
+      // })
+    } else if (request == 'week') {
+      // uniqueWeeks.forEach((item, i) => {
+      //   if (item.slice(0,7) == input.slice(0,7)) {
+      //     drawCalendar(item,'week',uniqueWeeks)
+      //   }
+      // })
+    }
+
     for (let i = 0; i < document.querySelectorAll('#'+request+'-container > button').length; i++) {
       document.querySelectorAll('#'+request+'-container > button')[i].style.opacity = '1'
     }
+    document.querySelector('#'+request+'-'+input).style.opacity = '0.5'
     if (request == 'decade') {
-      document.querySelector('#'+request+'-'+input).style.opacity = '0.5'
       document.querySelector("#year-container").innerHTML = ''
       document.querySelector("#month-container").innerHTML = ''
       document.querySelector("#week-container").innerHTML = ''
     }
     if (request == 'year') {
-      document.querySelector('#'+request+'-'+input).style.opacity = '0.5'
       document.querySelector("#month-container").innerHTML = ''
       document.querySelector("#week-container").innerHTML = ''
     }
     if (request == 'month') {
-      document.querySelector('#'+request+'-'+input.slice(0,4)+'-'+input.slice(5,7)).style.opacity = '0.5'
       document.querySelector("#week-container").innerHTML = ''
     }
     if (request == 'week') {
-      document.querySelector('#'+request+'-'+input.slice(0,4)+'-'+input.slice(5,7)+'-'+input.slice(8,10)).style.opacity = '0.5'
     }
     for (let i = 0; i < data.length; i++) {
-      if (data[i].week.includes(input)) {
+      if (data[i].week.includes(input.replaceAll('-','/'))) {
         console.log(input + ": " + i)
         return
       }
     }
   }
 
-  function yearButton(year,week,request) {
+  function yearButton(request) {
   
-    var yearList = []
-    data.forEach((item, i) => {
-      if (item.week.includes(year)) {
-        yearList.push(item)
-      }
-    })
+    // var yearList = []
+    // data.forEach((item, i) => {
+    //   if (item.week.includes(year)) {
+    //     yearList.push(item)
+    //   }
+    // })
   
-    if (week == yearList.length) {
-      year++
-      week = 0;
-      var yearList = []
-      data.forEach((item, i) => {
-        if (item.week.includes(year)) {
-          yearList.push(item)
-        }
-      })
-    }
-    var counter = +yearList[week].no
+    // if (week == yearList.length) {
+    //   year++
+    //   week = 0;
+    //   var yearList = []
+    //   data.forEach((item, i) => {
+    //     if (item.week.includes(year)) {
+    //       yearList.push(item)
+    //     }
+    //   })
+    // }
+    // var counter = +yearList[week].no
 
     if (request == '3') {
-      // document.getElementById('next').onclick = async function() {
-      //   counter=counter + 1
-      //   findYear(data[counter].week.substring(0, request))
-      //   testHistory(counter)
-      // }
-      // document.getElementById('previous').onclick = function() {
-      //   counter=counter - 1
-      //   findYear(data[counter].week.substring(0, request))
-      //   testHistory(counter)
-      // }
+      document.getElementById('next').onclick = async function() {
+        counter=counter + 1
+        findYear(data[counter].week.substring(0, request))
+        testHistory(counter)
+      }
+      document.getElementById('previous').onclick = function() {
+        counter=counter - 1
+        findYear(data[counter].week.substring(0, request))
+        testHistory(counter)
+      }
       document.querySelector('#top10').innerHTML = ''
       findYear(data[counter].week.substring(0, request))
       testHistory(counter)
