@@ -6,7 +6,6 @@ var mapObj1 = {' ft. ':"separator",' / ':"separator",', ':"separator"};
 var re = new RegExp(Object.keys(mapObj).join("|"),"gi");
 var genrePool = ['#de7eea','#a16fd9','#9a82c8','#c295c8','#d700ff','#854d76','#ba2c8e','#ba3d3d','#b65f5f','#603232','#1a1a1a','#413630','#935b4a','#3ca33f','#308532','#638559','#6a9d32','#8eb371','#4aca4e','#97be9d','#a4d685','#c4c800','#a7ab00','#d5eb20','#ddf3a8','#c6ccae','#ceb8ae','#7085ef','#5666b8','#4d95b8','#623aff','#73e6e0','#3eadef','#ff6900','#f6b26b','#b3997a','#d49875','#c7cc86','#ffe381','#f5d8d8']
 
-
 homeInitialize()
 function homeInitialize() {
   test1 = false;
@@ -251,20 +250,19 @@ async function browseInitialize() {
   }
 
   function testfml(input, request) {
-    console.log(input)
-    
-    
+
     if (request == 'decade') {
       // document.querySelectorAll("#decade-container").innerHTML = ''
       // uniqueDecades.forEach((item, i) => {
       //   drawCalendar(item,'decade',uniqueDecades)
       // })
     } else if (request == 'year') {
-      // uniqueYears.forEach((item, i) => {
-      //   if (item.slice(0,3) == input.slice(0,3)) {
-      //     drawCalendar(item,'year',uniqueYears)
-      //   }
-      // })
+      document.querySelectorAll("#year-container").innerHTML = ''
+      uniqueYears.forEach((item, i) => {
+        if (item.slice(0,3) == input.slice(0,3)) {
+          drawCalendar(item,'year',uniqueYears)
+        }
+      })
     } else if (request == 'month') {
       // uniqueMonths.forEach((item, i) => {
       //   if (item.slice(0,4) == input.slice(0,4)) {
@@ -297,93 +295,27 @@ async function browseInitialize() {
     }
     if (request == 'week') {
     }
+    
     for (let i = 0; i < data.length; i++) {
       if (data[i].week.includes(input.replaceAll('-','/'))) {
-        console.log(input + ": " + i)
+        yearButton(data[i].week,request,i)
         return
       }
     }
   }
 
-  function yearButton(request) {
-  
-    // var yearList = []
-    // data.forEach((item, i) => {
-    //   if (item.week.includes(year)) {
-    //     yearList.push(item)
-    //   }
-    // })
-  
-    // if (week == yearList.length) {
-    //   year++
-    //   week = 0;
-    //   var yearList = []
-    //   data.forEach((item, i) => {
-    //     if (item.week.includes(year)) {
-    //       yearList.push(item)
-    //     }
-    //   })
-    // }
-    // var counter = +yearList[week].no
+  function yearButton(week,request,counter) {
 
-    if (request == '3') {
-      document.getElementById('next').onclick = async function() {
-        counter=counter + 1
-        findYear(data[counter].week.substring(0, request))
-        testHistory(counter)
-      }
-      document.getElementById('previous').onclick = function() {
-        counter=counter - 1
-        findYear(data[counter].week.substring(0, request))
-        testHistory(counter)
-      }
-      document.querySelector('#top10').innerHTML = ''
-      findYear(data[counter].week.substring(0, request))
-      testHistory(counter)
-    } else if (request == '4') {
-      document.getElementById('next').onclick = async function() {
-        counter=counter + 1
-        findYear(data[counter].week.substring(0, request))
-        testHistory(counter)
-      }
-      document.getElementById('previous').onclick = function() {
-        counter=counter - 1
-        findYear(data[counter].week.substring(0, request))
-        testHistory(counter)
-      }
-      document.querySelector('#top10').innerHTML = ''
-      findYear(data[counter].week.substring(0, request))
-      testHistory(counter)
-    } else if (request == '7') {
-      document.getElementById('next').onclick = async function() {
-        counter=counter + 1
-        findYear(data[counter].week.substring(0, request))
-        testHistory(counter)
-      }
-      document.getElementById('previous').onclick = function() {
-        counter=counter - 1
-        findYear(data[counter].week.substring(0, request))
-        testHistory(counter)
-      }
-      document.querySelector('#top10').innerHTML = ''
-      findYear(data[counter].week.substring(0, request))
-      testHistory(counter)
-    } else if (request == '10') {
-      document.getElementById('next').onclick = async function() {
-        counter=counter + 1
-        findWeek(counter)
-        testHistory(counter)
-      }
-      document.getElementById('previous').onclick = function() {
-        counter=counter - 1
-        findWeek(counter)
-        testHistory(counter)
-      }
-      document.querySelector('#top10').innerHTML = ''
+    if (request == 'decade') {
+      findYear(week.substring(0, 3))
+    } else if (request == 'year') {
+      findYear(week.substring(0, 4))
+    } else if (request == 'month') {
+      findYear(week.substring(0, 7))
+    } else if (request == 'week') {
       findWeek(counter)
-      testHistory(counter)
     }
-    
+    testHistory([week,decade])
   }
 
 // }
@@ -581,6 +513,8 @@ async function findYear(yearno) {
   
   document.querySelector('#songs').innerHTML = ''
   document.querySelector('#artists').innerHTML = ''
+  document.querySelector('#top10').innerHTML = ''
+
   for (let i = 0; i < genrePool.length; i++) {
     document.querySelector('#id' + genrePool[i].slice(-6)).style.width = '266px'
     document.querySelector('#id' + genrePool[i].slice(-6)).innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + genrePool[i] + ';"></div>' + decode(genrePool[i].slice(-7)) + ": 0" + "</div><div class='bar' style='background:" + genrePool[i].slice(-7) + "'></div>"
