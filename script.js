@@ -256,45 +256,72 @@ async function browseInitialize() {
       // uniqueDecades.forEach((item, i) => {
       //   drawCalendar(item,'decade',uniqueDecades)
       // })
+      for (let i = 0; i < document.querySelectorAll('#button-container button').length; i++) {
+        document.querySelectorAll('#button-container button')[i].style.opacity = '1'
+      }
+      document.querySelector('#decade-'+input.slice(0,3)+'0').style.opacity = '0.5'
+      document.querySelector("#month-container").innerHTML = ''
+      document.querySelector("#week-container").innerHTML = ''
     } else if (request == 'year') {
-      document.querySelectorAll("#year-container").innerHTML = ''
+      document.querySelector("#year-container").innerHTML = ''
       uniqueYears.forEach((item, i) => {
         if (item.slice(0,3) == input.slice(0,3)) {
           drawCalendar(item,'year',uniqueYears)
         }
       })
+      for (let i = 0; i < document.querySelectorAll('#button-container button').length; i++) {
+        document.querySelectorAll('#button-container button')[i].style.opacity = '1'
+      }
+      document.querySelector('#decade-'+input.slice(0,3)+'0').style.opacity = '0.5'
+      document.querySelector('#year-'+input.slice(0,4)).style.opacity = '0.5'
+      document.querySelector("#week-container").innerHTML = ''
     } else if (request == 'month') {
-      // uniqueMonths.forEach((item, i) => {
-      //   if (item.slice(0,4) == input.slice(0,4)) {
-      //     drawCalendar(item,'month',uniqueMonths)
-      //   }
-      // })
+      document.querySelector("#month-container").innerHTML = ''
+      uniqueMonths.forEach((item, i) => {
+        if (item.slice(0,4) == input.slice(0,4)) {
+          drawCalendar(item,'month',uniqueMonths)
+        }
+      })
+      for (let i = 0; i < document.querySelectorAll('#button-container button').length; i++) {
+        document.querySelectorAll('#button-container button')[i].style.opacity = '1'
+      }
+      document.querySelector('#decade-'+input.slice(0,3)+'0').style.opacity = '0.5'
+      document.querySelector('#year-'+input.slice(0,4)).style.opacity = '0.5'
+      document.querySelector('#month-'+input.slice(0,7)).style.opacity = '0.5'
     } else if (request == 'week') {
-      // uniqueWeeks.forEach((item, i) => {
-      //   if (item.slice(0,7) == input.slice(0,7)) {
-      //     drawCalendar(item,'week',uniqueWeeks)
-      //   }
-      // })
+      // console.log(request,'#week-'+input)
+      document.querySelector("#week-container").innerHTML = ''
+      uniqueWeeks.forEach((item, i) => {
+        if (item.slice(0,7) == input.slice(0,7)) {
+          console.log(item.slice(0,7), input.slice(0,7))
+          drawCalendar(item,'week',uniqueWeeks)
+        }
+      })
+      for (let i = 0; i < document.querySelectorAll('#button-container button').length; i++) {
+        document.querySelectorAll('#button-container button')[i].style.opacity = '1'
+      }
+      document.querySelector('#decade-'+input.slice(0,3)+'0').style.opacity = '0.5'
+      document.querySelector('#year-'+input.slice(0,4)).style.opacity = '0.5'
+      console.log(document.querySelector('#month-'+input.slice(0,7)))
+      document.querySelector('#month-'+input.slice(0,7)).style.opacity = '0.5'
+      document.querySelector('#week-'+input).style.opacity = '0.5'
     }
 
-    for (let i = 0; i < document.querySelectorAll('#'+request+'-container > button').length; i++) {
-      document.querySelectorAll('#'+request+'-container > button')[i].style.opacity = '1'
-    }
-    document.querySelector('#'+request+'-'+input).style.opacity = '0.5'
-    if (request == 'decade') {
-      document.querySelector("#year-container").innerHTML = ''
-      document.querySelector("#month-container").innerHTML = ''
-      document.querySelector("#week-container").innerHTML = ''
-    }
-    if (request == 'year') {
-      document.querySelector("#month-container").innerHTML = ''
-      document.querySelector("#week-container").innerHTML = ''
-    }
-    if (request == 'month') {
-      document.querySelector("#week-container").innerHTML = ''
-    }
-    if (request == 'week') {
-    }
+    
+    // if (request == 'decade') {
+    //   document.querySelector("#year-container").innerHTML = ''
+    //   document.querySelector("#month-container").innerHTML = ''
+    //   document.querySelector("#week-container").innerHTML = ''
+    // }
+    // if (request == 'year') {
+    //   document.querySelector("#month-container").innerHTML = ''
+    //   document.querySelector("#week-container").innerHTML = ''
+    // }
+    // if (request == 'month') {
+    //   document.querySelector("#week-container").innerHTML = ''
+    // }
+    // if (request == 'week') {
+    // }
     
     for (let i = 0; i < data.length; i++) {
       if (data[i].week.includes(input.replaceAll('-','/'))) {
@@ -307,6 +334,12 @@ async function browseInitialize() {
   function yearButton(week,request,counter) {
 
     if (request == 'decade') {
+      // document.querySelectorAll("#year-container").innerHTML = ''
+      // uniqueYears.forEach((item, i) => {
+      //   if (item.slice(0,3) == input.slice(0,3)) {
+      //     drawCalendar(item,'year',uniqueYears)
+      //   }
+      // })
       findYear(week.substring(0, 3))
     } else if (request == 'year') {
       findYear(week.substring(0, 4))
