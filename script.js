@@ -217,14 +217,14 @@ async function browseInitialize() {
     token.onclick = function(){
       //yearButton(decades.innerHTML.slice(0,4),0,3)
       var requestIndex = input
-      testfml(requestIndex.replaceAll('/','-'),request)
+      testfml(requestIndex.replaceAll('/','-'),request,'initialize')
       document.getElementById('next').onclick = async function() {
         requestIndex = requestArray[(requestArray.findIndex(element => element.includes(requestIndex)))+1]
-        testfml(requestIndex.replaceAll('/','-'),request)
+        testfml(requestIndex.replaceAll('/','-'),request,'navigate')
       }
       document.getElementById('previous').onclick = function() {
         requestIndex = requestArray[(requestArray.findIndex(element => element.includes(requestIndex)))-1]
-        testfml(requestIndex.replaceAll('/','-'),request)
+        testfml(requestIndex.replaceAll('/','-'),request,'navigate')
       }
       if (request == 'decade') {
         uniqueYears.forEach((item, i) => {
@@ -249,7 +249,7 @@ async function browseInitialize() {
     document.querySelector("#"+request+"-container").appendChild(token)
   }
 
-  function testfml(input, request) {
+  function testfml(input, request, action) {
 
     if (request == 'decade') {
       // document.querySelectorAll("#decade-container").innerHTML = ''
@@ -260,9 +260,20 @@ async function browseInitialize() {
         document.querySelectorAll('#button-container button')[i].style.opacity = '1'
       }
       document.querySelector('#decade-'+input.slice(0,3)+'0').style.opacity = '0.5'
+      document.querySelector("#year-container").innerHTML = ''
+      if (action == 'navigate') {
+        uniqueYears.forEach((item, i) => {
+          if (item.slice(0,3) == input.slice(0,3)) {
+            drawCalendar(item,'year',uniqueYears)
+          }
+        })
+      }
       document.querySelector("#month-container").innerHTML = ''
       document.querySelector("#week-container").innerHTML = ''
     } else if (request == 'year') {
+      for (let i = 0; i < document.querySelectorAll('#button-container button').length; i++) {
+        document.querySelectorAll('#button-container button')[i].style.opacity = '1'
+      }
       document.querySelector("#year-container").innerHTML = ''
       uniqueYears.forEach((item, i) => {
         if (item.slice(0,3) == input.slice(0,3)) {
@@ -274,8 +285,28 @@ async function browseInitialize() {
       }
       document.querySelector('#decade-'+input.slice(0,3)+'0').style.opacity = '0.5'
       document.querySelector('#year-'+input.slice(0,4)).style.opacity = '0.5'
+      document.querySelector("#month-container").innerHTML = ''
+      if (action == 'navigate') {
+        uniqueMonths.forEach((item, i) => {
+          if (item.slice(0,4) == input.slice(0,4)) {
+            drawCalendar(item,'month',uniqueMonths)
+          }
+        })
+      }
       document.querySelector("#week-container").innerHTML = ''
     } else if (request == 'month') {
+      for (let i = 0; i < document.querySelectorAll('#button-container button').length; i++) {
+        document.querySelectorAll('#button-container button')[i].style.opacity = '1'
+      }
+      document.querySelector("#year-container").innerHTML = ''
+      uniqueYears.forEach((item, i) => {
+        if (item.slice(0,3) == input.slice(0,3)) {
+          drawCalendar(item,'year',uniqueYears)
+        }
+      })
+      for (let i = 0; i < document.querySelectorAll('#button-container button').length; i++) {
+        document.querySelectorAll('#button-container button')[i].style.opacity = '1'
+      }
       document.querySelector("#month-container").innerHTML = ''
       uniqueMonths.forEach((item, i) => {
         if (item.slice(0,4) == input.slice(0,4)) {
@@ -288,8 +319,36 @@ async function browseInitialize() {
       document.querySelector('#decade-'+input.slice(0,3)+'0').style.opacity = '0.5'
       document.querySelector('#year-'+input.slice(0,4)).style.opacity = '0.5'
       document.querySelector('#month-'+input.slice(0,7)).style.opacity = '0.5'
+      document.querySelector("#week-container").innerHTML = ''
+      if (action == 'navigate') {
+        uniqueWeeks.forEach((item, i) => {
+          if (item.slice(0,7) == input.slice(0,7).replaceAll('-','/')) {
+            drawCalendar(item,'week',uniqueWeeks)
+          }
+        })
+      }
     } else if (request == 'week') {
-      // console.log(request,'#week-'+input)
+      for (let i = 0; i < document.querySelectorAll('#button-container button').length; i++) {
+        document.querySelectorAll('#button-container button')[i].style.opacity = '1'
+      }
+      document.querySelector("#year-container").innerHTML = ''
+      uniqueYears.forEach((item, i) => {
+        if (item.slice(0,3) == input.slice(0,3)) {
+          drawCalendar(item,'year',uniqueYears)
+        }
+      })
+      for (let i = 0; i < document.querySelectorAll('#button-container button').length; i++) {
+        document.querySelectorAll('#button-container button')[i].style.opacity = '1'
+      }
+      document.querySelector("#month-container").innerHTML = ''
+      uniqueMonths.forEach((item, i) => {
+        if (item.slice(0,4) == input.slice(0,4)) {
+          drawCalendar(item,'month',uniqueMonths)
+        }
+      })
+      for (let i = 0; i < document.querySelectorAll('#button-container button').length; i++) {
+        document.querySelectorAll('#button-container button')[i].style.opacity = '1'
+      }
       document.querySelector("#week-container").innerHTML = ''
       uniqueWeeks.forEach((item, i) => {
         if (item.slice(0,7) == input.slice(0,7).replaceAll('-','/')) {
