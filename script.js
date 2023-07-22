@@ -292,8 +292,7 @@ async function browseInitialize() {
       // console.log(request,'#week-'+input)
       document.querySelector("#week-container").innerHTML = ''
       uniqueWeeks.forEach((item, i) => {
-        if (item.slice(0,7) == input.slice(0,7)) {
-          console.log(item.slice(0,7), input.slice(0,7))
+        if (item.slice(0,7) == input.slice(0,7).replaceAll('-','/')) {
           drawCalendar(item,'week',uniqueWeeks)
         }
       })
