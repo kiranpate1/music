@@ -485,15 +485,6 @@ async function findYear(yearno) {
   var combinedArtist = artistList.flat(1)
 
   function group(type) {
-    // let reducedArray = type.reduce( (acc, curr, _, arr) => {
-    //     if (acc.length == 0) acc.push({item: curr, count: 1})
-    //     else if (acc.findIndex(f => f.item === curr ) === -1) acc.push({item: curr, count: 1})
-    //     else ++acc[acc.findIndex(f => f.item === curr)].count
-    //     return acc
-    // }, []);
-    // console.log(reducedArray)
-    // var results = reducedArray.sort((a,b) => b.count - a.count )
-    // return results;
     var reducedArray = Object.values(type.reduce((hash, item) => {
       if (!hash[item.object]) {
           hash[item.object] = { key: item.object, score: 0 };
@@ -527,7 +518,6 @@ async function findYear(yearno) {
   document.querySelectorAll('#artists li a').forEach((item, i) => {
     item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
   })
-  console.log(songList)
 }
 
 async function findWeek(weekno) {
@@ -593,7 +583,7 @@ async function findWeek(weekno) {
   const valWhichRepeat = (arr,count) =>
            [...new Set(arr)].filter(x =>
                 arr.filter(a => a === x).length == count
-           );
+           )
 
   var exitSongList = valWhichRepeat(exitList,10); //from last week
   var exitSongIdList = valWhichRepeat(exitIdList,10); //from last week
@@ -619,7 +609,7 @@ async function findWeek(weekno) {
       div.classList.add('out')
       document.querySelector('#top10').appendChild(div);
     }
-  });
+  })
   enterSongList.forEach((element, i) => { //before next week
     var exists = document.querySelector("#" + enterSongIdList[i] + "");
     if(exists) {
@@ -643,7 +633,7 @@ async function findWeek(weekno) {
       }
       document.querySelector('#top10').appendChild(div);
     }
-  });
+  })
   newSongList.forEach((element, i) => { //this week
     console.log(newSongIdList[i] + " enters top 10")
     var exists = document.querySelector("#" + newSongIdList[i] + "");
@@ -661,7 +651,7 @@ async function findWeek(weekno) {
       div.classList.add('no'+newSongList[i].slice(0, 2))
       document.querySelector('#top10').appendChild(div);
     }
-  });
+  })
   repeatSongList.forEach((element, i) => { //this week
     var repeats = document.querySelector("#" + repeatSongIdList[i] + "");
     if(repeats !== null){
@@ -678,7 +668,7 @@ async function findWeek(weekno) {
       div.classList.add('no'+repeatSongList[i].slice(0, 2))
       document.querySelector('#top10').appendChild(div);
     }
-  });
+  })
 
   document.querySelector('#weektitle').innerHTML = data[weekno].week;
   function addToAttribute(element, attributeName, value) {
@@ -689,12 +679,12 @@ async function findWeek(weekno) {
     //item.setAttribute('href', '#')
     item.setAttribute('onClick', 'modal(`visible`);searchSong(`'+item.getAttribute("id")+'`)')
     //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
-  });
+  })
   document.querySelectorAll('#top10 .artistname a').forEach((item, i) => {
     //item.setAttribute('href', '#')
     item.setAttribute('onClick', 'modal(`visible`);searchArtist(`'+item.innerHTML+'`)')
     //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
-  });
+  })
 
   pic(lastWeek.no1artist, lastWeek.no1name, '1')
   pic(currentWeek.no1artist, currentWeek.no1name, '2')
@@ -747,8 +737,8 @@ async function searchSong(id) {
         document.querySelector('#modalstats').innerHTML = "#"+[i+1]+" all time • #"+decode(id)[0][1]+" peak • "+item.count+" weeks"
         return
       }
-    });
-  });
+    })
+  })
   function decode(input) {
     const output = []
     for (let x = 1; x <= 10; x++) {
@@ -783,7 +773,7 @@ async function searchArtist(artist) {
           fullList.push(item?.['no'+x+'id'])
         }
       }
-    });
+    })
   }
   combinedUnique = [...new Set(fullList)];
   var totalList = group(fullList)[0]
@@ -871,36 +861,37 @@ async function termSearch() {
     document.querySelector("#searchResults").innerHTML = ''
     return
   }
-    document.querySelector("#searchResults").innerHTML = ''
-  //for songs
-  list('name','id').then(function (val) {
-    val.forEach((item, i) => {
-      if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
-        const line = document.createElement("li");
-        line.innerHTML = decode(item.artist.slice(-10))[0][3] + ' - ' + decode(item.artist.slice(-10))[0][4];
-        document.querySelector("#searchResults").appendChild(line);
-      }
-    })
-  }) //for artists
-  list('artist').then(function (val) {
-    val.forEach((item, i) => {
-      if (item.artist.toLowerCase().includes(searchValue)) {
-        const line = document.createElement("li");
-        line.innerHTML = item.artist
-        document.querySelector("#searchResults").appendChild(line);
-      }
-    })
-  }) //for songs by artist
-  list('artist','id').then(function (val) {
-    val.forEach((item, i) => {
-      if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
-        const line = document.createElement("li");
-        line.innerHTML = decode(item.artist.slice(-10))
-        document.querySelector("#searchResults").appendChild(line);
-      }
-    })
-  })
 
+    document.querySelector("#searchResults").innerHTML = ''
+    //for songs
+    list('name','id').then(function (val) {
+      document.querySelector("#searchResults").innerHTML = ''
+      val.forEach((item, i) => {
+        if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
+          const line = document.createElement("li");
+          line.innerHTML = decode(item.artist.slice(-10))[0][3] + ' - ' + decode(item.artist.slice(-10))[0][4];
+          document.querySelector("#searchResults").appendChild(line);
+        }
+      })
+    }) //for artists
+    list('artist').then(function (val) {
+      val.forEach((item, i) => {
+        if (item.artist.toLowerCase().includes(searchValue)) {
+          const line = document.createElement("li");
+          line.innerHTML = item.artist
+          document.querySelector("#searchResults").appendChild(line);
+        }
+      })
+    }) //for songs by artist
+    list('artist','id').then(function (val) {
+      val.forEach((item, i) => {
+        if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
+          const line = document.createElement("li");
+          line.innerHTML = decode(item.artist.slice(-10))
+          document.querySelector("#searchResults").appendChild(line);
+        }
+      })
+    })
 
 }
 
