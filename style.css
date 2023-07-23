@@ -145,7 +145,7 @@ a {color:#00a3ff}
   transform: translateY(160px);
 }
 .nonweeklychart {
-  position: absolute;
+  position: relative;
   width: 100%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);

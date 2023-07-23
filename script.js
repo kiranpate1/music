@@ -387,7 +387,7 @@ async function browseInitialize() {
     const topgenres = document.createElement("div")
     topgenres.setAttribute("id", 'genres')
     topgenres.classList.add('genres')
-    document.querySelector("#datalist").appendChild(topgenres)
+    document.querySelector(".chart-wrapper").appendChild(topgenres)
 
     genrePool.forEach((item, i) => {
       const li = document.createElement("li");
@@ -506,6 +506,9 @@ async function findYear(yearno) {
     return results
   }
   group(songList).forEach((item, i) => {
+    if (i == '0') {
+      pic(item.key[2], item.key[1], '2')
+    }
     const li = document.createElement("li")
     li.innerHTML = item.score + ' <div style="display:inline-block;width:16px;height:16px;background: ' + item.key[0] + ';"></div>' + item.key[1] + " - " + item.key[2]
     document.querySelector("#songs").appendChild(li)
@@ -524,6 +527,7 @@ async function findYear(yearno) {
   document.querySelectorAll('#artists li a').forEach((item, i) => {
     item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
   })
+  console.log(songList)
 }
 
 async function findWeek(weekno) {
