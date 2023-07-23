@@ -300,25 +300,25 @@ async function browseInitialize() {
     nextprev.classList.add('nextprev')
     document.querySelector(".chart-wrapper").appendChild(nextprev)
 
-    const browseWeek = document.createElement("button")
-    browseWeek.setAttribute("id", 'week')
-    browseWeek.innerHTML = "Week"
-    document.querySelector(".nextprev").appendChild(browseWeek)
+    // const browseWeek = document.createElement("button")
+    // browseWeek.setAttribute("id", 'week')
+    // browseWeek.innerHTML = "Week"
+    // document.querySelector(".nextprev").appendChild(browseWeek)
 
-    const browseMonth = document.createElement("button")
-    browseMonth.setAttribute("id", 'month')
-    browseMonth.innerHTML = "Month"
-    document.querySelector(".nextprev").appendChild(browseMonth)
+    // const browseMonth = document.createElement("button")
+    // browseMonth.setAttribute("id", 'month')
+    // browseMonth.innerHTML = "Month"
+    // document.querySelector(".nextprev").appendChild(browseMonth)
 
-    const browseYear = document.createElement("button")
-    browseYear.setAttribute("id", 'year')
-    browseYear.innerHTML = "Year"
-    document.querySelector(".nextprev").appendChild(browseYear)
+    // const browseYear = document.createElement("button")
+    // browseYear.setAttribute("id", 'year')
+    // browseYear.innerHTML = "Year"
+    // document.querySelector(".nextprev").appendChild(browseYear)
 
-    const browseDecade = document.createElement("button")
-    browseDecade.setAttribute("id", 'decade')
-    browseDecade.innerHTML = "Decade"
-    document.querySelector(".nextprev").appendChild(browseDecade)
+    // const browseDecade = document.createElement("button")
+    // browseDecade.setAttribute("id", 'decade')
+    // browseDecade.innerHTML = "Decade"
+    // document.querySelector(".nextprev").appendChild(browseDecade)
 
     const prev = document.createElement("button")
     prev.setAttribute("id", 'previous')
@@ -421,6 +421,10 @@ function search() {
   searchWeek(document.getElementById("yearSearch").value + "/" + document.getElementById("monthSearch").value + "/" + document.getElementById("daySearch").value);
 }
 async function searchWeek(searchRequest) {
+  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
+  const response = await fetch(api_url);
+  const data = await response.json();
+
   var yearRequest = searchRequest.substring(4, 0);
   var weekRequest = getNumberOfWeek(searchRequest);
 
@@ -434,7 +438,16 @@ async function searchWeek(searchRequest) {
       return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7) - 1;
     }
   }
-  yearButton(yearRequest,weekRequest)
+  var sdfsdfsdf = []
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].week.includes(yearRequest)) {
+      sdfsdfsdf.push(i)
+    }
+  }
+  document.querySelector('#top10').innerHTML = ''
+  findWeek(sdfsdfsdf[weekRequest])
+  
+  // console.log(yearRequest,weekRequest)
 }
 
 
