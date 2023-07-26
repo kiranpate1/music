@@ -726,21 +726,32 @@ document.querySelector('#close').onclick = function(){
 };
 function history(term) {
   modalHistory.push(term)
+  
+  const historyItem = document.createElement("li");
+  historyItem.innerHTML = modalHistory[modalHistory.length - 1]
+  document.querySelector("#history").appendChild(historyItem)
 }
 document.querySelector('#back').onclick = function(){
   modalHistory.pop()
   var recent = modalHistory.length - 1
+  
   if (!modalHistory[recent]) {
     modal('hidden')
     modalHistory.pop()
+    const parent = document.querySelector("#history");
+    [...parent.children].slice(-1).forEach(parent.removeChild.bind(parent));
   } else if (modalHistory[recent].slice(0, 2) == 'ix') {
     modal(`visible`)
     searchSong(modalHistory[recent])
     modalHistory.pop()
+    const parent = document.querySelector("#history");
+    [...parent.children].slice(-2).forEach(parent.removeChild.bind(parent));
   } else {
     modal(`visible`)
     searchArtist(modalHistory[recent])
     modalHistory.pop()
+    const parent = document.querySelector("#history");
+    [...parent.children].slice(-2).forEach(parent.removeChild.bind(parent));
   }
 }
 
