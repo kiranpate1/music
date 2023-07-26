@@ -12,9 +12,10 @@
         <div>
           <a onClick="homeInitialize()">home</a>
           <a onClick="browseInitialize()">browse</a>
-          <div class="search" style="display:inline-block;">
+          <div style="display:inline-block;">
             <input type="text" id="termSearch" placeholder="Search" onkeydown="termSearch();">
             <button id="" onclick="termSearch()">Go!</button>
+            <div id="searchClose"></div>
           </div>
           <div class="history">
             <ul id="searchResults"></ul>

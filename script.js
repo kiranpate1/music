@@ -854,12 +854,16 @@ function group(type) {
 //CHANGE SEARCH TO CALCULATE RESULTS AT ONCE AND THEN APPEND RATHER THAN APPEND ONE BY ONE
 
 async function termSearch() {
-  document.querySelector("#searchResults").innerHTML = ''
+  
   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
   const response = await fetch(api_url);
   const data = await response.json();
 
-  
+  const searchResults = document.querySelector("#searchResults")
+  const termSearch = document.querySelector("#termSearch")
+  const searchClose = document.querySelector("#searchClose")
+
+  searchResults.innerHTML = ''
 
   function decode(input) {
     const output = []
@@ -872,20 +876,20 @@ async function termSearch() {
       }
     }
   }
-  var searchValue = document.getElementById("termSearch").value.toLowerCase();
-  if (document.querySelector("#termSearch") !== null && document.querySelector("#termSearch").value === ""){
-    document.querySelector("#searchResults").innerHTML = ''
+  var searchValue = termSearch.value.toLowerCase();
+  if (termSearch !== null && termSearch.value === ""){
+    searchResults.innerHTML = ''
     return
   }
 
   //for songs
   list('name','id').then(function (val) {
-    document.querySelector("#searchResults").innerHTML = ''
+    searchResults.innerHTML = ''
     val.forEach((item, i) => {
       if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
         const line = document.createElement("li");
         line.innerHTML = decode(item.artist.slice(-10))[0][3] + ' - ' + decode(item.artist.slice(-10))[0][4];
-        document.querySelector("#searchResults").appendChild(line);
+        searchResults.appendChild(line);
       }
     })
   }) //for artists
@@ -894,7 +898,7 @@ async function termSearch() {
       if (item.artist.toLowerCase().includes(searchValue)) {
         const line = document.createElement("li");
         line.innerHTML = item.artist
-        document.querySelector("#searchResults").appendChild(line);
+        searchResults.appendChild(line);
       }
     })
   }) //for songs by artist
@@ -903,18 +907,22 @@ async function termSearch() {
       if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
         const line = document.createElement("li");
         line.innerHTML = decode(item.artist.slice(-10))
-        document.querySelector("#searchResults").appendChild(line);
+        searchResults.appendChild(line);
       }
     })
   })
 
+  searchClose.innerHTML = ''
+
   const closeSearch = document.createElement("button")
   closeSearch.setAttribute("id", 'closeSearch')
   closeSearch.innerHTML = "X"
-  document.querySelector("#searchResults").appendChild(closeSearch)
+  searchClose.appendChild(closeSearch)
 
   document.querySelector('#closeSearch').onclick = function(){
-    document.querySelector("#searchResults").innerHTML = ''
+    searchResults.innerHTML = ''
+    searchClose.innerHTML = ''
+    termSearch.value = ''
   }
 }
 
