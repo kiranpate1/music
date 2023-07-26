@@ -858,6 +858,9 @@ async function termSearch() {
   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
   const response = await fetch(api_url);
   const data = await response.json();
+
+  
+
   function decode(input) {
     const output = []
     for (let x = 1; x <= 10; x++) {
@@ -875,37 +878,44 @@ async function termSearch() {
     return
   }
 
+  //for songs
+  list('name','id').then(function (val) {
     document.querySelector("#searchResults").innerHTML = ''
-    //for songs
-    list('name','id').then(function (val) {
-      document.querySelector("#searchResults").innerHTML = ''
-      val.forEach((item, i) => {
-        if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
-          const line = document.createElement("li");
-          line.innerHTML = decode(item.artist.slice(-10))[0][3] + ' - ' + decode(item.artist.slice(-10))[0][4];
-          document.querySelector("#searchResults").appendChild(line);
-        }
-      })
-    }) //for artists
-    list('artist').then(function (val) {
-      val.forEach((item, i) => {
-        if (item.artist.toLowerCase().includes(searchValue)) {
-          const line = document.createElement("li");
-          line.innerHTML = item.artist
-          document.querySelector("#searchResults").appendChild(line);
-        }
-      })
-    }) //for songs by artist
-    list('artist','id').then(function (val) {
-      val.forEach((item, i) => {
-        if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
-          const line = document.createElement("li");
-          line.innerHTML = decode(item.artist.slice(-10))
-          document.querySelector("#searchResults").appendChild(line);
-        }
-      })
+    val.forEach((item, i) => {
+      if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
+        const line = document.createElement("li");
+        line.innerHTML = decode(item.artist.slice(-10))[0][3] + ' - ' + decode(item.artist.slice(-10))[0][4];
+        document.querySelector("#searchResults").appendChild(line);
+      }
     })
+  }) //for artists
+  list('artist').then(function (val) {
+    val.forEach((item, i) => {
+      if (item.artist.toLowerCase().includes(searchValue)) {
+        const line = document.createElement("li");
+        line.innerHTML = item.artist
+        document.querySelector("#searchResults").appendChild(line);
+      }
+    })
+  }) //for songs by artist
+  list('artist','id').then(function (val) {
+    val.forEach((item, i) => {
+      if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
+        const line = document.createElement("li");
+        line.innerHTML = decode(item.artist.slice(-10))
+        document.querySelector("#searchResults").appendChild(line);
+      }
+    })
+  })
 
+  const closeSearch = document.createElement("button")
+  closeSearch.setAttribute("id", 'closeSearch')
+  closeSearch.innerHTML = "X"
+  document.querySelector("#searchResults").appendChild(closeSearch)
+
+  document.querySelector('#closeSearch').onclick = function(){
+    document.querySelector("#searchResults").innerHTML = ''
+  }
 }
 
 async function list(component,comp2) {
