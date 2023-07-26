@@ -11,7 +11,7 @@
       <div id="nav">
         <div class="nav-top">
           <a onClick="homeInitialize()">home</a>
-          <a onClick="browseInitialize()">browse</a>
+          <a onClick="browse()">browse</a>
           <div style="display:inline-block;">
             <input type="text" id="termSearch" placeholder="Search" onkeydown="termSearch();">
             <button id="" onclick="termSearch()">Go!</button>
@@ -29,6 +29,9 @@
       
 
       <div id="main">
+        <div id="main-content">
+
+        </div>
         <!-- <div id="map-labels">
 
         </div>
@@ -53,28 +56,28 @@
         
 
 
-
+        <div id="modal-wrapper">
+          <div id="modal">
+            <div style="display:flex;">
+              <div class="videos">
+                <div id="videomodal" class="video"></div>
+              </div>
+              <div class="covers">
+                <div id="covermodal" class="cover"></div>
+              </div>
+            </div>
+            <div id="modalname"></div>
+            <div id="modalstats"></div>
+            <div id="modalsongs"></div>
+            <button style="position:absolute;top:0;right:0;" id="close">x</button>
+            <button style="position:absolute;top:0;left:0;" id="back">back</button>
+          </div>
+        </div>
       </div>
       <div id="banner">
 
       </div>
-      <div id="modal" style="visibility:hidden;position:fixed;z-index:2;background:rgba(255,255,255,0.2);width:100%;height:100%;top:0;left:0;display:flex;align-items:center;justify-content:center;">
-        <div style="position:relative;width:50%;height:50%;background:#000;">
-          <div style="display:flex;">
-            <div class="videos">
-              <div id="videomodal" class="video"></div>
-            </div>
-            <div class="covers">
-              <div id="covermodal" class="cover"></div>
-            </div>
-          </div>
-          <div id="modalname"></div>
-          <div id="modalstats"></div>
-          <div id="modalsongs"></div>
-          <button style="position:absolute;top:0;right:0;" id="close">x</button>
-          <button style="position:absolute;top:0;left:0;" id="back">back</button>
-        </div>
-      </div>
+      
     </div>
 
     <script src="vibrant.js-master/dist/Vibrant.js"></script>
