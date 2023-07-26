@@ -17,8 +17,13 @@ function homeInitialize() {
 }
 
 function testHistory(term) {
+  const history = document.querySelector("#history")
   browseHistory.push(term)
-  console.log(browseHistory)
+
+      const historyItem = document.createElement("li");
+      historyItem.innerHTML = browseHistory[browseHistory.length - 1][0] + " " + browseHistory[browseHistory.length - 1][1]
+      history.appendChild(historyItem)
+
 }
 
 async function browseInitialize() {

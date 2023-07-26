@@ -28,6 +28,7 @@ a {color:#00a3ff}
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow: hidden;
 }
 #nav > div {
   display: flex;
@@ -43,14 +44,23 @@ a {color:#00a3ff}
   border: 1px solid green;
 }
 
+.nav-top {
+  height: 100%;
+}
+
 .search-container {
   display; flex;
   flex-direction: row;
 }
 
+#history {
+  overflow: scroll;
+}
+
 #searchResults {
   z-index: 2;
   background: #000000;
+  overflow: scroll;
 }
 
 .nextprev {
