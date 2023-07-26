@@ -36,6 +36,7 @@ a {color:#00a3ff}
 #main {
   grid-area: 1 / 2 / 2 / 3;
   border: 1px solid blue;
+  overflow: scroll;
 }
 #banner {
   grid-area: 2 / 1 / 3 / 3;
@@ -45,6 +46,11 @@ a {color:#00a3ff}
 .search-container {
   display; flex;
   flex-direction: row;
+}
+
+#searchResults {
+  z-index: 2;
+  background: #000000;
 }
 
 .nextprev {
