@@ -272,7 +272,6 @@ async function browse() {
 //   const response = await fetch(api_url);
 //   const data = await response.json();
 
-
   if (!test1) {
 
     //document.querySelector(".chart-wrapper").innerHTML = ''
