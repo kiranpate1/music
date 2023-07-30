@@ -78,9 +78,13 @@ async function browse() {
   function browseInitialize() {
     document.querySelector("#main-content").innerHTML = ''
 
+    const navContainer = document.createElement("div")
+    navContainer.setAttribute("id", 'nav-container')
+    document.querySelector("#main-content").appendChild(navContainer)
+
     const buttonContainer = document.createElement("div")
     buttonContainer.setAttribute("id", 'button-container')
-    document.querySelector("#main-content").appendChild(buttonContainer)
+    document.querySelector("#nav-container").appendChild(buttonContainer)
 
     const decadeContainer = document.createElement("div")
     decadeContainer.classList.add('button-container')
@@ -91,7 +95,6 @@ async function browse() {
     uniqueDecades.forEach((item, i) => {
       drawCalendar(item,'decade',uniqueDecades)
     })
-
 
     const yearContainer = document.createElement("div")
     yearContainer.classList.add('button-container')
@@ -143,6 +146,7 @@ async function browse() {
         uniqueYears.forEach((item, i) => {
           if (item.slice(0,3) == token.innerHTML.slice(0,3)) {
             drawCalendar(item,'year',uniqueYears)
+
           }
         })
       } else if (request == 'year') {
@@ -296,7 +300,7 @@ async function browse() {
 
     const searchWeek = document.createElement("div")
     searchWeek.classList.add('search-container')
-    document.querySelector(".chart-wrapper").appendChild(searchWeek)
+    document.querySelector("#nav-container").appendChild(searchWeek)
 
     const yyyy = document.createElement("input")
     yyyy.setAttribute("type", 'text')
@@ -327,7 +331,7 @@ async function browse() {
 
     const nextprev = document.createElement("div")
     nextprev.classList.add('nextprev')
-    document.querySelector(".chart-wrapper").appendChild(nextprev)
+    document.querySelector("#nav-container").appendChild(nextprev)
 
     // const browseWeek = document.createElement("button")
     // browseWeek.setAttribute("id", 'week')
@@ -437,6 +441,8 @@ async function browse() {
     document.querySelector('#songs').innerHTML = ''
     document.querySelector('#artists').innerHTML = ''
     document.querySelector('#top10').innerHTML = ''
+
+    document.querySelector('#weektitle').innerHTML = yearno
   
     for (let i = 0; i < genrePool.length; i++) {
       document.querySelector('#id' + genrePool[i].slice(-6)).style.width = '266px'
@@ -509,6 +515,8 @@ async function browse() {
     document.querySelectorAll('#artists li a').forEach((item, i) => {
       item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
+    document.querySelector('.chart-intel').innerHTML = group(songList)[0].key[1] + " is the #1 song of " + yearno
+
   }
   
   function findWeek(weekno) {
@@ -784,10 +792,8 @@ function updateHistory(el) {
   el.style.opacity = '0.5'
 
   const i = Array.from(el.parentNode.children).indexOf(el)
-  console.log(i,document.querySelector("#history").children.length)
   var itemAheadLength = 0 - [document.querySelector("#history").children.length - i - 1]
 
-  console.log(el)
   const parent = document.querySelector("#history");
   [...parent.children].slice(itemAheadLength).forEach(parent.removeChild.bind(parent));
 }
@@ -854,8 +860,8 @@ async function searchArtist(artist) {
         document.querySelector('#modalstats').innerHTML = "#"+[i+1]+" all time • "+no1Count+" #1s • "+[combinedUnique.length]+" top 10s"
         return
       }
-    });
-  });
+    })
+  })
   combinedUnique.forEach((item, i) => {
     if (decode(item)[0][1] == '01') {
       no1Count++
@@ -863,15 +869,15 @@ async function searchArtist(artist) {
     const div = document.createElement("div");
     div.innerHTML = decode(item)[0][1]+'<div style="width:16px;height:16px;background: '+decode(item)[0][2]+';"></div>'+'<a class="songname" id="'+item+'">'+decode(item)[0][3]+'</a>&nbsp'+"-"+"&nbsp<div class='artistname'><a>"+decode(item)[0][4].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
     document.querySelector("#modalsongs").appendChild(div);
-  });
+  })
   document.querySelectorAll('#modalsongs a.songname').forEach((item, i) => {
     //item.setAttribute('href', '#')
     item.setAttribute('onClick', 'modal(`visible`);searchSong(`'+item.getAttribute("id")+'`)')
-  });
+  })
   document.querySelectorAll('#modalsongs .artistname a').forEach((item, i) => {
     //item.setAttribute('href', '#')
     item.setAttribute('onClick', 'modal(`visible`);searchArtist(`'+item.innerHTML+'`)')
-  });
+  })
   function decode(input) {
     const output = []
     for (let x = 1; x <= 10; x++) {
@@ -888,7 +894,7 @@ async function searchArtist(artist) {
     if (leadArtist[0] == artist) {
       return item !== undefined;
     }
-  });
+  })
   var dfsgfeg = filteredDecode.concat(combinedUnique)[0]
   // decode(dfsgfeg).then(results => {
   //   pic(results[0][4], results[0][3], 'modal')
@@ -902,9 +908,9 @@ function group(type) {
       else if (acc.findIndex(f => f.artist === curr ) === -1) acc.push({artist: curr, count: 1})
       else ++acc[acc.findIndex(f => f.artist === curr)].count
       return acc
-  }, []);
+  }, [])
   var results = reducedArray.sort((a,b) => b.count - a.count )
-  return results;
+  return results
 }
 
 //CHANGE SEARCH TO CALCULATE RESULTS AT ONCE AND THEN APPEND RATHER THAN APPEND ONE BY ONE
@@ -945,7 +951,7 @@ async function termSearch() {
       if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
         const line = document.createElement("li");
         line.innerHTML = decode(item.artist.slice(-10))[0][3] + ' - ' + decode(item.artist.slice(-10))[0][4];
-        searchResults.appendChild(line);
+        searchResults.appendChild(line)
       }
     })
   }) //for artists
@@ -954,7 +960,7 @@ async function termSearch() {
       if (item.artist.toLowerCase().includes(searchValue)) {
         const line = document.createElement("li");
         line.innerHTML = item.artist
-        searchResults.appendChild(line);
+        searchResults.appendChild(line)
       }
     })
   }) //for songs by artist
@@ -963,7 +969,7 @@ async function termSearch() {
       if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
         const line = document.createElement("li");
         line.innerHTML = decode(item.artist.slice(-10))
-        searchResults.appendChild(line);
+        searchResults.appendChild(line)
       }
     })
   })
@@ -984,8 +990,8 @@ async function termSearch() {
 
 async function list(component,comp2) {
   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
-  const response = await fetch(api_url);
-  const data = await response.json();
+  const response = await fetch(api_url)
+  const data = await response.json()
 
   var list = []
   for (let i = 1; i <= 10; i++) {

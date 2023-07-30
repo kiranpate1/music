@@ -77,6 +77,10 @@ a {color:#00a3ff}
   overflow: scroll;
 }
 
+#button-container {
+  height: 100px;
+}
+
 #searchResults {
   z-index: 2;
   background: #000000;
