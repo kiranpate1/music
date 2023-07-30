@@ -782,22 +782,14 @@ document.querySelector('#back').onclick = function(){
 
 function updateHistory(el) {
   el.style.opacity = '0.5'
-  // const parent = document.querySelector("#history");
-  // [...parent.children].slice(-1).forEach(parent.removeChild.bind(parent));
+
   const i = Array.from(el.parentNode.children).indexOf(el)
   console.log(i,document.querySelector("#history").children.length)
   var itemAheadLength = 0 - [document.querySelector("#history").children.length - i - 1]
-  // console.log(itemAheadLength)
 
-  // document.querySelectorAll('#button-container button').forEach((item, i) => {
-  //   item.addEventListener("click", function() {
-      console.log(el)
-      const parent = document.querySelector("#history");
-      [...parent.children].slice(itemAheadLength).forEach(parent.removeChild.bind(parent));
-      // testHistory([item.innerHTML,'decade'])
-  //   })
-  // })
-  
+  console.log(el)
+  const parent = document.querySelector("#history");
+  [...parent.children].slice(itemAheadLength).forEach(parent.removeChild.bind(parent));
 }
 
 async function searchSong(id) {
