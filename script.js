@@ -801,6 +801,7 @@ function updateHistory(el) {
 }
 
 async function searchSong(id) {
+  history(id)
   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
   const response = await fetch(api_url);
   const data = await response.json();
@@ -832,10 +833,10 @@ async function searchSong(id) {
     item.setAttribute('onClick', 'modal(`visible`);searchArtist(`'+item.innerHTML+'`)')
   });
   pic(artist,name,'modal')
-  history(id)
 }
 
 async function searchArtist(artist) {
+  history(artist)
   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
   const response = await fetch(api_url);
   const data = await response.json();
@@ -902,7 +903,6 @@ async function searchArtist(artist) {
   // })
   pic(decode(dfsgfeg)[0][4], decode(dfsgfeg)[0][3], 'modal')
   //pic(decode(totalList.artist)[0][4], decode(totalList.artist)[0][3], 'modal')
-  history(artist)
 }
 function group(type) {
   let reducedArray = type.reduce( (acc, curr, _, arr) => {
