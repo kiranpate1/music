@@ -49,12 +49,30 @@ async function browse() {
   function testHistory(term) {
     const history = document.querySelector("#history")
     browseHistory.push(term)
+    var date = browseHistory[browseHistory.length - 1][0].replaceAll('/','-')
+    var request = browseHistory[browseHistory.length - 1][1]
   
     const historyItem = document.createElement("li");
-    historyItem.innerHTML = browseHistory[browseHistory.length - 1][0] + " " + browseHistory[browseHistory.length - 1][1]
+    // historyItem.setAttribute("date", date)
+    // historyItem.setAttribute("request", request)
+    if (request == 'decade') {
+      historyItem.innerHTML = date.slice(0,3) + "0s"
+      historyItem.addEventListener("click", function() { testfml(date.slice(0,3) + "0",request,'navigate');updateHistory(historyItem) })
+    } else if (request == 'year') {
+      historyItem.innerHTML = date.slice(0,4)
+      historyItem.addEventListener("click", function() { testfml(date.slice(0,4),request,'navigate');updateHistory(historyItem) })
+    } else if (request == 'month') {
+      historyItem.innerHTML = date.slice(0,7)
+      historyItem.addEventListener("click", function() { testfml(date.slice(0,7),request,'navigate');updateHistory(historyItem) })
+    } else if (request == 'week') {
+      historyItem.innerHTML = date
+      historyItem.addEventListener("click", function() { testfml(date,request,'navigate');updateHistory(historyItem) })
+    }
     history.appendChild(historyItem)
   
   }
+
+  
 
   browseInitialize()
   function browseInitialize() {
@@ -99,7 +117,7 @@ async function browse() {
 
     if (browseHistory.length !== 0) {
       // chartInitialize()
-      findWeek(browseHistory[browseHistory.length - 1])
+      // findWeek(browseHistory[browseHistory.length - 1])
     }
   }
 
@@ -711,6 +729,7 @@ async function browse() {
 
 
 
+
 function modal(visibility) {
   document.querySelector("#videomodal").style.backgroundImage = ''
   document.querySelector("#covermodal").style.backgroundImage = ''
@@ -728,6 +747,13 @@ function history(term) {
   
   const historyItem = document.createElement("li");
   historyItem.innerHTML = modalHistory[modalHistory.length - 1]
+  if (term.slice(0, 2) == 'ix') {
+    historyItem.addEventListener('click', function() { modal(`visible`);searchSong(term);updateHistory(historyItem) })
+    // historyItem.setAttribute('onClick', 'modal(`visible`);searchSong(`'+term+'`)')
+  } else {
+    historyItem.addEventListener('click', function() { modal(`visible`);searchArtist(term);updateHistory(historyItem) })
+    // historyItem.setAttribute('onClick', 'modal(`visible`);searchArtist(`'+term+'`)')
+  }
   document.querySelector("#history").appendChild(historyItem)
 }
 document.querySelector('#back').onclick = function(){
@@ -752,6 +778,26 @@ document.querySelector('#back').onclick = function(){
     const parent = document.querySelector("#history");
     [...parent.children].slice(-2).forEach(parent.removeChild.bind(parent));
   }
+}
+
+function updateHistory(el) {
+  el.style.opacity = '0.5'
+  // const parent = document.querySelector("#history");
+  // [...parent.children].slice(-1).forEach(parent.removeChild.bind(parent));
+  const i = Array.from(el.parentNode.children).indexOf(el)
+  console.log(i,document.querySelector("#history").children.length)
+  var itemAheadLength = 0 - [document.querySelector("#history").children.length - i - 1]
+  // console.log(itemAheadLength)
+
+  // document.querySelectorAll('#button-container button').forEach((item, i) => {
+  //   item.addEventListener("click", function() {
+      console.log(el)
+      const parent = document.querySelector("#history");
+      [...parent.children].slice(itemAheadLength).forEach(parent.removeChild.bind(parent));
+      // testHistory([item.innerHTML,'decade'])
+  //   })
+  // })
+  
 }
 
 async function searchSong(id) {
