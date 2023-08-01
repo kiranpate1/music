@@ -92,10 +92,6 @@ async function browse() {
     decadeContainer.style.gridTemplateColumns = 'repeat('+uniqueDecades.length+', 1fr)'
     document.querySelector("#button-container").appendChild(decadeContainer)
 
-    uniqueDecades.forEach((item, i) => {
-      drawCalendar(item,'decade',uniqueDecades)
-    })
-
     const yearContainer = document.createElement("div")
     yearContainer.classList.add('button-container')
     yearContainer.setAttribute("id", 'year-container')
@@ -114,9 +110,17 @@ async function browse() {
     weekContainer.style.gridTemplateColumns = 'repeat(53, 1fr)'
     document.querySelector("#button-container").appendChild(weekContainer)
 
+    const childrenContainer = document.createElement("div")
+    childrenContainer.setAttribute("id", 'children-container')
+    document.querySelector("#main-content").appendChild(childrenContainer)
+
     const chartWrapper = document.createElement("div")
-    chartWrapper.classList.add('chart-wrapper')
+    chartWrapper.setAttribute("id", 'chart-wrapper')
     document.querySelector("#main-content").appendChild(chartWrapper)
+
+    uniqueDecades.forEach((item, i) => {
+      drawCalendar(item,'decade',uniqueDecades)
+    })
 
     if (browseHistory.length !== 0) {
       // chartInitialize()
@@ -127,11 +131,24 @@ async function browse() {
   
 
   function drawCalendar(input,request,requestArray) {
+    const childrenContainer = document.querySelector("#children-container")
     const token = document.createElement("button")
     token.innerHTML = input
     token.setAttribute("id", request+'-'+input.replaceAll('/','-'))
     token.onclick = function(){
-      //yearButton(decades.innerHTML.slice(0,4),0,3)
+      etwwetwet()
+    }
+
+    const token1 = document.createElement("button")
+    token1.innerHTML = input
+    token1.setAttribute("id", request+'-'+input.replaceAll('/','-'))
+    token1.onclick = function(){
+      etwwetwet()
+    }
+
+    function etwwetwet() {
+      childrenContainer.innerHTML = ''
+
       var requestIndex = input
       testfml(requestIndex.replaceAll('/','-'),request,'initialize')
       document.getElementById('next').onclick = async function() {
@@ -142,16 +159,17 @@ async function browse() {
         requestIndex = requestArray[(requestArray.findIndex(element => element.includes(requestIndex)))-1]
         testfml(requestIndex.replaceAll('/','-'),request,'navigate')
       }
+      
       if (request == 'decade') {
         uniqueYears.forEach((item, i) => {
           if (item.slice(0,3) == token.innerHTML.slice(0,3)) {
             drawCalendar(item,'year',uniqueYears)
-
           }
         })
       } else if (request == 'year') {
         uniqueMonths.forEach((item, i) => {
           if (item.slice(0,4) == token.innerHTML.slice(0,4)) {
+            console.log(item)
             drawCalendar(item,'month',uniqueMonths)
           }
         })
@@ -163,6 +181,9 @@ async function browse() {
         })
       }
     }
+
+    // childrenContainer.innerHTML += '<div class="date-slot">'+input+'</div>'
+    childrenContainer.appendChild(token1)
     document.querySelector("#"+request+"-container").appendChild(token)
   }
 
@@ -172,6 +193,7 @@ async function browse() {
       for (let i = 0; i < document.querySelectorAll('#button-container button').length; i++) {
         document.querySelectorAll('#button-container button')[i].style.opacity = '1'
       }
+      document.querySelector("#children-container").innerHTML = ''
       document.querySelector('#decade-'+input.slice(0,3)+'0').style.opacity = '0.5'
       document.querySelector("#year-container").innerHTML = ''
       if (action == 'navigate') {
@@ -193,6 +215,7 @@ async function browse() {
       for (let i = 0; i < document.querySelectorAll('#button-container button').length; i++) {
         document.querySelectorAll('#button-container button')[i].style.opacity = '1'
       }
+      document.querySelector("#children-container").innerHTML = ''
       document.querySelector('#decade-'+input.slice(0,3)+'0').style.opacity = '0.5'
       document.querySelector('#year-'+input.slice(0,4)).style.opacity = '0.5'
       document.querySelector("#month-container").innerHTML = ''
@@ -220,6 +243,7 @@ async function browse() {
       for (let i = 0; i < document.querySelectorAll('#button-container button').length; i++) {
         document.querySelectorAll('#button-container button')[i].style.opacity = '1'
       }
+      document.querySelector("#children-container").innerHTML = ''
       document.querySelector('#decade-'+input.slice(0,3)+'0').style.opacity = '0.5'
       document.querySelector('#year-'+input.slice(0,4)).style.opacity = '0.5'
       document.querySelector('#month-'+input.slice(0,7)).style.opacity = '0.5'
@@ -253,6 +277,7 @@ async function browse() {
       for (let i = 0; i < document.querySelectorAll('#button-container button').length; i++) {
         document.querySelectorAll('#button-container button')[i].style.opacity = '1'
       }
+      document.querySelector("#children-container").innerHTML = ''
       document.querySelector('#decade-'+input.slice(0,3)+'0').style.opacity = '0.5'
       document.querySelector('#year-'+input.slice(0,4)).style.opacity = '0.5'
       document.querySelector('#month-'+input.slice(0,7)).style.opacity = '0.5'
@@ -296,7 +321,7 @@ async function browse() {
 
   if (!test1) {
 
-    //document.querySelector(".chart-wrapper").innerHTML = ''
+    //document.querySelector("#chart-wrapper").innerHTML = ''
 
     const searchWeek = document.createElement("div")
     searchWeek.classList.add('search-container')
@@ -365,7 +390,7 @@ async function browse() {
 
     const chartTitle = document.createElement("div")
     chartTitle.classList.add('chart-title')
-    document.querySelector(".chart-wrapper").appendChild(chartTitle)
+    document.querySelector("#chart-wrapper").appendChild(chartTitle)
 
     const weekTitle = document.createElement("div")
     weekTitle.setAttribute("id", 'weektitle')
@@ -377,7 +402,7 @@ async function browse() {
 
     const videoPic = document.createElement("div")
     videoPic.setAttribute("id", 'videos')
-    document.querySelector(".chart-wrapper").appendChild(videoPic)
+    document.querySelector("#chart-wrapper").appendChild(videoPic)
 
     const video1 = document.createElement("div")
     video1.setAttribute("id", 'video1')
@@ -396,7 +421,7 @@ async function browse() {
 
     const dataList = document.createElement("div")
     dataList.setAttribute("id", 'datalist')
-    document.querySelector(".chart-wrapper").appendChild(dataList)
+    document.querySelector("#chart-wrapper").appendChild(dataList)
 
     const top10 = document.createElement("div")
     top10.setAttribute("id", 'top10')
@@ -420,7 +445,7 @@ async function browse() {
     const topgenres = document.createElement("div")
     topgenres.setAttribute("id", 'genres')
     topgenres.classList.add('genres')
-    document.querySelector(".chart-wrapper").appendChild(topgenres)
+    document.querySelector("#chart-wrapper").appendChild(topgenres)
 
     genrePool.forEach((item, i) => {
       const li = document.createElement("li");
