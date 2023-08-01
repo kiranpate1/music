@@ -119,7 +119,7 @@ async function browse() {
     document.querySelector("#main-content").appendChild(chartWrapper)
 
     uniqueDecades.forEach((item, i) => {
-      drawCalendar(item,'decade',uniqueDecades)
+      drawCalendar(item,'decade')
     })
 
     if (browseHistory.length !== 0) {
@@ -130,59 +130,49 @@ async function browse() {
 
   
 
-  function drawCalendar(input,request,requestArray) {
-    const childrenContainer = document.querySelector("#children-container")
+  function drawCalendar(input,request) {
     const token = document.createElement("button")
     token.innerHTML = input
     token.setAttribute("id", request+'-'+input.replaceAll('/','-'))
     token.onclick = function(){
-      etwwetwet()
+      findChildren()
     }
 
+    const childrenContainer = document.querySelector("#children-container")
     const token1 = document.createElement("button")
     token1.innerHTML = input
     token1.setAttribute("id", request+'-'+input.replaceAll('/','-'))
     token1.onclick = function(){
-      etwwetwet()
+      findChildren()
     }
 
-    function etwwetwet() {
+    function findChildren() {
       childrenContainer.innerHTML = ''
 
       var requestIndex = input
       testfml(requestIndex.replaceAll('/','-'),request,'initialize')
-      document.getElementById('next').onclick = async function() {
-        requestIndex = requestArray[(requestArray.findIndex(element => element.includes(requestIndex)))+1]
-        testfml(requestIndex.replaceAll('/','-'),request,'navigate')
-      }
-      document.getElementById('previous').onclick = function() {
-        requestIndex = requestArray[(requestArray.findIndex(element => element.includes(requestIndex)))-1]
-        testfml(requestIndex.replaceAll('/','-'),request,'navigate')
-      }
       
       if (request == 'decade') {
         uniqueYears.forEach((item, i) => {
           if (item.slice(0,3) == token.innerHTML.slice(0,3)) {
-            drawCalendar(item,'year',uniqueYears)
+            drawCalendar(item,'year')
           }
         })
       } else if (request == 'year') {
         uniqueMonths.forEach((item, i) => {
           if (item.slice(0,4) == token.innerHTML.slice(0,4)) {
-            console.log(item)
-            drawCalendar(item,'month',uniqueMonths)
+            drawCalendar(item,'month')
           }
         })
       } else if (request == 'month') {
         uniqueWeeks.forEach((item, i) => {
           if (item.slice(0,7) == token.innerHTML.slice(0,7)) {
-            drawCalendar(item,'week',uniqueWeeks)
+            drawCalendar(item,'week')
           }
         })
       }
     }
 
-    // childrenContainer.innerHTML += '<div class="date-slot">'+input+'</div>'
     childrenContainer.appendChild(token1)
     document.querySelector("#"+request+"-container").appendChild(token)
   }
@@ -199,17 +189,19 @@ async function browse() {
       if (action == 'navigate') {
         uniqueYears.forEach((item, i) => {
           if (item.slice(0,3) == input.slice(0,3)) {
-            drawCalendar(item,'year',uniqueYears)
+            drawCalendar(item,'year')
           }
         })
       }
       document.querySelector("#month-container").innerHTML = ''
       document.querySelector("#week-container").innerHTML = ''
+
+      nextPrev(uniqueDecades)
     } else if (request == 'year') {
       document.querySelector("#year-container").innerHTML = ''
       uniqueYears.forEach((item, i) => {
         if (item.slice(0,3) == input.slice(0,3)) {
-          drawCalendar(item,'year',uniqueYears)
+          drawCalendar(item,'year')
         }
       })
       for (let i = 0; i < document.querySelectorAll('#button-container button').length; i++) {
@@ -222,22 +214,24 @@ async function browse() {
       if (action == 'navigate') {
         uniqueMonths.forEach((item, i) => {
           if (item.slice(0,4) == input.slice(0,4)) {
-            drawCalendar(item,'month',uniqueMonths)
+            drawCalendar(item,'month')
           }
         })
       }
       document.querySelector("#week-container").innerHTML = ''
+
+      nextPrev(uniqueYears)
     } else if (request == 'month') {
       document.querySelector("#year-container").innerHTML = ''
       uniqueYears.forEach((item, i) => {
         if (item.slice(0,3) == input.slice(0,3)) {
-          drawCalendar(item,'year',uniqueYears)
+          drawCalendar(item,'year')
         }
       })
       document.querySelector("#month-container").innerHTML = ''
       uniqueMonths.forEach((item, i) => {
         if (item.slice(0,4) == input.slice(0,4)) {
-          drawCalendar(item,'month',uniqueMonths)
+          drawCalendar(item,'month')
         }
       })
       for (let i = 0; i < document.querySelectorAll('#button-container button').length; i++) {
@@ -251,27 +245,29 @@ async function browse() {
       if (action == 'navigate') {
         uniqueWeeks.forEach((item, i) => {
           if (item.slice(0,7) == input.slice(0,7).replaceAll('-','/')) {
-            drawCalendar(item,'week',uniqueWeeks)
+            drawCalendar(item,'week')
           }
         })
       }
+
+      nextPrev(uniqueMonths)
     } else if (request == 'week') {
       document.querySelector("#year-container").innerHTML = ''
       uniqueYears.forEach((item, i) => {
         if (item.slice(0,3) == input.slice(0,3)) {
-          drawCalendar(item,'year',uniqueYears)
+          drawCalendar(item,'year')
         }
       })
       document.querySelector("#month-container").innerHTML = ''
       uniqueMonths.forEach((item, i) => {
         if (item.slice(0,4) == input.slice(0,4)) {
-          drawCalendar(item,'month',uniqueMonths)
+          drawCalendar(item,'month')
         }
       })
       document.querySelector("#week-container").innerHTML = ''
       uniqueWeeks.forEach((item, i) => {
         if (item.slice(0,7) == input.slice(0,7).replaceAll('-','/')) {
-          drawCalendar(item,'week',uniqueWeeks)
+          drawCalendar(item,'week')
         }
       })
       for (let i = 0; i < document.querySelectorAll('#button-container button').length; i++) {
@@ -282,6 +278,19 @@ async function browse() {
       document.querySelector('#year-'+input.slice(0,4)).style.opacity = '0.5'
       document.querySelector('#month-'+input.slice(0,7)).style.opacity = '0.5'
       document.querySelector('#week-'+input).style.opacity = '0.5'
+
+      nextPrev(uniqueWeeks)
+    }
+
+    function nextPrev(requestArray) {
+      document.getElementById('next').onclick = async function() {
+        input = requestArray[(requestArray.findIndex(element => element.includes(input.replaceAll('-','/'))))+1]
+        testfml(input.replaceAll('/','-'),request,'navigate')
+      }
+      document.getElementById('previous').onclick = function() {
+        input = requestArray[(requestArray.findIndex(element => element.includes(input.replaceAll('-','/'))))-1]
+        testfml(input.replaceAll('/','-'),request,'navigate')
+      }
     }
     
     for (let i = 0; i < data.length; i++) {
