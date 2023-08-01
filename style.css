@@ -101,7 +101,9 @@ a {color:#00a3ff}
 #children-container button {
   flex-grow: 1;
   height: 50px;
-  border: 1px solid #fff;
+  border: 0;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 
@@ -122,6 +124,8 @@ a {color:#00a3ff}
 .video, #videos {
   width: 350px;
   height: 150px;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 .cover, .covers {
   width: 150px;

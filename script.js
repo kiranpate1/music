@@ -1046,6 +1046,8 @@ async function list(component,comp2) {
   return group(combinedList)
 }
 
+//CHANGE TO RETURN A SINGULAR IMAGE
+
 function pic(termArtist, termSong, order) {
   var allArtists = termArtist.replace(' ft. ',' ').toLowerCase()
   var artists = termArtist;
