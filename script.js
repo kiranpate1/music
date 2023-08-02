@@ -1113,7 +1113,6 @@ function pic(termArtist, termSong, order) {
           document.querySelector('#video'+order).style.backgroundImage = 'url(' + str + ')'
           color(str)
         }
-
   })
   // var video2 = fetch(url2)
   //     .then((Response) => Response.json())
