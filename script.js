@@ -66,7 +66,7 @@ async function browse() {
       historyItem.addEventListener("click", function() { testfml(date.slice(0,7),request,'navigate');updateHistory(historyItem) })
     } else if (request == 'week') {
       historyItem.innerHTML = date
-      historyItem.addEventListener("click", function() { testfml(date,request,'navigate');updateHistory(historyItem) })
+      historyItem.addEventListener("click", function() { document.querySelector('#top10').innerHTML = '';testfml(date,request,'navigate');updateHistory(historyItem) })
     }
     history.appendChild(historyItem)
   
