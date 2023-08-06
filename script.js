@@ -131,17 +131,24 @@ async function browse() {
   
 
   function drawCalendar(input,request) {
+    
     const token = document.createElement("button")
-    token.innerHTML = input
+    const childrenContainer = document.querySelector("#children-container")
+    const token1 = document.createElement("button")
+    if (request == 'decade') {
+      input = input.slice(0,3)
+      token.innerHTML = input + "0s"
+      token1.innerHTML = input + "0s"
+    } else {
+      token.innerHTML = input
+      token1.innerHTML = input
+    }
     token.setAttribute("id", request+'-'+input.replaceAll('/','-'))
     token.onclick = function(){
       findChildren()
     }
 
-    const childrenContainer = document.querySelector("#children-container")
-    const token1 = document.createElement("button")
-    token1.innerHTML = input
-    token1.setAttribute("id", request+'-'+input.replaceAll('/','-'))
+    token1.setAttribute("id", 'children-'+input.replaceAll('/','-'))
     token1.onclick = function(){
       findChildren()
     }
@@ -175,6 +182,30 @@ async function browse() {
 
     childrenContainer.appendChild(token1)
     document.querySelector("#"+request+"-container").appendChild(token)
+
+    // var songList = []
+    // for (let i = 1; i <= 10; i++) {
+    //   searchYearly(i)
+    // }
+    // function searchYearly(pos) {
+    //   for (let i = 0; i < data.length; i++) {
+    //     if (data[i].week.includes(input)) {
+    //       var name = data[i]?.['no'+pos+'name']
+    //       var artist = data[i]?.['no'+pos+'artist']
+    //       var genre = data[i]?.['no'+pos+'genre']
+    //       var object = [genre,name,artist]
+    //       var score = 11 - pos
+    //       songList.push({object,score})
+    //     }
+    //   }
+    // }
+    // group(songList).forEach((item, i) => {
+    //   if (i == '0') {
+    //     setTimeout(function() {
+    //       pic(item.key[2], item.key[1], 'children-'+input.replaceAll('/','-'))
+    //     }, 400);
+    //   }
+    // })
   }
 
   function testfml(input, request, action) {
@@ -184,11 +215,11 @@ async function browse() {
         document.querySelectorAll('#button-container button')[i].style.opacity = '1'
       }
       document.querySelector("#children-container").innerHTML = ''
-      document.querySelector('#decade-'+input.slice(0,3)+'0').style.opacity = '0.5'
+      document.querySelector('#decade-'+input).style.opacity = '0.5'
       document.querySelector("#year-container").innerHTML = ''
       if (action == 'navigate') {
         uniqueYears.forEach((item, i) => {
-          if (item.slice(0,3) == input.slice(0,3)) {
+          if (item.slice(0,3) == input) {
             drawCalendar(item,'year')
           }
         })
@@ -208,7 +239,7 @@ async function browse() {
         document.querySelectorAll('#button-container button')[i].style.opacity = '1'
       }
       document.querySelector("#children-container").innerHTML = ''
-      document.querySelector('#decade-'+input.slice(0,3)+'0').style.opacity = '0.5'
+      document.querySelector('#decade-'+input.slice(0,3)).style.opacity = '0.5'
       document.querySelector('#year-'+input.slice(0,4)).style.opacity = '0.5'
       document.querySelector("#month-container").innerHTML = ''
       if (action == 'navigate') {
@@ -238,7 +269,7 @@ async function browse() {
         document.querySelectorAll('#button-container button')[i].style.opacity = '1'
       }
       document.querySelector("#children-container").innerHTML = ''
-      document.querySelector('#decade-'+input.slice(0,3)+'0').style.opacity = '0.5'
+      document.querySelector('#decade-'+input.slice(0,3)).style.opacity = '0.5'
       document.querySelector('#year-'+input.slice(0,4)).style.opacity = '0.5'
       document.querySelector('#month-'+input.slice(0,7)).style.opacity = '0.5'
       document.querySelector("#week-container").innerHTML = ''
@@ -274,7 +305,7 @@ async function browse() {
         document.querySelectorAll('#button-container button')[i].style.opacity = '1'
       }
       document.querySelector("#children-container").innerHTML = ''
-      document.querySelector('#decade-'+input.slice(0,3)+'0').style.opacity = '0.5'
+      document.querySelector('#decade-'+input.slice(0,3)).style.opacity = '0.5'
       document.querySelector('#year-'+input.slice(0,4)).style.opacity = '0.5'
       document.querySelector('#month-'+input.slice(0,7)).style.opacity = '0.5'
       document.querySelector('#week-'+input).style.opacity = '0.5'
@@ -515,21 +546,10 @@ async function browse() {
   
     var combinedArtist = artistList.flat(1)
   
-    function group(type) {
-      var reducedArray = Object.values(type.reduce((hash, item) => {
-        if (!hash[item.object]) {
-            hash[item.object] = { key: item.object, score: 0 };
-        }
-        hash[item.object].score += item.score;
-        
-        return hash;
-      }, {}))
-      var results = reducedArray.sort((a,b) => b.score - a.score )
-      return results
-    }
+    
     group(songList).forEach((item, i) => {
       if (i == '0') {
-        pic(item.key[2], item.key[1], '2')
+        pic(item.key[2], item.key[1], 'video2')
       }
       const li = document.createElement("li")
       li.innerHTML = item.score + ' <div style="display:inline-block;width:16px;height:16px;background: ' + item.key[0] + ';"></div>' + item.key[1] + " - " + item.key[2]
@@ -551,6 +571,18 @@ async function browse() {
     })
     document.querySelector('.chart-intel').innerHTML = group(songList)[0].key[1] + " is the #1 song of " + yearno
 
+  }
+  function group(type) {
+    var reducedArray = Object.values(type.reduce((hash, item) => {
+      if (!hash[item.object]) {
+          hash[item.object] = { key: item.object, score: 0 };
+      }
+      hash[item.object].score += item.score;
+      
+      return hash;
+    }, {}))
+    var results = reducedArray.sort((a,b) => b.score - a.score )
+    return results
   }
   
   function findWeek(weekno) {
@@ -716,9 +748,9 @@ async function browse() {
       //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
   
-    pic(lastWeek.no1artist, lastWeek.no1name, '1')
-    pic(currentWeek.no1artist, currentWeek.no1name, '2')
-    pic(nextWeek.no1artist, nextWeek.no1name, '3')
+    pic(lastWeek.no1artist, lastWeek.no1name, 'video1')
+    pic(currentWeek.no1artist, currentWeek.no1name, 'video2')
+    pic(nextWeek.no1artist, nextWeek.no1name, 'video3')
   }
 
   function searchEnter(e) {
@@ -864,7 +896,7 @@ async function searchSong(id) {
     //item.setAttribute('href', '#')
     item.setAttribute('onClick', 'modal(`visible`);searchArtist(`'+item.innerHTML+'`)')
   });
-  pic(artist,name,'modal')
+  pic(artist,name,'videomodal')
 }
 
 async function searchArtist(artist) {
@@ -933,7 +965,7 @@ async function searchArtist(artist) {
   // decode(dfsgfeg).then(results => {
   //   pic(results[0][4], results[0][3], 'modal')
   // })
-  pic(decode(dfsgfeg)[0][4], decode(dfsgfeg)[0][3], 'modal')
+  pic(decode(dfsgfeg)[0][4], decode(dfsgfeg)[0][3], 'videomodal')
   //pic(decode(totalList.artist)[0][4], decode(totalList.artist)[0][3], 'modal')
 }
 function group(type) {
@@ -1048,7 +1080,7 @@ async function list(component,comp2) {
 
 //CHANGE TO RETURN A SINGULAR IMAGE
 
-function pic(termArtist, termSong, order) {
+function pic(termArtist, termSong, id) {
   var allArtists = termArtist.replace(' ft. ',' ').toLowerCase()
   var artists = termArtist;
 
@@ -1082,7 +1114,7 @@ function pic(termArtist, termSong, order) {
           }
         }
         //let str = coverList[0].artworkUrl100.replace('100x100', '200x200')
-        //document.querySelector('#cover'+order).style.backgroundImage = 'url(' + str + ')'
+        //document.querySelector('#'+id).style.backgroundImage = 'url(' + str + ')'
   })
   fetch(url1)
       .then((Response) => Response.json())
@@ -1105,13 +1137,13 @@ function pic(termArtist, termSong, order) {
           console.log("no")
           setTimeout(() => {
             let str = coverList[0].artworkUrl100.replace('100x100', '800x800')
-            document.querySelector('#video'+order).style.backgroundImage = 'url(' + str + ')'
-            color(str)
+            document.querySelector('#'+id).style.backgroundImage = 'url(' + str + ')'
+            // color(str)
           }, 2000);
         } else {
           let str = con[0].artworkUrl100.replace('100x100', '800x800')
-          document.querySelector('#video'+order).style.backgroundImage = 'url(' + str + ')'
-          color(str)
+          document.querySelector('#'+id).style.backgroundImage = 'url(' + str + ')'
+          // color(str)
         }
   })
   // var video2 = fetch(url2)
@@ -1132,12 +1164,12 @@ function pic(termArtist, termSong, order) {
   // Promise.all([video1, songCover]).then(function(valArray) {
   //   const videoList = valArray[0].concat(valArray[1],valArray[2])
   //   let str = videoList[0].artworkUrl100.replace('100x100', '800x800')
-  //   document.querySelector('#video'+order).style.backgroundImage = 'url(' + str + ')'
+  //   document.querySelector('#'+id).style.backgroundImage = 'url(' + str + ')'
   // });
   //
   // songCover.then(function (val) {
   //   let str = val[0].artworkUrl100.replace('100x100', '300x300')
-  //   document.querySelector('#cover'+order).style.backgroundImage = 'url(' + str + ')'
+  //   document.querySelector('#cover'+id).style.backgroundImage = 'url(' + str + ')'
   //   //console.log(str + ', done loading')
   // });
   function color(pic) {

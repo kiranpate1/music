@@ -102,7 +102,8 @@ a {color:#00a3ff}
   flex-grow: 1;
   height: 50px;
   border: 0;
-  background-size: contain;
+  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
 }
 
