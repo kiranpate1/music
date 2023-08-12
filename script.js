@@ -1084,6 +1084,7 @@ function pic(termArtist, termSong, id) {
   var allArtists = termArtist.replace(' ft. ',' ').toLowerCase()
   var artists = termArtist;
 
+  
   const artistsList = artists.replace(re, function(matched){return mapObj1[matched]}).split("separator");
 
   termArtist = artistsList[0].toLowerCase()
