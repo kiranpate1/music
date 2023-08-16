@@ -183,6 +183,7 @@ async function browse() {
     childrenContainer.appendChild(token1)
     document.querySelector("#"+request+"-container").appendChild(token)
 
+    //FIND PICS FOR EVERY DECADE/YEAR/MONTH/WEEK
     // var songList = []
     // for (let i = 1; i <= 10; i++) {
     //   searchYearly(i)
@@ -201,9 +202,7 @@ async function browse() {
     // }
     // group(songList).forEach((item, i) => {
     //   if (i == '0') {
-    //     setTimeout(function() {
-    //       pic(item.key[2], item.key[1], 'children-'+input.replaceAll('/','-'))
-    //     }, 400);
+    //     pic(item.key[2], item.key[1], 'children-'+input.replaceAll('/','-'))
     //   }
     // })
   }
@@ -211,6 +210,7 @@ async function browse() {
   function testfml(input, request, action) {
 
     if (request == 'decade') {
+      input = input.slice(0,3)
       for (let i = 0; i < document.querySelectorAll('#button-container button').length; i++) {
         document.querySelectorAll('#button-container button')[i].style.opacity = '1'
       }
@@ -1084,7 +1084,6 @@ function pic(termArtist, termSong, id) {
   var allArtists = termArtist.replace(' ft. ',' ').toLowerCase()
   var artists = termArtist;
 
-  
   const artistsList = artists.replace(re, function(matched){return mapObj1[matched]}).split("separator");
 
   termArtist = artistsList[0].toLowerCase()
