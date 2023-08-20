@@ -346,160 +346,141 @@ async function browse() {
     testHistory([week,request])
   }
 
-// }
-
-// document.querySelector('#close').onclick = function(){
-//   modal('hidden')
-//   modalHistory = []
-// };
 
 
-// async function chartInitialize() {
-//   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
-//   const response = await fetch(api_url);
-//   const data = await response.json();
+  const searchFml = document.createElement("div")
+  searchFml.classList.add('search-container')
+  document.querySelector("#nav-container").appendChild(searchFml)
 
-  if (!test1) {
+  const yyyy = document.createElement("input")
+  yyyy.setAttribute("type", 'text')
+  yyyy.setAttribute("id", 'yearSearch')
+  yyyy.setAttribute("placeholder", 'YYYY')
+  yyyy.setAttribute("maxlength", '4')
+  document.querySelector(".search-container").appendChild(yyyy)
 
-    //document.querySelector("#chart-wrapper").innerHTML = ''
+  const mm = document.createElement("input")
+  mm.setAttribute("type", 'text')
+  mm.setAttribute("id", 'monthSearch')
+  mm.setAttribute("placeholder", 'MM')
+  mm.setAttribute("maxlength", '2')
+  document.querySelector(".search-container").appendChild(mm)
 
-    const searchWeek = document.createElement("div")
-    searchWeek.classList.add('search-container')
-    document.querySelector("#nav-container").appendChild(searchWeek)
+  const dd = document.createElement("input")
+  dd.setAttribute("type", 'text')
+  dd.setAttribute("id", 'daySearch')
+  dd.setAttribute("placeholder", 'DD')
+  dd.setAttribute("maxlength", '2')
+  document.querySelector(".search-container").appendChild(dd)
 
-    const yyyy = document.createElement("input")
-    yyyy.setAttribute("type", 'text')
-    yyyy.setAttribute("id", 'yearSearch')
-    yyyy.setAttribute("placeholder", 'YYYY')
-    yyyy.setAttribute("maxlength", '4')
-    document.querySelector(".search-container").appendChild(yyyy)
+  const searchWeekButton = document.createElement("button")
+  searchWeekButton.setAttribute("id", 'search-button')
+  searchWeekButton.onclick = function(){search()}
+  searchWeekButton.innerHTML = "search"
+  document.querySelector(".search-container").appendChild(searchWeekButton)
 
-    const mm = document.createElement("input")
-    mm.setAttribute("type", 'text')
-    mm.setAttribute("id", 'monthSearch')
-    mm.setAttribute("placeholder", 'MM')
-    mm.setAttribute("maxlength", '2')
-    document.querySelector(".search-container").appendChild(mm)
+  const nextprev = document.createElement("div")
+  nextprev.classList.add('nextprev')
+  document.querySelector("#nav-container").appendChild(nextprev)
 
-    const dd = document.createElement("input")
-    dd.setAttribute("type", 'text')
-    dd.setAttribute("id", 'daySearch')
-    dd.setAttribute("placeholder", 'DD')
-    dd.setAttribute("maxlength", '2')
-    document.querySelector(".search-container").appendChild(dd)
+  // const browseWeek = document.createElement("button")
+  // browseWeek.setAttribute("id", 'week')
+  // browseWeek.innerHTML = "Week"
+  // document.querySelector(".nextprev").appendChild(browseWeek)
 
-    const searchWeekButton = document.createElement("button")
-    searchWeekButton.setAttribute("id", 'search-button')
-    searchWeekButton.onclick = function(){search()}
-    searchWeekButton.innerHTML = "search"
-    document.querySelector(".search-container").appendChild(searchWeekButton)
+  // const browseMonth = document.createElement("button")
+  // browseMonth.setAttribute("id", 'month')
+  // browseMonth.innerHTML = "Month"
+  // document.querySelector(".nextprev").appendChild(browseMonth)
 
-    const nextprev = document.createElement("div")
-    nextprev.classList.add('nextprev')
-    document.querySelector("#nav-container").appendChild(nextprev)
+  // const browseYear = document.createElement("button")
+  // browseYear.setAttribute("id", 'year')
+  // browseYear.innerHTML = "Year"
+  // document.querySelector(".nextprev").appendChild(browseYear)
 
-    // const browseWeek = document.createElement("button")
-    // browseWeek.setAttribute("id", 'week')
-    // browseWeek.innerHTML = "Week"
-    // document.querySelector(".nextprev").appendChild(browseWeek)
+  // const browseDecade = document.createElement("button")
+  // browseDecade.setAttribute("id", 'decade')
+  // browseDecade.innerHTML = "Decade"
+  // document.querySelector(".nextprev").appendChild(browseDecade)
 
-    // const browseMonth = document.createElement("button")
-    // browseMonth.setAttribute("id", 'month')
-    // browseMonth.innerHTML = "Month"
-    // document.querySelector(".nextprev").appendChild(browseMonth)
+  const prev = document.createElement("button")
+  prev.setAttribute("id", 'previous')
+  prev.innerHTML = "<"
+  document.querySelector(".nextprev").appendChild(prev)
 
-    // const browseYear = document.createElement("button")
-    // browseYear.setAttribute("id", 'year')
-    // browseYear.innerHTML = "Year"
-    // document.querySelector(".nextprev").appendChild(browseYear)
+  const next = document.createElement("button")
+  next.setAttribute("id", 'next')
+  next.innerHTML = ">"
+  document.querySelector(".nextprev").appendChild(next)
 
-    // const browseDecade = document.createElement("button")
-    // browseDecade.setAttribute("id", 'decade')
-    // browseDecade.innerHTML = "Decade"
-    // document.querySelector(".nextprev").appendChild(browseDecade)
+  const chartTitle = document.createElement("div")
+  chartTitle.classList.add('chart-title')
+  document.querySelector("#chart-wrapper").appendChild(chartTitle)
 
-    const prev = document.createElement("button")
-    prev.setAttribute("id", 'previous')
-    prev.innerHTML = "<"
-    document.querySelector(".nextprev").appendChild(prev)
+  const weekTitle = document.createElement("div")
+  weekTitle.setAttribute("id", 'weektitle')
+  document.querySelector(".chart-title").appendChild(weekTitle)
 
-    const next = document.createElement("button")
-    next.setAttribute("id", 'next')
-    next.innerHTML = ">"
-    document.querySelector(".nextprev").appendChild(next)
+  const chartIntel = document.createElement("div")
+  chartIntel.classList.add('chart-intel')
+  document.querySelector(".chart-title").appendChild(chartIntel)
 
-    const chartTitle = document.createElement("div")
-    chartTitle.classList.add('chart-title')
-    document.querySelector("#chart-wrapper").appendChild(chartTitle)
+  const videoPic = document.createElement("div")
+  videoPic.setAttribute("id", 'videos')
+  document.querySelector("#chart-wrapper").appendChild(videoPic)
 
-    const weekTitle = document.createElement("div")
-    weekTitle.setAttribute("id", 'weektitle')
-    document.querySelector(".chart-title").appendChild(weekTitle)
+  const video1 = document.createElement("div")
+  video1.setAttribute("id", 'video1')
+  video1.classList.add('video')
+  document.querySelector("#videos").appendChild(video1)
 
-    const chartIntel = document.createElement("div")
-    chartIntel.classList.add('chart-intel')
-    document.querySelector(".chart-title").appendChild(chartIntel)
+  const video2 = document.createElement("div")
+  video2.setAttribute("id", 'video2')
+  video2.classList.add('video')
+  document.querySelector("#videos").appendChild(video2)
 
-    const videoPic = document.createElement("div")
-    videoPic.setAttribute("id", 'videos')
-    document.querySelector("#chart-wrapper").appendChild(videoPic)
+  const video3 = document.createElement("div")
+  video3.setAttribute("id", 'video3')
+  video3.classList.add('video')
+  document.querySelector("#videos").appendChild(video3)
 
-    const video1 = document.createElement("div")
-    video1.setAttribute("id", 'video1')
-    video1.classList.add('video')
-    document.querySelector("#videos").appendChild(video1)
+  const dataList = document.createElement("div")
+  dataList.setAttribute("id", 'datalist')
+  document.querySelector("#chart-wrapper").appendChild(dataList)
 
-    const video2 = document.createElement("div")
-    video2.setAttribute("id", 'video2')
-    video2.classList.add('video')
-    document.querySelector("#videos").appendChild(video2)
+  const top10 = document.createElement("div")
+  top10.setAttribute("id", 'top10')
+  top10.classList.add('top10')
+  document.querySelector("#datalist").appendChild(top10)
 
-    const video3 = document.createElement("div")
-    video3.setAttribute("id", 'video3')
-    video3.classList.add('video')
-    document.querySelector("#videos").appendChild(video3)
+  const nonweeklychart = document.createElement("div")
+  nonweeklychart.classList.add('nonweeklychart')
+  document.querySelector("#datalist").appendChild(nonweeklychart)
 
-    const dataList = document.createElement("div")
-    dataList.setAttribute("id", 'datalist')
-    document.querySelector("#chart-wrapper").appendChild(dataList)
+  const topsongs = document.createElement("div")
+  topsongs.setAttribute("id", 'songs')
+  topsongs.classList.add('songs')
+  document.querySelector(".nonweeklychart").appendChild(topsongs)
 
-    const top10 = document.createElement("div")
-    top10.setAttribute("id", 'top10')
-    top10.classList.add('top10')
-    document.querySelector("#datalist").appendChild(top10)
+  const topartists = document.createElement("div")
+  topartists.setAttribute("id", 'artists')
+  topartists.classList.add('artists')
+  document.querySelector(".nonweeklychart").appendChild(topartists)
 
-    const nonweeklychart = document.createElement("div")
-    nonweeklychart.classList.add('nonweeklychart')
-    document.querySelector("#datalist").appendChild(nonweeklychart)
+  const topgenres = document.createElement("div")
+  topgenres.setAttribute("id", 'genres')
+  topgenres.classList.add('genres')
+  document.querySelector("#chart-wrapper").appendChild(topgenres)
 
-    const topsongs = document.createElement("div")
-    topsongs.setAttribute("id", 'songs')
-    topsongs.classList.add('songs')
-    document.querySelector(".nonweeklychart").appendChild(topsongs)
+  genrePool.forEach((item, i) => {
+    const li = document.createElement("li");
+    li.setAttribute("id", 'id' + item.slice(-6));
+    li.style.order = i + 1;
+    li.innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item + ';"></div>'
+    document.querySelector("#genres").appendChild(li);
+  });
 
-    const topartists = document.createElement("div")
-    topartists.setAttribute("id", 'artists')
-    topartists.classList.add('artists')
-    document.querySelector(".nonweeklychart").appendChild(topartists)
 
-    const topgenres = document.createElement("div")
-    topgenres.setAttribute("id", 'genres')
-    topgenres.classList.add('genres')
-    document.querySelector("#chart-wrapper").appendChild(topgenres)
-
-    genrePool.forEach((item, i) => {
-      const li = document.createElement("li");
-      li.setAttribute("id", 'id' + item.slice(-6));
-      li.style.order = i + 1;
-      li.innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item + ';"></div>'
-      document.querySelector("#genres").appendChild(li);
-    });
-
-    // document.querySelector('#week').onclick = function(){
-    //   console.log("hi!")
-    // }
-  }
-  test1 = true; //when user switches tab, set false
 
   function findYear(yearno) {
     
@@ -524,10 +505,11 @@ async function browse() {
     function searchYearly(pos) {
       for (let i = 0; i < data.length; i++) {
         if (data[i].week.includes(yearno)) {
+          var genre = data[i]?.['no'+pos+'genre']
+          var id = data[i]?.['no'+pos+'id']
           var name = data[i]?.['no'+pos+'name']
           var artist = data[i]?.['no'+pos+'artist']
-          var genre = data[i]?.['no'+pos+'genre']
-          var object = [genre,name,artist]
+          var object = [genre,id,name,artist]
           var score = 11 - pos
           songList.push({object,score})
           var separators = [' ft. ', ' / ', ', '];
@@ -547,17 +529,18 @@ async function browse() {
     var combinedArtist = artistList.flat(1)
   
     
+    
     group(songList).forEach((item, i) => {
       if (i == '0') {
-        pic(item.key[2], item.key[1], 'video2')
+        pic(item.key[3], item.key[2], 'video2')
       }
       const li = document.createElement("li")
-      li.innerHTML = item.score + ' <div style="display:inline-block;width:16px;height:16px;background: ' + item.key[0] + ';"></div>' + item.key[1] + " - " + item.key[2]
+      li.innerHTML = item.score + ' <div style="display:inline-block;width:16px;height:16px;background: ' + item.key[0] + ';"></div><a class="songname" songid="'+ item.key[1] + '">' + item.key[2] + "</a>&nbsp-&nbsp<div class='artistname'><a>"+item.key[3].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
       document.querySelector("#songs").appendChild(li)
     })
     group(combinedArtist).forEach((item, i) => {
       const li = document.createElement("li")
-      li.innerHTML = item.score + " " + item.key
+      li.innerHTML = item.score + "&nbsp/&nbsp<div class='artistname'><a>" + item.key + "</a></div>"
       document.querySelector("#artists").appendChild(li)
     })
     group(genreList).forEach((item, i) => {
@@ -571,6 +554,14 @@ async function browse() {
     })
     document.querySelector('.chart-intel').innerHTML = group(songList)[0].key[1] + " is the #1 song of " + yearno
 
+    document.querySelectorAll('.nonweeklychart a.songname').forEach((item, i) => {
+      item.setAttribute('onClick', 'modal(`visible`);searchSong(`'+item.getAttribute("songid")+'`)')
+      //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
+    })
+    document.querySelectorAll('.nonweeklychart .artistname a').forEach((item, i) => {
+      item.setAttribute('onClick', 'modal(`visible`);searchArtist(`'+item.innerHTML+'`)')
+      //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
+    })
   }
   function group(type) {
     var reducedArray = Object.values(type.reduce((hash, item) => {
@@ -621,20 +612,20 @@ async function browse() {
     for (let y = 1; y <= 10; y++) {
       for (let z = 1; z <= 10; z++) {
         if(lastWeek?.['no'+y+'name'] !== currentWeek?.['no'+z+'name']){
-          const exits = lastWeek?.['no'+y+'direction']+'<div style="width:16px;height:16px;background: '+lastWeek?.['no'+y+'genre']+';"></div>'+'<a class="songname" id="'+lastWeek?.['no'+y+'id']+'">'+lastWeek?.['no'+y+'name']+'</a>&nbsp'+"-"+"&nbsp<div class='artistname'><a>"+lastWeek?.['no'+y+'artist'].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
+          const exits = lastWeek?.['no'+y+'direction']+'<div style="width:16px;height:16px;background: '+lastWeek?.['no'+y+'genre']+';"></div>'+'<a class="songname" id="'+lastWeek?.['no'+y+'id']+'">'+lastWeek?.['no'+y+'name']+"</a>&nbsp-&nbsp<div class='artistname'><a>"+lastWeek?.['no'+y+'artist'].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
           const exitsId = lastWeek?.['no'+y+'id']
           exitList.push(exits);
           exitIdList.push(exitsId);
         }
         if(nextWeek?.['no'+y+'name'] !== currentWeek?.['no'+z+'name']){
-          const enters = nextWeek?.['no'+y+'direction']+'<div style="width:16px;height:16px;background: '+nextWeek?.['no'+y+'genre']+';"></div>'+'<a class="songname" id="'+nextWeek?.['no'+y+'id']+'">'+nextWeek?.['no'+y+'name']+'</a>&nbsp'+"-"+"&nbsp<div class='artistname'><a>"+nextWeek?.['no'+y+'artist'].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
+          const enters = nextWeek?.['no'+y+'direction']+'<div style="width:16px;height:16px;background: '+nextWeek?.['no'+y+'genre']+';"></div>'+'<a class="songname" id="'+nextWeek?.['no'+y+'id']+'">'+nextWeek?.['no'+y+'name']+"</a>&nbsp-&nbsp<div class='artistname'><a>"+nextWeek?.['no'+y+'artist'].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
           const entersId = nextWeek?.['no'+y+'id']
           enterList.push(enters);
           enterIdList.push(entersId);
         }
         if(currentWeek?.['no'+y+'name'] !== lastWeek?.['no'+z+'name']){
           //const news = currentWeek?.['no'+y+'direction']+'<div style="width:16px;height:16px;background: '+currentWeek?.['no'+y+'genre']+';"></div>'+'<a onClick="modal(`visible`,`'+currentWeek?.['no'+y+'artist']+'`,`'+currentWeek?.['no'+y+'name']+'`,`modal`)">'+currentWeek?.['no'+y+'name']+'</a>&nbsp'+"-"+"&nbsp<a>"+currentWeek?.['no'+y+'artist'].replace(re, function(matched){return mapObj[matched]})+"</a>"
-          const news = currentWeek?.['no'+y+'direction']+'<div style="width:16px;height:16px;background: '+currentWeek?.['no'+y+'genre']+';"></div>'+'<a class="songname" id="'+currentWeek?.['no'+y+'id']+'">'+currentWeek?.['no'+y+'name']+'</a>&nbsp'+"-"+"&nbsp<div class='artistname'><a>"+currentWeek?.['no'+y+'artist'].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
+          const news = currentWeek?.['no'+y+'direction']+'<div style="width:16px;height:16px;background: '+currentWeek?.['no'+y+'genre']+';"></div>'+'<a class="songname" id="'+currentWeek?.['no'+y+'id']+'">'+currentWeek?.['no'+y+'name']+"</a>&nbsp-&nbsp<div class='artistname'><a>"+currentWeek?.['no'+y+'artist'].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
           const newsId = currentWeek?.['no'+y+'id']
           newList.push(news);
           newIdList.push(newsId);
