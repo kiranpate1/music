@@ -107,6 +107,11 @@ a {color:#00a3ff}
   background-repeat: no-repeat;
 }
 
+.nonweeklychart li {
+  display: flex;
+  flex-direction: row;
+}
+
 
 
 /* past */
