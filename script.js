@@ -184,6 +184,7 @@ async function browse() {
     document.querySelector("#"+request+"-container").appendChild(token)
 
     //FIND PICS FOR EVERY DECADE/YEAR/MONTH/WEEK
+    
     // var songList = []
     // for (let i = 1; i <= 10; i++) {
     //   searchYearly(i)
@@ -546,7 +547,7 @@ async function browse() {
     group(genreList).forEach((item, i) => {
         document.querySelector('#id' + item.key.slice(-6)).style.order = i + 1
         document.querySelector('#id' + item.key.slice(-6)).style.width = [[item.score / 1000] * 100 + 266] + 'px'
-        document.querySelector('#id' + item.key.slice(-6)).innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item.key + ';"></div><div>' + decode(item.key) + ": " + item.score + "</div><div class='bar' style='background:" + item.key + "'></div>"
+        document.querySelector('#id' + item.key.slice(-6)).innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item.key + ';"></div><div>' + decodeGenre(item.key) + ": " + item.score + "</div><div class='bar' style='background:" + item.key + "'></div>"
         document.querySelector('#id' + item.key.slice(-6)).style.opacity = '1'
     })
     document.querySelectorAll('#artists li a').forEach((item, i) => {
@@ -555,11 +556,11 @@ async function browse() {
     document.querySelector('.chart-intel').innerHTML = group(songList)[0].key[1] + " is the #1 song of " + yearno
 
     document.querySelectorAll('.nonweeklychart a.songname').forEach((item, i) => {
-      item.setAttribute('onClick', 'modal(`visible`);searchSong(`'+item.getAttribute("songid")+'`)')
+      item.setAttribute('onClick', 'searchSong(`'+item.getAttribute("songid")+'`)')
       //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
     document.querySelectorAll('.nonweeklychart .artistname a').forEach((item, i) => {
-      item.setAttribute('onClick', 'modal(`visible`);searchArtist(`'+item.innerHTML+'`)')
+      item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
       //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
   }
@@ -688,13 +689,14 @@ async function browse() {
       }
     })
     newSongList.forEach((element, i) => { //this week
-      console.log(newSongIdList[i] + " enters top 10")
+      console.log(decode(newSongIdList[i])[0][4] + " - " + decode(newSongIdList[i])[0][3] + " enters top 10")
       var exists = document.querySelector("#" + newSongIdList[i] + "");
       if(exists) {
         addToAttribute(exists, "pos", newSongList[i].slice(0, 3))
         exists.innerHTML = newSongList[i];
         exists.className = "";
         exists.classList.add('no'+newSongList[i].slice(0, 2))
+        exists.style.backgroundColor = 'gray'
       }else {
         const div = document.createElement("div");
         div.setAttribute("id", newSongIdList[i]);
@@ -702,6 +704,7 @@ async function browse() {
         div.innerHTML = newSongList[i];
         div.className = "";
         div.classList.add('no'+newSongList[i].slice(0, 2))
+        div.style.backgroundColor = 'gray'
         document.querySelector('#top10').appendChild(div);
       }
     })
@@ -712,6 +715,7 @@ async function browse() {
         repeats.innerHTML = repeatSongList[i];
         repeats.className = "";
         repeats.classList.add('no'+repeatSongList[i].slice(0, 2));
+        repeats.style.backgroundColor = ''
       }else {
         const div = document.createElement("div");
         div.setAttribute("id", repeatSongIdList[i]);
@@ -719,6 +723,7 @@ async function browse() {
         div.innerHTML = repeatSongList[i];
         div.className = "";
         div.classList.add('no'+repeatSongList[i].slice(0, 2))
+        div.style.backgroundColor = ''
         document.querySelector('#top10').appendChild(div);
       }
     })
@@ -730,18 +735,30 @@ async function browse() {
   
     document.querySelectorAll('#top10 a.songname').forEach((item, i) => {
       //item.setAttribute('href', '#')
-      item.setAttribute('onClick', 'modal(`visible`);searchSong(`'+item.getAttribute("id")+'`)')
+      item.setAttribute('onClick', 'searchSong(`'+item.getAttribute("id")+'`)')
       //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
     document.querySelectorAll('#top10 .artistname a').forEach((item, i) => {
       //item.setAttribute('href', '#')
-      item.setAttribute('onClick', 'modal(`visible`);searchArtist(`'+item.innerHTML+'`)')
+      item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
       //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
   
     pic(lastWeek.no1artist, lastWeek.no1name, 'video1')
     pic(currentWeek.no1artist, currentWeek.no1name, 'video2')
     pic(nextWeek.no1artist, nextWeek.no1name, 'video3')
+  }
+
+  function decode(input) {
+    const output = []
+    for (let x = 1; x <= 10; x++) {
+      for (var a = 0; a < data.length; a++) {
+        if (data[a]?.['no'+x+'id'] == input) {
+          output.push(new Array(data[a]?.week,data[a]?.['no'+x+'direction'].slice(0, 2),data[a]?.['no'+x+'genre'],data[a]?.['no'+x+'name'],data[a]?.['no'+x+'artist']))
+          return output
+        }
+      }
+    }
   }
 
   function searchEnter(e) {
@@ -804,20 +821,23 @@ function modal(visibility) {
 }
 var modalHistory = []
 document.querySelector('#close').onclick = function(){
+  for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
+    document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
+  }
   modal('hidden')
   modalHistory = []
-};
+}
 function history(term) {
   modalHistory.push(term)
   
   const historyItem = document.createElement("li");
   historyItem.innerHTML = modalHistory[modalHistory.length - 1]
   if (term.slice(0, 2) == 'ix') {
-    historyItem.addEventListener('click', function() { modal(`visible`);searchSong(term);updateHistory(historyItem) })
-    // historyItem.setAttribute('onClick', 'modal(`visible`);searchSong(`'+term+'`)')
+    historyItem.addEventListener('click', function() { searchSong(term);updateHistory(historyItem) })
+    // historyItem.setAttribute('onClick', 'searchSong(`'+term+'`)')
   } else {
-    historyItem.addEventListener('click', function() { modal(`visible`);searchArtist(term);updateHistory(historyItem) })
-    // historyItem.setAttribute('onClick', 'modal(`visible`);searchArtist(`'+term+'`)')
+    historyItem.addEventListener('click', function() { searchArtist(term);updateHistory(historyItem) })
+    // historyItem.setAttribute('onClick', 'searchArtist(`'+term+'`)')
   }
   document.querySelector("#history").appendChild(historyItem)
 }
@@ -826,18 +846,19 @@ document.querySelector('#back').onclick = function(){
   var recent = modalHistory.length - 1
   
   if (!modalHistory[recent]) {
+    for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
+      document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
+    }
     modal('hidden')
     modalHistory.pop()
     const parent = document.querySelector("#history");
     [...parent.children].slice(-1).forEach(parent.removeChild.bind(parent));
   } else if (modalHistory[recent].slice(0, 2) == 'ix') {
-    modal(`visible`)
     searchSong(modalHistory[recent])
     modalHistory.pop()
     const parent = document.querySelector("#history");
     [...parent.children].slice(-2).forEach(parent.removeChild.bind(parent));
   } else {
-    modal(`visible`)
     searchArtist(modalHistory[recent])
     modalHistory.pop()
     const parent = document.querySelector("#history");
@@ -856,6 +877,7 @@ function updateHistory(el) {
 }
 
 async function searchSong(id) {
+  modal(`visible`)
   history(id)
   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
   const response = await fetch(api_url);
@@ -885,12 +907,13 @@ async function searchSong(id) {
   }
   document.querySelectorAll('#modalname a').forEach((item, i) => {
     //item.setAttribute('href', '#')
-    item.setAttribute('onClick', 'modal(`visible`);searchArtist(`'+item.innerHTML+'`)')
+    item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
   });
   pic(artist,name,'videomodal')
 }
 
 async function searchArtist(artist) {
+  modal('visible')
   history(artist)
   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
   const response = await fetch(api_url);
@@ -929,11 +952,11 @@ async function searchArtist(artist) {
   })
   document.querySelectorAll('#modalsongs a.songname').forEach((item, i) => {
     //item.setAttribute('href', '#')
-    item.setAttribute('onClick', 'modal(`visible`);searchSong(`'+item.getAttribute("id")+'`)')
+    item.setAttribute('onClick', 'searchSong(`'+item.getAttribute("id")+'`)')
   })
   document.querySelectorAll('#modalsongs .artistname a').forEach((item, i) => {
     //item.setAttribute('href', '#')
-    item.setAttribute('onClick', 'modal(`visible`);searchArtist(`'+item.innerHTML+'`)')
+    item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
   })
   function decode(input) {
     const output = []
@@ -997,26 +1020,34 @@ async function termSearch() {
   }
   var searchValue = termSearch.value.toLowerCase();
   if (termSearch !== null && termSearch.value === ""){
+    searchClose.innerHTML = ''
     searchResults.innerHTML = ''
     return
   }
 
-  //for songs
-  list('name','id').then(function (val) {
-    searchResults.innerHTML = ''
-    val.forEach((item, i) => {
-      if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
-        const line = document.createElement("li");
-        line.innerHTML = decode(item.artist.slice(-10))[0][3] + ' - ' + decode(item.artist.slice(-10))[0][4];
-        searchResults.appendChild(line)
-      }
-    })
-  }) //for artists
+  //for artists
   list('artist').then(function (val) {
+    searchResults.innerHTML = ''
     val.forEach((item, i) => {
       if (item.artist.toLowerCase().includes(searchValue)) {
         const line = document.createElement("li");
         line.innerHTML = item.artist
+        line.addEventListener('click', function() {
+          searchArtist(item.artist) 
+          for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
+            document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
+          }
+          line.style.backgroundColor = 'grey'
+        })
+        searchResults.appendChild(line)
+      }
+    })
+  }) //for songs
+  list('name','id').then(function (val) {
+    val.forEach((item, i) => {
+      if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
+        const line = document.createElement("li");
+        line.innerHTML = decode(item.artist.slice(-10))[0][3] + ' - ' + decode(item.artist.slice(-10))[0][4];
         searchResults.appendChild(line)
       }
     })
@@ -1258,7 +1289,7 @@ function pic(termArtist, termSong, id) {
 //   return artistSearch;
 // }
 
-function decode(input) {
+function decodeGenre(input) {
 
   if (input == '#de7eea') {
     output = 'Pop'
