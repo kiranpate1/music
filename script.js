@@ -1047,7 +1047,14 @@ async function termSearch() {
     val.forEach((item, i) => {
       if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
         const line = document.createElement("li");
-        line.innerHTML = decode(item.artist.slice(-10))[0][3] + ' - ' + decode(item.artist.slice(-10))[0][4];
+        line.innerHTML = decode(item.artist.slice(-10))[0][3]
+        line.addEventListener('click', function() {
+          searchSong(item.artist.slice(-10)) 
+          for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
+            document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
+          }
+          line.style.backgroundColor = 'grey'
+        })
         searchResults.appendChild(line)
       }
     })
@@ -1056,7 +1063,14 @@ async function termSearch() {
     val.forEach((item, i) => {
       if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
         const line = document.createElement("li");
-        line.innerHTML = decode(item.artist.slice(-10))
+        line.innerHTML = decode(item.artist.slice(-10))[0][3]
+        line.addEventListener('click', function() {
+          searchSong(item.artist.slice(-10)) 
+          for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
+            document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
+          }
+          line.style.backgroundColor = 'grey'
+        })
         searchResults.appendChild(line)
       }
     })
