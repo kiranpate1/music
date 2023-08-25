@@ -517,7 +517,7 @@ async function browse() {
           var tokens = artist.split(new RegExp(separators.join('|'), 'g'))
           var fuck = []
           tokens.forEach((object, i) => {
-            //score = (score + 10) * (1/(tokens.length)) + (5 / (i+1))
+            score = (score + 10) * (1/(tokens.length)) + (5 / (i+1))
             fuck.push({object,score})
           })
           artistList.push(fuck)
@@ -556,11 +556,11 @@ async function browse() {
     document.querySelector('.chart-intel').innerHTML = group(songList)[0].key[1] + " is the #1 song of " + yearno
 
     document.querySelectorAll('.nonweeklychart a.songname').forEach((item, i) => {
-      item.setAttribute('onClick', 'searchSong(`'+item.getAttribute("songid")+'`)')
+      item.setAttribute('onClick', 'history(`'+item.getAttribute("songid")+'`);searchSong(`'+item.getAttribute("songid")+'`)')
       //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
     document.querySelectorAll('.nonweeklychart .artistname a').forEach((item, i) => {
-      item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
+      item.setAttribute('onClick', 'history(`'+item.innerHTML+'`);searchArtist(`'+item.innerHTML+'`)')
       //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
   }
@@ -735,12 +735,12 @@ async function browse() {
   
     document.querySelectorAll('#top10 a.songname').forEach((item, i) => {
       //item.setAttribute('href', '#')
-      item.setAttribute('onClick', 'searchSong(`'+item.getAttribute("id")+'`)')
+      item.setAttribute('onClick', 'history(`'+item.getAttribute("id")+'`);searchSong(`'+item.getAttribute("id")+'`)')
       //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
     document.querySelectorAll('#top10 .artistname a').forEach((item, i) => {
       //item.setAttribute('href', '#')
-      item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
+      item.setAttribute('onClick', 'history(`'+item.innerHTML+'`);searchArtist(`'+item.innerHTML+'`)')
       //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
   
@@ -833,10 +833,10 @@ function history(term) {
   const historyItem = document.createElement("li");
   historyItem.innerHTML = modalHistory[modalHistory.length - 1]
   if (term.slice(0, 2) == 'ix') {
-    historyItem.addEventListener('click', function() { searchSong(term);updateHistory(historyItem) })
+    historyItem.addEventListener('click', function() { history(term);searchSong(term);updateHistory(historyItem) })
     // historyItem.setAttribute('onClick', 'searchSong(`'+term+'`)')
   } else {
-    historyItem.addEventListener('click', function() { searchArtist(term);updateHistory(historyItem) })
+    historyItem.addEventListener('click', function() { history(term);searchArtist(term);updateHistory(historyItem) })
     // historyItem.setAttribute('onClick', 'searchArtist(`'+term+'`)')
   }
   document.querySelector("#history").appendChild(historyItem)
@@ -854,11 +854,13 @@ document.querySelector('#back').onclick = function(){
     const parent = document.querySelector("#history");
     [...parent.children].slice(-1).forEach(parent.removeChild.bind(parent));
   } else if (modalHistory[recent].slice(0, 2) == 'ix') {
+    history(modalHistory[recent])
     searchSong(modalHistory[recent])
     modalHistory.pop()
     const parent = document.querySelector("#history");
     [...parent.children].slice(-2).forEach(parent.removeChild.bind(parent));
   } else {
+    history(modalHistory[recent])
     searchArtist(modalHistory[recent])
     modalHistory.pop()
     const parent = document.querySelector("#history");
@@ -878,7 +880,7 @@ function updateHistory(el) {
 
 async function searchSong(id) {
   modal(`visible`)
-  history(id)
+  // history(id)
   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
   const response = await fetch(api_url);
   const data = await response.json();
@@ -907,14 +909,14 @@ async function searchSong(id) {
   }
   document.querySelectorAll('#modalname a').forEach((item, i) => {
     //item.setAttribute('href', '#')
-    item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
+    item.setAttribute('onClick', 'history(`'+item.innerHTML+'`);searchArtist(`'+item.innerHTML+'`)')
   });
   pic(artist,name,'videomodal')
 }
 
 async function searchArtist(artist) {
   modal('visible')
-  history(artist)
+  // history(artist)
   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
   const response = await fetch(api_url);
   const data = await response.json();
@@ -952,11 +954,11 @@ async function searchArtist(artist) {
   })
   document.querySelectorAll('#modalsongs a.songname').forEach((item, i) => {
     //item.setAttribute('href', '#')
-    item.setAttribute('onClick', 'searchSong(`'+item.getAttribute("id")+'`)')
+    item.setAttribute('onClick', 'history(`'+item.getAttribute("id")+'`);searchSong(`'+item.getAttribute("id")+'`)')
   })
   document.querySelectorAll('#modalsongs .artistname a').forEach((item, i) => {
     //item.setAttribute('href', '#')
-    item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
+    item.setAttribute('onClick', 'history(`'+item.innerHTML+'`);searchArtist(`'+item.innerHTML+'`)')
   })
   function decode(input) {
     const output = []
