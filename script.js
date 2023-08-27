@@ -8,10 +8,10 @@ var genrePool = ['#de7eea','#a16fd9','#9a82c8','#c295c8','#d700ff','#854d76','#b
 
 homeInitialize()
 function homeInitialize() {
-  test1 = false;
+  test1 = false
   document.querySelector("#main-content").innerHTML = ''
 
-  const yeah = document.createElement("div");
+  const yeah = document.createElement("div")
   yeah.innerHTML = "Hello and welcome!"
   document.querySelector("#main-content").appendChild(yeah);
 }
@@ -52,7 +52,7 @@ async function browse() {
     var date = browseHistory[browseHistory.length - 1][0].replaceAll('/','-')
     var request = browseHistory[browseHistory.length - 1][1]
   
-    const historyItem = document.createElement("li");
+    const historyItem = document.createElement("li")
     // historyItem.setAttribute("date", date)
     // historyItem.setAttribute("request", request)
     if (request == 'decade') {
@@ -110,13 +110,35 @@ async function browse() {
     weekContainer.style.gridTemplateColumns = 'repeat(53, 1fr)'
     document.querySelector("#button-container").appendChild(weekContainer)
 
-    const childrenContainer = document.createElement("div")
-    childrenContainer.setAttribute("id", 'children-container')
-    document.querySelector("#main-content").appendChild(childrenContainer)
-
     const chartWrapper = document.createElement("div")
     chartWrapper.setAttribute("id", 'chart-wrapper')
     document.querySelector("#main-content").appendChild(chartWrapper)
+
+    const videoPic = document.createElement("div")
+    videoPic.setAttribute("id", 'videos')
+    document.querySelector("#chart-wrapper").appendChild(videoPic)
+
+    const chartTitle = document.createElement("div")
+    chartTitle.classList.add('chart-title')
+    document.querySelector("#chart-wrapper").appendChild(chartTitle)
+
+    const topgenres = document.createElement("div")
+    topgenres.setAttribute("id", 'genres')
+    topgenres.classList.add('genres')
+    document.querySelector("#chart-wrapper").appendChild(topgenres)
+
+    genrePool.forEach((item, i) => {
+      const li = document.createElement("li");
+      li.setAttribute("id", 'id' + item.slice(-6));
+      li.style.order = i + 1;
+      // li.innerHTML = '<div style="display:inline-block;background: ' + item + ';"></div>'
+      // li.innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item + ';"></div>'
+      document.querySelector("#genres").appendChild(li);
+    })
+
+    const childrenContainer = document.createElement("div")
+    childrenContainer.setAttribute("id", 'children-container')
+    document.querySelector("#chart-wrapper").appendChild(childrenContainer)
 
     uniqueDecades.forEach((item, i) => {
       drawCalendar(item,'decade')
@@ -414,10 +436,6 @@ async function browse() {
   next.innerHTML = ">"
   document.querySelector(".nextprev").appendChild(next)
 
-  const chartTitle = document.createElement("div")
-  chartTitle.classList.add('chart-title')
-  document.querySelector("#chart-wrapper").appendChild(chartTitle)
-
   const weekTitle = document.createElement("div")
   weekTitle.setAttribute("id", 'weektitle')
   document.querySelector(".chart-title").appendChild(weekTitle)
@@ -425,10 +443,6 @@ async function browse() {
   const chartIntel = document.createElement("div")
   chartIntel.classList.add('chart-intel')
   document.querySelector(".chart-title").appendChild(chartIntel)
-
-  const videoPic = document.createElement("div")
-  videoPic.setAttribute("id", 'videos')
-  document.querySelector("#chart-wrapper").appendChild(videoPic)
 
   const video1 = document.createElement("div")
   video1.setAttribute("id", 'video1')
@@ -468,18 +482,6 @@ async function browse() {
   topartists.classList.add('artists')
   document.querySelector(".nonweeklychart").appendChild(topartists)
 
-  const topgenres = document.createElement("div")
-  topgenres.setAttribute("id", 'genres')
-  topgenres.classList.add('genres')
-  document.querySelector("#chart-wrapper").appendChild(topgenres)
-
-  genrePool.forEach((item, i) => {
-    const li = document.createElement("li");
-    li.setAttribute("id", 'id' + item.slice(-6));
-    li.style.order = i + 1;
-    li.innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item + ';"></div>'
-    document.querySelector("#genres").appendChild(li);
-  });
 
 
 
@@ -492,10 +494,11 @@ async function browse() {
     document.querySelector('#weektitle').innerHTML = yearno
   
     for (let i = 0; i < genrePool.length; i++) {
-      document.querySelector('#id' + genrePool[i].slice(-6)).style.width = '266px'
-      document.querySelector('#id' + genrePool[i].slice(-6)).innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + genrePool[i] + ';"></div>' + decode(genrePool[i].slice(-7)) + ": 0" + "</div><div class='bar' style='background:" + genrePool[i].slice(-7) + "'></div>"
+      document.querySelector('#id' + genrePool[i].slice(-6)).style.width = '0'
+      document.querySelector('#id' + genrePool[i].slice(-6)).innerHTML = '<div class="bar" style="display:inline-block;background: ' + genrePool[i] + ';"></div>'
+      // document.querySelector('#id' + genrePool[i].slice(-6)).innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + genrePool[i] + ';"></div>' + decode(genrePool[i].slice(-7)) + ": 0" + "</div><div class='bar' style='background:" + genrePool[i].slice(-7) + "'></div>"
       document.querySelector('#id' + genrePool[i].slice(-6)).style.order = '500'
-      document.querySelector('#id' + genrePool[i].slice(-6)).style.opacity = '0.3'
+      // document.querySelector('#id' + genrePool[i].slice(-6)).style.opacity = '0'
     }
     var songList = []
     var artistList = []
@@ -506,23 +509,46 @@ async function browse() {
     function searchYearly(pos) {
       for (let i = 0; i < data.length; i++) {
         if (data[i].week.includes(yearno)) {
+          var year = data[i].week.slice(0,4)
           var genre = data[i]?.['no'+pos+'genre']
           var id = data[i]?.['no'+pos+'id']
           var name = data[i]?.['no'+pos+'name']
           var artist = data[i]?.['no'+pos+'artist']
           var object = [genre,id,name,artist]
           var score = 11 - pos
+          score = multiplier(year,score)
           songList.push({object,score})
-          var separators = [' ft. ', ' / ', ', '];
+          var separators = [' ft. ', ' / ', ', ']
           var tokens = artist.split(new RegExp(separators.join('|'), 'g'))
           var fuck = []
           tokens.forEach((object, i) => {
-            score = (score + 10) * (1/(tokens.length)) + (5 / (i+1))
+            score = multiplier(year,(score + 10) * (1/(tokens.length)) + (5 / (i+1)))
             fuck.push({object,score})
           })
           artistList.push(fuck)
           object = genre
           genreList.push({object,score})
+        }
+
+        function multiplier(year,score) {
+          if ((year >= 1980) && (year <= 1984)) {
+            score = score * 1.6
+          } else if ((year >= 1985) && (year <= 1991)) {
+            score = score * 2
+          } else if ((year >= 1992) && (year <= 2011)) {
+            score = score * 1
+          } else if ((year >= 2012) && (year <= 2013)) {
+            score = score * 0.9
+          } else if ((year >= 2014) && (year <= 2016)) {
+            score = score * 0.85
+          } else if ((year >= 2017) && (year <= 2018)) {
+            score = score * 0.8
+          } else if ((year >= 2019) && (year <= 2020)) {
+            score = score * 0.75
+          } else if ((year >= 2021) && (year <= 2023)) {
+            score = score * 0.65
+          }
+          return Math.round(score)
         }
       }
     }
@@ -546,8 +572,8 @@ async function browse() {
     })
     group(genreList).forEach((item, i) => {
         document.querySelector('#id' + item.key.slice(-6)).style.order = i + 1
-        document.querySelector('#id' + item.key.slice(-6)).style.width = [[item.score / 1000] * 100 + 266] + 'px'
-        document.querySelector('#id' + item.key.slice(-6)).innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item.key + ';"></div><div>' + decodeGenre(item.key) + ": " + item.score + "</div><div class='bar' style='background:" + item.key + "'></div>"
+        document.querySelector('#id' + item.key.slice(-6)).style.width = [item.score] + '%'
+        // document.querySelector('#id' + item.key.slice(-6)).innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item.key + ';"></div><div>' + decodeGenre(item.key) + ": " + item.score + "</div><div class='bar' style='background:" + item.key + "'></div>"
         document.querySelector('#id' + item.key.slice(-6)).style.opacity = '1'
     })
     document.querySelectorAll('#artists li a').forEach((item, i) => {
@@ -768,7 +794,7 @@ async function browse() {
     }
   }
   function search() {
-    document.querySelector('#songs').innerHTML = "";
+    document.querySelector('#songs').innerHTML = ""
     searchWeek(document.getElementById("yearSearch").value + "/" + document.getElementById("monthSearch").value + "/" + document.getElementById("daySearch").value);
   }
   function searchWeek(searchRequest) {
@@ -830,7 +856,7 @@ document.querySelector('#close').onclick = function(){
 function history(term) {
   modalHistory.push(term)
   
-  const historyItem = document.createElement("li");
+  const historyItem = document.createElement("li")
   historyItem.innerHTML = modalHistory[modalHistory.length - 1]
   if (term.slice(0, 2) == 'ix') {
     historyItem.addEventListener('click', function() { history(term);searchSong(term);updateHistory(historyItem) })
@@ -841,32 +867,32 @@ function history(term) {
   }
   document.querySelector("#history").appendChild(historyItem)
 }
-document.querySelector('#back').onclick = function(){
-  modalHistory.pop()
-  var recent = modalHistory.length - 1
+// document.querySelector('#back').onclick = function(){
+//   modalHistory.pop()
+//   var recent = modalHistory.length - 1
   
-  if (!modalHistory[recent]) {
-    for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
-      document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
-    }
-    modal('hidden')
-    modalHistory.pop()
-    const parent = document.querySelector("#history");
-    [...parent.children].slice(-1).forEach(parent.removeChild.bind(parent));
-  } else if (modalHistory[recent].slice(0, 2) == 'ix') {
-    history(modalHistory[recent])
-    searchSong(modalHistory[recent])
-    modalHistory.pop()
-    const parent = document.querySelector("#history");
-    [...parent.children].slice(-2).forEach(parent.removeChild.bind(parent));
-  } else {
-    history(modalHistory[recent])
-    searchArtist(modalHistory[recent])
-    modalHistory.pop()
-    const parent = document.querySelector("#history");
-    [...parent.children].slice(-2).forEach(parent.removeChild.bind(parent));
-  }
-}
+//   if (!modalHistory[recent]) {
+//     for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
+//       document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
+//     }
+//     modal('hidden')
+//     modalHistory.pop()
+//     const parent = document.querySelector("#history");
+//     [...parent.children].slice(-1).forEach(parent.removeChild.bind(parent));
+//   } else if (modalHistory[recent].slice(0, 2) == 'ix') {
+//     history(modalHistory[recent])
+//     searchSong(modalHistory[recent])
+//     modalHistory.pop()
+//     const parent = document.querySelector("#history");
+//     [...parent.children].slice(-2).forEach(parent.removeChild.bind(parent));
+//   } else {
+//     history(modalHistory[recent])
+//     searchArtist(modalHistory[recent])
+//     modalHistory.pop()
+//     const parent = document.querySelector("#history");
+//     [...parent.children].slice(-2).forEach(parent.removeChild.bind(parent));
+//   }
+// }
 
 function updateHistory(el) {
   el.style.opacity = '0.5'
@@ -909,7 +935,11 @@ async function searchSong(id) {
   }
   document.querySelectorAll('#modalname a').forEach((item, i) => {
     //item.setAttribute('href', '#')
-    item.setAttribute('onClick', 'history(`'+item.innerHTML+'`);searchArtist(`'+item.innerHTML+'`)')
+    if (document.querySelector("#termSearch").value.length === 0) {
+      item.setAttribute('onClick', 'history(`'+item.innerHTML+'`);searchArtist(`'+item.innerHTML+'`)')
+    } else {
+      item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
+    }
   });
   pic(artist,name,'videomodal')
 }
@@ -954,11 +984,19 @@ async function searchArtist(artist) {
   })
   document.querySelectorAll('#modalsongs a.songname').forEach((item, i) => {
     //item.setAttribute('href', '#')
-    item.setAttribute('onClick', 'history(`'+item.getAttribute("id")+'`);searchSong(`'+item.getAttribute("id")+'`)')
+    if (document.querySelector("#termSearch").value.length === 0) {
+      item.setAttribute('onClick', 'history(`'+item.getAttribute("id")+'`);searchSong(`'+item.getAttribute("id")+'`)')
+    } else {
+      item.setAttribute('onClick', 'searchSong(`'+item.getAttribute("id")+'`)')
+    }
   })
   document.querySelectorAll('#modalsongs .artistname a').forEach((item, i) => {
     //item.setAttribute('href', '#')
-    item.setAttribute('onClick', 'history(`'+item.innerHTML+'`);searchArtist(`'+item.innerHTML+'`)')
+    if (document.querySelector("#termSearch").value.length === 0) {
+      item.setAttribute('onClick', 'history(`'+item.innerHTML+'`);searchArtist(`'+item.innerHTML+'`)')
+    } else {
+      item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
+    }
   })
   function decode(input) {
     const output = []
@@ -1049,6 +1087,7 @@ async function termSearch() {
     val.forEach((item, i) => {
       if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
         const line = document.createElement("li");
+        console.log(item.artist.slice(-10), decode(item.artist.slice(-10)))
         line.innerHTML = decode(item.artist.slice(-10))[0][3]
         line.addEventListener('click', function() {
           searchSong(item.artist.slice(-10)) 

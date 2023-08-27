@@ -214,12 +214,13 @@ a {color:#00a3ff}
 }
 .genres {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }
 .genres li {
-  display: grid;
+  list-style-type: none;
+  /* display: grid;
   grid-template-columns: 16px 250px auto;
-  grid-auto-rows: auto;
+  grid-auto-rows: auto; */
   transition: 1s;
 }
 .bar {
