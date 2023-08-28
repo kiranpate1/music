@@ -515,7 +515,7 @@ async function browse() {
           var name = data[i]?.['no'+pos+'name']
           var artist = data[i]?.['no'+pos+'artist']
           var object = [genre,id,name,artist]
-          var score = 11 - pos
+          var score = 11 - pos + (1 / pos)
           score = multiplier(year,score)
           songList.push({object,score})
           var separators = [' ft. ', ' / ', ', ']
@@ -579,7 +579,7 @@ async function browse() {
     document.querySelectorAll('#artists li a').forEach((item, i) => {
       item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
-    document.querySelector('.chart-intel').innerHTML = group(songList)[0].key[1] + " is the #1 song of " + yearno
+    document.querySelector('.chart-intel').innerHTML = decode(group(songList)[0].key[1])[0][3] + " is the #1 song of " + yearno
 
     document.querySelectorAll('.nonweeklychart a.songname').forEach((item, i) => {
       item.setAttribute('onClick', 'history(`'+item.getAttribute("songid")+'`);searchSong(`'+item.getAttribute("songid")+'`)')
@@ -794,8 +794,9 @@ async function browse() {
     }
   }
   function search() {
+    var date = document.getElementById("yearSearch").value + "/" + document.getElementById("monthSearch").value + "/" + document.getElementById("daySearch").value
     document.querySelector('#songs').innerHTML = ""
-    searchWeek(document.getElementById("yearSearch").value + "/" + document.getElementById("monthSearch").value + "/" + document.getElementById("daySearch").value);
+    searchWeek(date)
   }
   function searchWeek(searchRequest) {
     var yearRequest = searchRequest.substring(4, 0);
@@ -811,6 +812,7 @@ async function browse() {
         return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7) - 1;
       }
     }
+    
     var sdfsdfsdf = []
     for (let i = 0; i < data.length; i++) {
       if (data[i].week.includes(yearRequest)) {
@@ -818,6 +820,7 @@ async function browse() {
       }
     }
     document.querySelector('#top10').innerHTML = ''
+    testfml(data[sdfsdfsdf[weekRequest]].week.replaceAll('/','-'),'week','initialize')
     findWeek(sdfsdfsdf[weekRequest])
     
     // console.log(yearRequest,weekRequest)
@@ -1347,43 +1350,43 @@ function pic(termArtist, termSong, id) {
 function decodeGenre(input) {
 
   if (input == '#de7eea') {
-    output = 'Pop'
+    output = ['Pop','Power pop']
   } else if (input == '#a16fd9') {
-    output = 'Pop (Synth, Dance, etc)'
+    output = ['Dance Pop','Synth-pop, Dance-pop']
   } else if (input == '#9a82c8') {
-    output = 'Pop (Indie, etc)'
+    output = ['Indie','Indie-pop, Indie-rock']
   } else if (input == '#c295c8') {
-    output = 'Pop Rock (Soft, etc)'
+    output = ['Pop rock','Pop rock, Soft rock, Pop punk']
   } else if (input == '#d700ff') {
-    output = 'Disco'
+    output = ['Disco','Disco, Nu-Disco']
   } else if (input == '#854d76') {
-    output = 'Funk'
+    output = ['Funk','Funk, Funk-pop, Boogie']
   } else if (input == '#ba2c8e') {
-    output = 'Pop Rap, Rap Rock, etc'
+    output = ['Pop rap','Pop rap, Melodic rap']
   } else if (input == '#ba3d3d') {
-    output = 'R&B'
+    output = ['R&B','']
   } else if (input == '#b65f5f') {
-    output = 'R&B (New Jack, Doo Wop, etc)'
+    output = ['New jack','New jack, Doo-wop, Swing']
   } else if (input == '#603232') {
-    output = 'Hip Hop'
+    output = ['Hip Hop','']
   } else if (input == '#1a1a1a') {
-    output = 'Hip Hop (Trap, Dirty, etc)'
+    output = ['Trap','Trap, Dirty, Southern hip hop, Crunk, Snap, Drill, Trap metal, Trap soul, Trapstep, Cloud rap, Trap rock, Trap jazz, Trap funk, Trap pop, Trapcore']
   } else if (input == '#413630') {
-    output = 'Hip Hop (Regional)'
+    output = ['Regional','Regional, Gangsta rap, G-funk, West Coast hip hop, East Coast hip hop']
   } else if (input == '#935b4a') {
-    output = 'Hip Hop (alt)'
+    output = ['Alt hip hop','Alternative hip hop, Experimental hip hop, Jazz rap, Conscious hip hop, Political hip hop, Horrorcore']
   } else if (input == '#3ca33f') {
-    output = 'Rock'
+    output = ['Rock','']
   } else if (input == '#308532') {
-    output = 'Rock (Metal, Hard, etc)'
+    output = ['Hard rock','Hard rock, Metal, Heavy metal, Glam metal, Hair metal, Thrash metal, Death metal, Black metal, Doom metal, Grindcore, Metalcore, Industrial metal, Alternative metal, Nu metal']
   } else if (input == '#638559') {
-    output = 'Rock (Grunge, etc)'
+    output = ['Grunge','Grunge, Post-grunge, Alternative metal, Nu metal']
   } else if (input == '#6a9d32') {
-    output = 'Rock (Funk, Blues, etc)'
+    output = ['Funk rock','Funk rock, Blues rock, Psychedelic rock, Jam rock']
   } else if (input == '#8eb371') {
-    output = 'Rock (Punk, New Wave, etc)'
+    output = ['Punk','Punk rock, New wave, Post-punk, Ska punk, Pop punk, Emo, Hardcore punk, Skate punk']
   } else if (input == '#4aca4e') {
-    output = 'Rock and Roll, etc'
+    output = ['Rock and Roll','Rock and roll, Rockabilly, Surf rock, Rock and roll revival']
   } else if (input == '#97be9d') {
     output = 'Alternative Rock'
   } else if (input == '#a4d685') {
