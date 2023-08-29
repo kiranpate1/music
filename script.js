@@ -144,6 +144,17 @@ async function browse() {
       drawCalendar(item,'decade')
     })
 
+    const genresContainer = document.createElement("div")
+    genresContainer.setAttribute("id", 'genres-container')
+    document.querySelector("#chart-wrapper").appendChild(genresContainer)
+
+    genrePool.forEach((item, i) => {
+      const button = document.createElement("button");
+      button.setAttribute("id", 'genre' + item.slice(-6));
+      button.innerHTML = decodeGenre(item)[0]
+      document.querySelector("#genres-container").appendChild(button);
+    })
+
     if (browseHistory.length !== 0) {
       // chartInitialize()
       // findWeek(browseHistory[browseHistory.length - 1])
@@ -826,6 +837,10 @@ async function browse() {
     // console.log(yearRequest,weekRequest)
   }
 
+  function genres() {
+
+  }
+
   
 }
 
@@ -1388,7 +1403,7 @@ function decodeGenre(input) {
   } else if (input == '#4aca4e') {
     output = ['Rock and Roll','Rock and roll, Rockabilly, Surf rock, Rock and roll revival']
   } else if (input == '#97be9d') {
-    output = 'Alternative Rock'
+    output = ['Alternative Rock','Alternative rock, Alternative metal']
   } else if (input == '#a4d685') {
     output = ['Folk Rock','Folk rock, Folktronica, Folk pop, Folk punk, Folk metal, Folk jazz']
   } else if (input == '#c4c800') {
@@ -1410,25 +1425,25 @@ function decodeGenre(input) {
   } else if (input == '#4d95b8') {
     output = ['Electro Rock','Electro rock, Electro funk, Electro rock, Electronic rock, Electronicore']
   } else if (input == '#623aff') {
-    output = ['Reggae','Reggae, Dancehall']
+    output = ['Reggae','Reggae, Dancehall, Afrobeats, Reggae fusion, Reggaeton, Reggae en Español, Reggae rock, Reggae pop, Reggae hip hop, Reggae metal']
   } else if (input == '#73e6e0') {
-    output = 'Eurodance, Trance, etc'
+    output = ['Eurodance','Eurodance, Trance, Euro disco, Italo disco, Space disco, Eurobeat, Euro house, Eurotrance']
   } else if (input == '#3eadef') {
-    output = 'House'
+    output = ['House','House, Deep house, Tech house, Progressive house, Tropical house, Future house, Acid house, Ambient house, Balearic house, Big room house, Bouncy house, Chicago house, Deep house, Electro house, Funky house, Ghetto house, Hard house, Hip house, Latin house, Microhouse, Minimal house, Progressive house, Tech house, Tribal house, UK hard house, Vocal house']
   } else if (input == '#ff6900') {
-    output = 'Country'
+    output = ['Country','']
   } else if (input == '#f6b26b') {
-    output = 'Country Pop'
+    output = ['Country Pop','Country pop, Folk pop']
   } else if (input == '#b3997a') {
-    output = 'Country Rock'
+    output = ['Country Rock','Country rock, Southern rock, Countrycore']
   } else if (input == '#d49875') {
-    output = 'Country Rap'
+    output = ['Country Rap','Country rap, Trap-country, Hick hop']
   } else if (input == '#c7cc86') {
-    output = 'Folk, Bluegrass, etc'
+    output = ['Folk','Folk, Bluegrass, Folktronica, Folk pop, Folk punk, Folk metal, Folk jazz']
   } else if (input == '#ffe381') {
-    output = 'Latin'
+    output = ['Latin','Latin, Latin pop, Latin rock, Salsa, Banda, Cumbia, Regional mexican, Tejano, Norteño, Mariachi, Ranchera']
   } else if (input == '#f5d8d8') {
-    output = 'Tango, Polka, etc'
+    output = ['Tango','Tango, Polka, Contradanse']
   }
   return output;
 }
