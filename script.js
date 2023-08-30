@@ -78,9 +78,44 @@ async function browse() {
   function browseInitialize() {
     document.querySelector("#main-content").innerHTML = ''
 
+    const browseContainer = document.createElement("div")
+    browseContainer.setAttribute("id", 'browse-container')
+    document.querySelector("#main-content").appendChild(browseContainer)
+
+    const initialDecades = document.createElement("div")
+    initialDecades.setAttribute("id", 'initial-decades-container')
+    document.querySelector("#browse-container").appendChild(initialDecades)
+
+    const genresContainer = document.createElement("div")
+    genresContainer.setAttribute("id", 'genres-container')
+    document.querySelector("#browse-container").appendChild(genresContainer)
+
+    const genresCount = []
+    for (let i = 1; i <= 10; i++) {
+      searchGenres(i)
+    }
+    function searchGenres(pos) {
+      var score = pos
+      for (let i = 0; i < data.length; i++) {
+        var object = data[i]?.['no'+pos+'genre']
+        genresCount.push({object,score})
+      }
+    }
+
+    group(genresCount).forEach((item, i) => {
+      const button = document.createElement("button")
+      // button.setAttribute("id", 'genre' + item.slice(-6))
+      button.innerHTML = decodeGenre(item.key)[0]
+      document.querySelector("#genres-container").appendChild(button)
+    })
+
+    const chartContainer = document.createElement("div")
+    chartContainer.setAttribute("id", 'chart-container')
+    document.querySelector("#main-content").appendChild(chartContainer)
+
     const navContainer = document.createElement("div")
     navContainer.setAttribute("id", 'nav-container')
-    document.querySelector("#main-content").appendChild(navContainer)
+    document.querySelector("#chart-container").appendChild(navContainer)
 
     const buttonContainer = document.createElement("div")
     buttonContainer.setAttribute("id", 'button-container')
@@ -110,49 +145,54 @@ async function browse() {
     weekContainer.style.gridTemplateColumns = 'repeat(53, 1fr)'
     document.querySelector("#button-container").appendChild(weekContainer)
 
-    const chartWrapper = document.createElement("div")
-    chartWrapper.setAttribute("id", 'chart-wrapper')
-    document.querySelector("#main-content").appendChild(chartWrapper)
-
     const videoPic = document.createElement("div")
     videoPic.setAttribute("id", 'videos')
-    document.querySelector("#chart-wrapper").appendChild(videoPic)
+    document.querySelector("#chart-container").appendChild(videoPic)
 
     const chartTitle = document.createElement("div")
     chartTitle.classList.add('chart-title')
-    document.querySelector("#chart-wrapper").appendChild(chartTitle)
+    document.querySelector("#chart-container").appendChild(chartTitle)
 
     const topgenres = document.createElement("div")
     topgenres.setAttribute("id", 'genres')
     topgenres.classList.add('genres')
-    document.querySelector("#chart-wrapper").appendChild(topgenres)
+    document.querySelector("#chart-container").appendChild(topgenres)
 
     genrePool.forEach((item, i) => {
-      const li = document.createElement("li");
-      li.setAttribute("id", 'id' + item.slice(-6));
-      li.style.order = i + 1;
+      const li = document.createElement("li")
+      li.setAttribute("id", 'id' + item.slice(-6))
+      li.style.order = i + 1
       // li.innerHTML = '<div style="display:inline-block;background: ' + item + ';"></div>'
       // li.innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item + ';"></div>'
-      document.querySelector("#genres").appendChild(li);
+      document.querySelector("#genres").appendChild(li)
     })
 
     const childrenContainer = document.createElement("div")
     childrenContainer.setAttribute("id", 'children-container')
-    document.querySelector("#chart-wrapper").appendChild(childrenContainer)
+    document.querySelector("#chart-container").appendChild(childrenContainer)
 
     uniqueDecades.forEach((item, i) => {
       drawCalendar(item,'decade')
-    })
+      
+      const token = document.createElement("button")
+      item = item.slice(0,3)
+      token.innerHTML = item + "0s"
+     
+      token.setAttribute("id", 'initialDecade-'+item.replaceAll('/','-'))
+      token.onclick = function(){
+        document.querySelector('#initial-decades-container').innerHTML = ''
 
-    const genresContainer = document.createElement("div")
-    genresContainer.setAttribute("id", 'genres-container')
-    document.querySelector("#chart-wrapper").appendChild(genresContainer)
+        var requestIndex = item
+        testfml(requestIndex.replaceAll('/','-'),'decade','initialize')
+        
+        uniqueYears.forEach((item, i) => {
+          if (item.slice(0,3) == token.innerHTML.slice(0,3)) {
+            drawCalendar(item,'year')
+          }
+        })
+      }
 
-    genrePool.forEach((item, i) => {
-      const button = document.createElement("button");
-      button.setAttribute("id", 'genre' + item.slice(-6));
-      button.innerHTML = decodeGenre(item)[0]
-      document.querySelector("#genres-container").appendChild(button);
+      document.querySelector('#initial-decades-container').appendChild(token)
     })
 
     if (browseHistory.length !== 0) {
@@ -472,7 +512,7 @@ async function browse() {
 
   const dataList = document.createElement("div")
   dataList.setAttribute("id", 'datalist')
-  document.querySelector("#chart-wrapper").appendChild(dataList)
+  document.querySelector("#chart-container").appendChild(dataList)
 
   const top10 = document.createElement("div")
   top10.setAttribute("id", 'top10')

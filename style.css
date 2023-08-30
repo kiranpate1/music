@@ -107,6 +107,12 @@ a {color:#00a3ff}
   background-repeat: no-repeat;
 }
 
+#genres-container, #initial-decades-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  width: 100%;
+}
+
 .nonweeklychart li {
   display: flex;
   flex-direction: row;
