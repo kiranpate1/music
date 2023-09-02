@@ -64,6 +64,24 @@ a {color:#00a3ff}
   border: 1px solid green;
 }
 
+#this-week {
+  display: block;
+  height: 200px;
+  width: 100%;
+  position: relative;
+  background-position: center;
+  background-size: cover;
+}
+
+#chart-container, #genre-container {
+  position: absolute;
+  background: #000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .nav-top {
   height: 100%;
 }
@@ -107,7 +125,7 @@ a {color:#00a3ff}
   background-repeat: no-repeat;
 }
 
-#genres-container, #initial-decades-container {
+#initial-genres-container, #initial-decades-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   width: 100%;
@@ -116,6 +134,24 @@ a {color:#00a3ff}
 .nonweeklychart li {
   display: flex;
   flex-direction: row;
+}
+
+.artistname {
+  display: inline-block
+}
+
+/* genres */
+
+#genre-nav-selection {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  width: 100%;
+  overflow: scroll;
+}
+
+#genre-nav-selection button {
+  white-space: nowrap;
 }
 
 

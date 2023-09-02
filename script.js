@@ -81,14 +81,23 @@ async function browse() {
     const browseContainer = document.createElement("div")
     browseContainer.setAttribute("id", 'browse-container')
     document.querySelector("#main-content").appendChild(browseContainer)
+    
+    const thisWeek = document.createElement("div")
+    thisWeek.setAttribute("id", 'this-week')
+    document.querySelector("#browse-container").appendChild(thisWeek)
+    pic(data[data.length - 1].no1artist, data[data.length - 1].no1name, 'this-week')
+
+    const thisWeekText = document.createElement("h1")
+    thisWeekText.innerHTML = "This Week - " + data[data.length - 1].week + " - " + data[data.length - 1].no1name + " by " + data[data.length - 1].no1artist + " is #1"
+    document.querySelector("#this-week").appendChild(thisWeekText)
 
     const initialDecades = document.createElement("div")
     initialDecades.setAttribute("id", 'initial-decades-container')
     document.querySelector("#browse-container").appendChild(initialDecades)
 
-    const genresContainer = document.createElement("div")
-    genresContainer.setAttribute("id", 'genres-container')
-    document.querySelector("#browse-container").appendChild(genresContainer)
+    const initialGenres = document.createElement("div")
+    initialGenres.setAttribute("id", 'initial-genres-container')
+    document.querySelector("#browse-container").appendChild(initialGenres)
 
     const genresCount = []
     for (let i = 1; i <= 10; i++) {
@@ -106,20 +115,30 @@ async function browse() {
       const button = document.createElement("button")
       // button.setAttribute("id", 'genre' + item.slice(-6))
       button.innerHTML = decodeGenre(item.key)[0]
-      document.querySelector("#genres-container").appendChild(button)
+      button.onclick = function(){
+        genre(item.key)
+        document.querySelector("#genre-container").style.display = "block"
+      }
+      document.querySelector("#initial-genres-container").appendChild(button)
     })
 
     const chartContainer = document.createElement("div")
     chartContainer.setAttribute("id", 'chart-container')
+    chartContainer.style.display = "none"
     document.querySelector("#main-content").appendChild(chartContainer)
 
-    const navContainer = document.createElement("div")
-    navContainer.setAttribute("id", 'nav-container')
-    document.querySelector("#chart-container").appendChild(navContainer)
+    const chartNav = document.createElement("div")
+    chartNav.setAttribute("id", 'chart-nav')
+    document.querySelector("#chart-container").appendChild(chartNav)
+
+    const navBack = document.createElement("div")
+    navBack.setAttribute("onClick", 'browse()')
+    navBack.innerHTML = "<"
+    document.querySelector("#chart-nav").appendChild(navBack)
 
     const buttonContainer = document.createElement("div")
     buttonContainer.setAttribute("id", 'button-container')
-    document.querySelector("#nav-container").appendChild(buttonContainer)
+    document.querySelector("#chart-nav").appendChild(buttonContainer)
 
     const decadeContainer = document.createElement("div")
     decadeContainer.classList.add('button-container')
@@ -180,6 +199,7 @@ async function browse() {
      
       token.setAttribute("id", 'initialDecade-'+item.replaceAll('/','-'))
       token.onclick = function(){
+        document.querySelector("#chart-container").style.display = "block"
         document.querySelector('#initial-decades-container').innerHTML = ''
 
         var requestIndex = item
@@ -193,6 +213,46 @@ async function browse() {
       }
 
       document.querySelector('#initial-decades-container').appendChild(token)
+    })
+
+    const genreContainer = document.createElement("div")
+    genreContainer.setAttribute("id", 'genre-container')
+    genreContainer.style.display = "none"
+    document.querySelector("#main-content").appendChild(genreContainer)
+
+    const genreNav = document.createElement("div")
+    genreNav.setAttribute("id", 'genre-nav')
+    document.querySelector("#genre-container").appendChild(genreNav)
+
+    document.querySelector('#genre-nav').appendChild(navBack.cloneNode(true))
+
+    const genreNavSelection = document.createElement("div")
+    genreNavSelection.setAttribute("id", 'genre-nav-selection')
+    document.querySelector("#genre-container").appendChild(genreNavSelection)
+
+    const genreInfo = document.createElement("div")
+    genreInfo.setAttribute("id", 'genre-info')
+    document.querySelector("#genre-container").appendChild(genreInfo)
+
+    const genreDataList = document.createElement("div")
+    genreDataList.setAttribute("id", 'genre-datalist')
+    document.querySelector("#genre-container").appendChild(genreDataList)
+
+    // const top10 = document.createElement("div")
+    // top10.setAttribute("id", 'top10')
+    // top10.classList.add('top10')
+    // document.querySelector("#chartDataList").appendChild(top10)
+
+    // const nonweeklychart = document.createElement("div")
+    // nonweeklychart.classList.add('nonweeklychart')
+    // document.querySelector("#chartDataList").appendChild(nonweeklychart)
+
+    genrePool.forEach((item, i) => {
+      const button = document.createElement("button")
+      button.innerHTML = decodeGenre(item)[0]
+      button.onclick = function(){
+      }
+      document.querySelector("#genre-nav-selection").appendChild(button)
     })
 
     if (browseHistory.length !== 0) {
@@ -424,7 +484,7 @@ async function browse() {
 
   const searchFml = document.createElement("div")
   searchFml.classList.add('search-container')
-  document.querySelector("#nav-container").appendChild(searchFml)
+  document.querySelector("#chart-nav").appendChild(searchFml)
 
   const yyyy = document.createElement("input")
   yyyy.setAttribute("type", 'text')
@@ -455,7 +515,7 @@ async function browse() {
 
   const nextprev = document.createElement("div")
   nextprev.classList.add('nextprev')
-  document.querySelector("#nav-container").appendChild(nextprev)
+  document.querySelector("#chart-nav").appendChild(nextprev)
 
   // const browseWeek = document.createElement("button")
   // browseWeek.setAttribute("id", 'week')
@@ -510,18 +570,18 @@ async function browse() {
   video3.classList.add('video')
   document.querySelector("#videos").appendChild(video3)
 
-  const dataList = document.createElement("div")
-  dataList.setAttribute("id", 'datalist')
-  document.querySelector("#chart-container").appendChild(dataList)
+  const chartDataList = document.createElement("div")
+  chartDataList.setAttribute("id", 'chart-datalist')
+  document.querySelector("#chart-container").appendChild(chartDataList)
 
   const top10 = document.createElement("div")
   top10.setAttribute("id", 'top10')
   top10.classList.add('top10')
-  document.querySelector("#datalist").appendChild(top10)
+  document.querySelector("#chart-datalist").appendChild(top10)
 
   const nonweeklychart = document.createElement("div")
   nonweeklychart.classList.add('nonweeklychart')
-  document.querySelector("#datalist").appendChild(nonweeklychart)
+  document.querySelector("#chart-datalist").appendChild(nonweeklychart)
 
   const topsongs = document.createElement("div")
   topsongs.setAttribute("id", 'songs')
@@ -551,64 +611,8 @@ async function browse() {
       document.querySelector('#id' + genrePool[i].slice(-6)).style.order = '500'
       // document.querySelector('#id' + genrePool[i].slice(-6)).style.opacity = '0'
     }
-    var songList = []
-    var artistList = []
-    var genreList = []
-    for (let i = 1; i <= 10; i++) {
-      searchYearly(i)
-    }
-    function searchYearly(pos) {
-      for (let i = 0; i < data.length; i++) {
-        if (data[i].week.includes(yearno)) {
-          var year = data[i].week.slice(0,4)
-          var genre = data[i]?.['no'+pos+'genre']
-          var id = data[i]?.['no'+pos+'id']
-          var name = data[i]?.['no'+pos+'name']
-          var artist = data[i]?.['no'+pos+'artist']
-          var object = [genre,id,name,artist]
-          var score = 11 - pos + (1 / pos)
-          score = multiplier(year,score)
-          songList.push({object,score})
-          var separators = [' ft. ', ' / ', ', ']
-          var tokens = artist.split(new RegExp(separators.join('|'), 'g'))
-          var fuck = []
-          tokens.forEach((object, i) => {
-            score = multiplier(year,(score + 10) * (1/(tokens.length)) + (5 / (i+1)))
-            fuck.push({object,score})
-          })
-          artistList.push(fuck)
-          object = genre
-          genreList.push({object,score})
-        }
-
-        function multiplier(year,score) {
-          if ((year >= 1980) && (year <= 1984)) {
-            score = score * 1.6
-          } else if ((year >= 1985) && (year <= 1991)) {
-            score = score * 2
-          } else if ((year >= 1992) && (year <= 2011)) {
-            score = score * 1
-          } else if ((year >= 2012) && (year <= 2013)) {
-            score = score * 0.9
-          } else if ((year >= 2014) && (year <= 2016)) {
-            score = score * 0.85
-          } else if ((year >= 2017) && (year <= 2018)) {
-            score = score * 0.8
-          } else if ((year >= 2019) && (year <= 2020)) {
-            score = score * 0.75
-          } else if ((year >= 2021) && (year <= 2023)) {
-            score = score * 0.65
-          }
-          return Math.round(score)
-        }
-      }
-    }
-  
-    var combinedArtist = artistList.flat(1)
-  
     
-    
-    group(songList).forEach((item, i) => {
+    group(dataList('week', yearno, 'song')).forEach((item, i) => {
       if (i == '0') {
         pic(item.key[3], item.key[2], 'video2')
       }
@@ -616,12 +620,12 @@ async function browse() {
       li.innerHTML = item.score + ' <div style="display:inline-block;width:16px;height:16px;background: ' + item.key[0] + ';"></div><a class="songname" songid="'+ item.key[1] + '">' + item.key[2] + "</a>&nbsp-&nbsp<div class='artistname'><a>"+item.key[3].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
       document.querySelector("#songs").appendChild(li)
     })
-    group(combinedArtist).forEach((item, i) => {
+    group(dataList('week', yearno, 'artist')).forEach((item, i) => {
       const li = document.createElement("li")
       li.innerHTML = item.score + "&nbsp/&nbsp<div class='artistname'><a>" + item.key + "</a></div>"
       document.querySelector("#artists").appendChild(li)
     })
-    group(genreList).forEach((item, i) => {
+    group(dataList('week', yearno, 'genre')).forEach((item, i) => {
         document.querySelector('#id' + item.key.slice(-6)).style.order = i + 1
         document.querySelector('#id' + item.key.slice(-6)).style.width = [item.score] + '%'
         // document.querySelector('#id' + item.key.slice(-6)).innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item.key + ';"></div><div>' + decodeGenre(item.key) + ": " + item.score + "</div><div class='bar' style='background:" + item.key + "'></div>"
@@ -630,7 +634,7 @@ async function browse() {
     document.querySelectorAll('#artists li a').forEach((item, i) => {
       item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
-    document.querySelector('.chart-intel').innerHTML = decode(group(songList)[0].key[1])[0][3] + " is the #1 song of " + yearno
+    document.querySelector('.chart-intel').innerHTML = decode(group(dataList('week', yearno, 'song'))[0].key[1])[0][3] + " is the #1 song of " + yearno
 
     document.querySelectorAll('.nonweeklychart a.songname').forEach((item, i) => {
       item.setAttribute('onClick', 'history(`'+item.getAttribute("songid")+'`);searchSong(`'+item.getAttribute("songid")+'`)')
@@ -641,6 +645,71 @@ async function browse() {
       //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
   }
+
+  function multiplier(year,score) {
+    if ((year >= 1980) && (year <= 1984)) {
+      score = score * 1.6
+    } else if ((year >= 1985) && (year <= 1991)) {
+      score = score * 2
+    } else if ((year >= 1992) && (year <= 2011)) {
+      score = score * 1
+    } else if ((year >= 2012) && (year <= 2013)) {
+      score = score * 0.9
+    } else if ((year >= 2014) && (year <= 2016)) {
+      score = score * 0.85
+    } else if ((year >= 2017) && (year <= 2018)) {
+      score = score * 0.8
+    } else if ((year >= 2019) && (year <= 2020)) {
+      score = score * 0.75
+    } else if ((year >= 2021) && (year <= 2023)) {
+      score = score * 0.65
+    }
+    return Math.round(score)
+  }
+
+  function dataList(operation, key, request) {
+    var list = []
+    var operator
+    for (let i = 1; i <= 10; i++) {
+      searchYearly(i)
+    }
+    function searchYearly(pos) {
+      if (operation == 'genre') {
+        operator = 'no'+pos+'genre'
+      } else {
+        operator = operation
+      }
+      for (let i = 0; i < data.length; i++) {
+        if (data[i]?.[operator].includes(key)) {
+          var year = data[i].week.slice(0,4)
+          var genre = data[i]?.['no'+pos+'genre']
+          var id = data[i]?.['no'+pos+'id']
+          var name = data[i]?.['no'+pos+'name']
+          var artist = data[i]?.['no'+pos+'artist']
+          var object = [genre,id,name,artist]
+          var score = 11 - pos + (1 / pos)
+          score = multiplier(year,score)
+          if (request == 'song') {
+            list.push({object,score})
+          } else if (request == 'artist') {
+            var separators = [' ft. ', ' / ', ', ']
+            var tokens = artist.split(new RegExp(separators.join('|'), 'g'))
+            var fuck = []
+            tokens.forEach((object, i) => {
+              score = multiplier(year,(score + 10) * (1/(tokens.length)) + (5 / (i+1)))
+              fuck.push({object,score})
+            })
+            list.push(fuck)
+          } else if (request == 'genre') {
+            object = genre
+            list.push({object,score})
+          }
+        }
+      }
+    }
+    return list.flat(1)
+  }
+
   function group(type) {
     var reducedArray = Object.values(type.reduce((hash, item) => {
       if (!hash[item.object]) {
@@ -877,8 +946,19 @@ async function browse() {
     // console.log(yearRequest,weekRequest)
   }
 
-  function genres() {
+  function genre(key) {
+    const description = document.createElement("h1")
+    description.innerHTML = decodeGenre(key)[0] + " is a genre that includes the following subgenres:" + decodeGenre(key)[1]
+    document.querySelector("#genre-info").appendChild(description)
 
+    group(dataList('genre', key, 'song')).forEach((item, i) => {
+      const li = document.createElement("li")
+      li.innerHTML = item.score + ' <div style="display:inline-block;width:16px;height:16px;background: ' + item.key[0] + ';"></div><a class="songname" songid="'+ item.key[1] + '">' + item.key[2] + "</a>&nbsp-&nbsp<div class='artistname'><a>"+item.key[3].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
+      li.setAttribute('songId', item.key[1])
+      document.querySelector("#genre-datalist").appendChild(li)
+    })
+    setClick('#genre-datalist','song','songId')
+    setClick('#genre-datalist','artist','')
   }
 
   
@@ -891,7 +971,27 @@ async function browse() {
 //old
 
 
-
+function setClick(container, request, id) {
+  if (request == 'song') {
+    document.querySelectorAll(container + ' a.songname').forEach((item, i) => {
+      //item.setAttribute('href', '#')
+      if (document.querySelector("#termSearch").value.length === 0) {
+        item.setAttribute('onClick', 'history(`'+item.getAttribute(id)+'`);searchSong(`'+item.getAttribute(id)+'`)')
+      } else {
+        item.setAttribute('onClick', 'searchSong(`'+item.innerHTML+'`)')
+      }
+    })
+  } else if (request == 'artist') {
+    document.querySelectorAll(container + ' .artistname a').forEach((item, i) => {
+      //item.setAttribute('href', '#')
+      if (document.querySelector("#termSearch").value.length === 0) {
+        item.setAttribute('onClick', 'history(`'+item.innerHTML+'`);searchArtist(`'+item.innerHTML+'`)')
+      } else {
+        item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
+      }
+    })
+  }
+}
 
 
 
@@ -970,7 +1070,7 @@ async function searchSong(id) {
   const data = await response.json();
   var artist = decode(id)[0][4]
   var name = decode(id)[0][3]
-  document.querySelector("#modalname").innerHTML = name+" by <a>"+artist.replace(re, function(matched){return mapObj[matched]})+"</a>"
+  document.querySelector("#modalname").innerHTML = name+" by <div class='artistname'><a>"+artist.replace(re, function(matched){return mapObj[matched]})+"</a></div>"
 
   list('id').then(function (val) {
     val.forEach((item, i) => {
@@ -991,14 +1091,15 @@ async function searchSong(id) {
       }
     }
   }
-  document.querySelectorAll('#modalname a').forEach((item, i) => {
-    //item.setAttribute('href', '#')
-    if (document.querySelector("#termSearch").value.length === 0) {
-      item.setAttribute('onClick', 'history(`'+item.innerHTML+'`);searchArtist(`'+item.innerHTML+'`)')
-    } else {
-      item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
-    }
-  });
+  setClick('#modalname','artist','')
+  // document.querySelectorAll('#modalname a').forEach((item, i) => {
+  //   //item.setAttribute('href', '#')
+  //   if (document.querySelector("#termSearch").value.length === 0) {
+  //     item.setAttribute('onClick', 'history(`'+item.innerHTML+'`);searchArtist(`'+item.innerHTML+'`)')
+  //   } else {
+  //     item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
+  //   }
+  // });
   pic(artist,name,'videomodal')
 }
 
@@ -1040,22 +1141,24 @@ async function searchArtist(artist) {
     div.innerHTML = decode(item)[0][1]+'<div style="width:16px;height:16px;background: '+decode(item)[0][2]+';"></div>'+'<a class="songname" id="'+item+'">'+decode(item)[0][3]+'</a>&nbsp'+"-"+"&nbsp<div class='artistname'><a>"+decode(item)[0][4].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
     document.querySelector("#modalsongs").appendChild(div);
   })
-  document.querySelectorAll('#modalsongs a.songname').forEach((item, i) => {
-    //item.setAttribute('href', '#')
-    if (document.querySelector("#termSearch").value.length === 0) {
-      item.setAttribute('onClick', 'history(`'+item.getAttribute("id")+'`);searchSong(`'+item.getAttribute("id")+'`)')
-    } else {
-      item.setAttribute('onClick', 'searchSong(`'+item.getAttribute("id")+'`)')
-    }
-  })
-  document.querySelectorAll('#modalsongs .artistname a').forEach((item, i) => {
-    //item.setAttribute('href', '#')
-    if (document.querySelector("#termSearch").value.length === 0) {
-      item.setAttribute('onClick', 'history(`'+item.innerHTML+'`);searchArtist(`'+item.innerHTML+'`)')
-    } else {
-      item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
-    }
-  })
+  setClick('#modalsongs','song','id')
+  // document.querySelectorAll('#modalsongs a.songname').forEach((item, i) => {
+  //   //item.setAttribute('href', '#')
+  //   if (document.querySelector("#termSearch").value.length === 0) {
+  //     item.setAttribute('onClick', 'history(`'+item.getAttribute("id")+'`);searchSong(`'+item.getAttribute("id")+'`)')
+  //   } else {
+  //     item.setAttribute('onClick', 'searchSong(`'+item.getAttribute("id")+'`)')
+  //   }
+  // })
+  setClick('#modalsongs','artist','')
+  // document.querySelectorAll('#modalsongs .artistname a').forEach((item, i) => {
+  //   //item.setAttribute('href', '#')
+  //   if (document.querySelector("#termSearch").value.length === 0) {
+  //     item.setAttribute('onClick', 'history(`'+item.innerHTML+'`);searchArtist(`'+item.innerHTML+'`)')
+  //   } else {
+  //     item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
+  //   }
+  // })
   function decode(input) {
     const output = []
     for (let x = 1; x <= 10; x++) {
