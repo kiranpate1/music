@@ -134,7 +134,7 @@ a {color:#00a3ff}
   width: 100%;
 }
 
-.nonweeklychart li {
+.nonweeklychart li, #genre-datalist {
   display: flex;
   flex-direction: row;
 }
@@ -156,7 +156,25 @@ a {color:#00a3ff}
 #genre-nav-selection button {
   white-space: nowrap;
 }
-
+#genre-map {
+  display: grid;
+  align-items: end;
+  height: 30px;
+}
+.map-week {
+  display: inline-block;
+  width: 100%;
+  /* height: 100%; */
+}
+.map-week div {
+  /* opacity: 0; */
+  width: 100%;
+  height: 100%;
+}
+#modalsongs > div {
+  display: flex;
+  flex-direction: row;
+}
 
 
 /* past */
@@ -289,18 +307,4 @@ a {color:#00a3ff}
   top: 0;
   left: 0;
 }
-.gdfskgf {
-  display: grid;
-  width: 100%;
-  height: 4px;
-  grid-template-rows: 100%;
-}
-.gdfskgf div {
-  opacity: 0;
-  width: 100%;
-  height: 100%;
-}
-#modalsongs > div {
-  display: flex;
-  flex-direction: row;
-}
+

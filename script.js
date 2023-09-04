@@ -46,27 +46,32 @@ async function browse() {
     return weeks.indexOf(item)== pos
   })
 
-  function testHistory(term) {
+  function testHistory(term,request) {
     const history = document.querySelector("#history")
     browseHistory.push(term)
     var date = browseHistory[browseHistory.length - 1][0].replaceAll('/','-')
-    var request = browseHistory[browseHistory.length - 1][1]
+    var timeRequest = browseHistory[browseHistory.length - 1][1]
   
     const historyItem = document.createElement("li")
     // historyItem.setAttribute("date", date)
-    // historyItem.setAttribute("request", request)
-    if (request == 'decade') {
-      historyItem.innerHTML = date.slice(0,3) + "0s"
-      historyItem.addEventListener("click", function() { testfml(date.slice(0,3) + "0",request,'navigate');updateHistory(historyItem) })
-    } else if (request == 'year') {
-      historyItem.innerHTML = date.slice(0,4)
-      historyItem.addEventListener("click", function() { testfml(date.slice(0,4),request,'navigate');updateHistory(historyItem) })
-    } else if (request == 'month') {
-      historyItem.innerHTML = date.slice(0,7)
-      historyItem.addEventListener("click", function() { testfml(date.slice(0,7),request,'navigate');updateHistory(historyItem) })
-    } else if (request == 'week') {
-      historyItem.innerHTML = date
-      historyItem.addEventListener("click", function() { document.querySelector('#top10').innerHTML = '';testfml(date,request,'navigate');updateHistory(historyItem) })
+    // historyItem.setAttribute("timeRequest", timeRequest)
+    if (request == 'time') {
+      if (timeRequest == 'decade') {
+        historyItem.innerHTML = date.slice(0,3) + "0s"
+        historyItem.addEventListener("click", function() { testfml(date.slice(0,3) + "0",timeRequest,'navigate');updateHistory(historyItem) })
+      } else if (timeRequest == 'year') {
+        historyItem.innerHTML = date.slice(0,4)
+        historyItem.addEventListener("click", function() { testfml(date.slice(0,4),timeRequest,'navigate');updateHistory(historyItem) })
+      } else if (timeRequest == 'month') {
+        historyItem.innerHTML = date.slice(0,7)
+        historyItem.addEventListener("click", function() { testfml(date.slice(0,7),timeRequest,'navigate');updateHistory(historyItem) })
+      } else if (timeRequest == 'week') {
+        historyItem.innerHTML = date
+        historyItem.addEventListener("click", function() { document.querySelector('#top10').innerHTML = '';testfml(date,timeRequest,'navigate');updateHistory(historyItem) })
+      }
+    } else if (request == 'genre') {
+      historyItem.innerHTML = decodeGenre(term)[0]
+      historyItem.addEventListener("click", function() { genre(term);updateHistory(historyItem) })
     }
     history.appendChild(historyItem)
   
@@ -117,8 +122,7 @@ async function browse() {
       button.innerHTML = decodeGenre(item.key)[0]
       button.onclick = function(){
         genre(item.key)
-        history(item.key)
-        document.querySelector("#genre-container").style.display = "block"
+        testHistory(item.key,'genre')
       }
       document.querySelector("#initial-genres-container").appendChild(button)
     })
@@ -235,9 +239,23 @@ async function browse() {
     genreInfo.setAttribute("id", 'genre-info')
     document.querySelector("#genre-container").appendChild(genreInfo)
 
+    const genreMap = document.createElement("div")
+    genreMap.setAttribute("id", 'genre-map')
+    document.querySelector("#genre-container").appendChild(genreMap)
+
     const genreDataList = document.createElement("div")
     genreDataList.setAttribute("id", 'genre-datalist')
     document.querySelector("#genre-container").appendChild(genreDataList)
+
+    const genreSongs = document.createElement("div")
+    genreSongs.setAttribute("id", 'genre-songs')
+    genreSongs.classList.add('songs')
+    document.querySelector("#genre-datalist").appendChild(genreSongs)
+
+    const genreArtists = document.createElement("div")
+    genreArtists.setAttribute("id", 'genre-artists')
+    genreArtists.classList.add('artists')
+    document.querySelector("#genre-datalist").appendChild(genreArtists)
 
     // const top10 = document.createElement("div")
     // top10.setAttribute("id", 'top10')
@@ -252,6 +270,8 @@ async function browse() {
       const button = document.createElement("button")
       button.innerHTML = decodeGenre(item)[0]
       button.onclick = function(){
+        genre(item)
+        testHistory(item,'genre')
       }
       document.querySelector("#genre-nav-selection").appendChild(button)
     })
@@ -478,7 +498,7 @@ async function browse() {
     } else if (request == 'week') {
       findWeek(counter)
     }
-    testHistory([week,request])
+    testHistory([week,request],'time')
   }
 
 
@@ -638,11 +658,11 @@ async function browse() {
     document.querySelector('.chart-intel').innerHTML = decode(group(dataList('week', yearno, 'song'))[0].key[1])[0][3] + " is the #1 song of " + yearno
 
     document.querySelectorAll('.nonweeklychart a.songname').forEach((item, i) => {
-      item.setAttribute('onClick', 'history(`'+item.getAttribute("songid")+'`);searchSong(`'+item.getAttribute("songid")+'`)')
+      item.setAttribute('onClick', 'history(`'+item.getAttribute("songid")+'`,`song`);searchSong(`'+item.getAttribute("songid")+'`)')
       //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
     document.querySelectorAll('.nonweeklychart .artistname a').forEach((item, i) => {
-      item.setAttribute('onClick', 'history(`'+item.innerHTML+'`);searchArtist(`'+item.innerHTML+'`)')
+      item.setAttribute('onClick', 'history(`'+item.innerHTML+'`,`artist`);searchArtist(`'+item.innerHTML+'`)')
       //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
   }
@@ -948,6 +968,11 @@ async function browse() {
   }
 
   function genre(key) {
+    document.querySelector("#genre-container").style.display = "block"
+    document.querySelector("#genre-songs").innerHTML = ""
+    document.querySelector("#genre-artists").innerHTML = ""
+    document.querySelector("#genre-info").innerHTML = ""
+    document.querySelector("#genre-map").innerHTML = ""
     const description = document.createElement("h1")
     description.innerHTML = decodeGenre(key)[0] + " is a genre that includes the following subgenres:" + decodeGenre(key)[1]
     document.querySelector("#genre-info").appendChild(description)
@@ -956,13 +981,55 @@ async function browse() {
       const li = document.createElement("li")
       li.innerHTML = item.score + ' <div style="display:inline-block;width:16px;height:16px;background: ' + item.key[0] + ';"></div><a class="songname" songid="'+ item.key[1] + '">' + item.key[2] + "</a>&nbsp-&nbsp<div class='artistname'><a>"+item.key[3].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
       li.setAttribute('songId', item.key[1])
-      document.querySelector("#genre-datalist").appendChild(li)
+      document.querySelector("#genre-songs").appendChild(li)
     })
-    setClick('#genre-datalist','song','songId')
-    setClick('#genre-datalist','artist','')
+    setClick('#genre-songs','song','songId')
+    setClick('#genre-songs','artist','')
+
+    group(dataList('genre', key, 'artist')).forEach((item, i) => {
+      const li = document.createElement("li")
+      li.innerHTML = item.score + "&nbsp/&nbsp<div class='artistname'><a>" + item.key + "</a></div>"
+      document.querySelector("#genre-artists").appendChild(li)
+    })
+    setClick('#genre-artists','artist','')
+    map(key,'genre')
   }
 
-  
+  document.querySelector("#genre-map").style.gridTemplateColumns = "repeat(" + data.length + ", 1fr)";
+  function map(key, request) {
+    for (let z = 0; z < data.length; z++) {
+      const li = document.createElement("div")
+      li.setAttribute("id", 'week' + z)
+      li.classList.add('map-week')
+      document.querySelector("#genre-map").appendChild(li)
+      createLine(z)
+    }
+    function createLine(pos) {
+      for (let i = 1; i <= 10; i++) {
+        const tile = document.createElement("div")
+        tile.style.backgroundColor = data[pos]?.['no'+i+'genre']
+        
+
+        if (request == 'artist') {
+          var separators = [' ft. ', ' / ', ', ']
+          const tokens = data[pos]?.['no'+i+'artist'].split(new RegExp(separators.join('|'), 'g'))
+    
+          if (tokens.some(r=> key.includes(r))) {
+            tile.style.opacity = '1'
+          } else {
+            tile.style.opacity = '0'
+          }
+        } else if (request == 'genre') {
+          if (data[pos]?.['no'+i+'genre'] == key) {
+            tile.style.height = '4px'
+          } else {
+            tile.style.height = '0'
+          }
+        }
+        document.querySelector('#week' + pos).appendChild(tile)
+      }
+    }
+  }
 }
 
 
@@ -1024,9 +1091,6 @@ function history(term, request) {
   } else if (request == 'artist') {
     historyItem.addEventListener('click', function() { history(term,'artist');searchArtist(term);updateHistory(historyItem) })
     // historyItem.setAttribute('onClick', 'searchArtist(`'+term+'`)')
-  } else if (request == 'genre') {
-    historyItem.addEventListener('click', function() { history(term,'genre');genre(term);updateHistory(historyItem) })
-    // historyItem.setAttribute('onClick', 'genre(`'+term+'`)')
   }
   document.querySelector("#history").appendChild(historyItem)
 }
@@ -1165,6 +1229,7 @@ async function searchArtist(artist) {
   pic(decode(dfsgfeg)[0][4], decode(dfsgfeg)[0][3], 'videomodal')
   //pic(decode(totalList.artist)[0][4], decode(totalList.artist)[0][3], 'modal')
 }
+
 function group(type) {
   let reducedArray = type.reduce( (acc, curr, _, arr) => {
       if (acc.length == 0) acc.push({artist: curr, count: 1})
