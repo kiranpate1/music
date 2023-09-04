@@ -1008,7 +1008,6 @@ async function browse() {
       for (let i = 1; i <= 10; i++) {
         const tile = document.createElement("div")
         tile.style.backgroundColor = data[pos]?.['no'+i+'genre']
-        
 
         if (request == 'artist') {
           var separators = [' ft. ', ' / ', ', ']
@@ -1021,7 +1020,7 @@ async function browse() {
           }
         } else if (request == 'genre') {
           if (data[pos]?.['no'+i+'genre'] == key) {
-            tile.style.height = '4px'
+            tile.classList.add('genre')
           } else {
             tile.style.height = '0'
           }

@@ -62,6 +62,10 @@ a {color:#00a3ff}
   height:50%;
   background:#1f1f1f;
 }
+#modalsongs > div {
+  display: flex;
+  flex-direction: row;
+}
 #banner {
   grid-area: 2 / 1 / 3 / 3;
   border: 1px solid green;
@@ -171,11 +175,37 @@ a {color:#00a3ff}
   width: 100%;
   height: 100%;
 }
-#modalsongs > div {
-  display: flex;
-  flex-direction: row;
-}
 
+.map-week .genre:nth-of-type(1) {
+  height: 10px;
+}
+.map-week .genre:nth-of-type(2) {
+  height: 9px;
+}
+.map-week .genre:nth-of-type(3) {
+  height: 8px;
+}
+.map-week .genre:nth-of-type(4) {
+  height: 7px;
+}
+.map-week .genre:nth-of-type(5) {
+  height: 6px;
+}
+.map-week .genre:nth-of-type(6) {
+  height: 5px;
+}
+.map-week .genre:nth-of-type(7) {
+  height: 4px;
+}
+.map-week .genre:nth-of-type(8) {
+  height: 3px;
+}
+.map-week .genre:nth-of-type(9) {
+  height: 2px;
+}
+.map-week .genre:nth-of-type(10) {
+  height: 1px;
+}
 
 /* past */
 .button-container {
