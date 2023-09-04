@@ -117,6 +117,7 @@ async function browse() {
       button.innerHTML = decodeGenre(item.key)[0]
       button.onclick = function(){
         genre(item.key)
+        history(item.key)
         document.querySelector("#genre-container").style.display = "block"
       }
       document.querySelector("#initial-genres-container").appendChild(button)
@@ -881,12 +882,12 @@ async function browse() {
   
     document.querySelectorAll('#top10 a.songname').forEach((item, i) => {
       //item.setAttribute('href', '#')
-      item.setAttribute('onClick', 'history(`'+item.getAttribute("id")+'`);searchSong(`'+item.getAttribute("id")+'`)')
+      item.setAttribute('onClick', 'history(`'+item.getAttribute("id")+'`,`song`);searchSong(`'+item.getAttribute("id")+'`)')
       //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
     document.querySelectorAll('#top10 .artistname a').forEach((item, i) => {
       //item.setAttribute('href', '#')
-      item.setAttribute('onClick', 'history(`'+item.innerHTML+'`);searchArtist(`'+item.innerHTML+'`)')
+      item.setAttribute('onClick', 'history(`'+item.innerHTML+'`,`artist`);searchArtist(`'+item.innerHTML+'`)')
       //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
   
@@ -976,7 +977,7 @@ function setClick(container, request, id) {
     document.querySelectorAll(container + ' a.songname').forEach((item, i) => {
       //item.setAttribute('href', '#')
       if (document.querySelector("#termSearch").value.length === 0) {
-        item.setAttribute('onClick', 'history(`'+item.getAttribute(id)+'`);searchSong(`'+item.getAttribute(id)+'`)')
+        item.setAttribute('onClick', 'history(`'+item.getAttribute(id)+'`,`song`);searchSong(`'+item.getAttribute(id)+'`)')
       } else {
         item.setAttribute('onClick', 'searchSong(`'+item.innerHTML+'`)')
       }
@@ -985,7 +986,7 @@ function setClick(container, request, id) {
     document.querySelectorAll(container + ' .artistname a').forEach((item, i) => {
       //item.setAttribute('href', '#')
       if (document.querySelector("#termSearch").value.length === 0) {
-        item.setAttribute('onClick', 'history(`'+item.innerHTML+'`);searchArtist(`'+item.innerHTML+'`)')
+        item.setAttribute('onClick', 'history(`'+item.innerHTML+'`,`artist`);searchArtist(`'+item.innerHTML+'`)')
       } else {
         item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
       }
@@ -1011,17 +1012,21 @@ document.querySelector('#close').onclick = function(){
   modal('hidden')
   modalHistory = []
 }
-function history(term) {
+function history(term, request) {
   modalHistory.push(term)
   
   const historyItem = document.createElement("li")
   historyItem.innerHTML = modalHistory[modalHistory.length - 1]
-  if (term.slice(0, 2) == 'ix') {
-    historyItem.addEventListener('click', function() { history(term);searchSong(term);updateHistory(historyItem) })
+  // if (term.slice(0, 2) == 'ix') {
+  if (request == 'song') {
+    historyItem.addEventListener('click', function() { history(term,'song');searchSong(term);updateHistory(historyItem) })
     // historyItem.setAttribute('onClick', 'searchSong(`'+term+'`)')
-  } else {
-    historyItem.addEventListener('click', function() { history(term);searchArtist(term);updateHistory(historyItem) })
+  } else if (request == 'artist') {
+    historyItem.addEventListener('click', function() { history(term,'artist');searchArtist(term);updateHistory(historyItem) })
     // historyItem.setAttribute('onClick', 'searchArtist(`'+term+'`)')
+  } else if (request == 'genre') {
+    historyItem.addEventListener('click', function() { history(term,'genre');genre(term);updateHistory(historyItem) })
+    // historyItem.setAttribute('onClick', 'genre(`'+term+'`)')
   }
   document.querySelector("#history").appendChild(historyItem)
 }
@@ -1075,7 +1080,7 @@ async function searchSong(id) {
   list('id').then(function (val) {
     val.forEach((item, i) => {
       if (item.artist == id) {
-        document.querySelector('#modalstats').innerHTML = "#"+[i+1]+" all time • #"+decode(id)[0][1]+" peak • "+item.count+" weeks"
+        document.querySelector('#modalstats').innerHTML = "#"+[i+1]+" all time • #"+decode(id)[0][1]+" peak • "+item.count+" weeks • "+decodeGenre(decode(id)[0][2])[0]
         return
       }
     })
@@ -1092,14 +1097,6 @@ async function searchSong(id) {
     }
   }
   setClick('#modalname','artist','')
-  // document.querySelectorAll('#modalname a').forEach((item, i) => {
-  //   //item.setAttribute('href', '#')
-  //   if (document.querySelector("#termSearch").value.length === 0) {
-  //     item.setAttribute('onClick', 'history(`'+item.innerHTML+'`);searchArtist(`'+item.innerHTML+'`)')
-  //   } else {
-  //     item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
-  //   }
-  // });
   pic(artist,name,'videomodal')
 }
 
@@ -1122,7 +1119,7 @@ async function searchArtist(artist) {
       }
     })
   }
-  combinedUnique = [...new Set(fullList)];
+  combinedUnique = [...new Set(fullList)]
   var totalList = group(fullList)[0]
   var no1Count = 0
   list('artist').then(function (val) {
@@ -1142,23 +1139,8 @@ async function searchArtist(artist) {
     document.querySelector("#modalsongs").appendChild(div);
   })
   setClick('#modalsongs','song','id')
-  // document.querySelectorAll('#modalsongs a.songname').forEach((item, i) => {
-  //   //item.setAttribute('href', '#')
-  //   if (document.querySelector("#termSearch").value.length === 0) {
-  //     item.setAttribute('onClick', 'history(`'+item.getAttribute("id")+'`);searchSong(`'+item.getAttribute("id")+'`)')
-  //   } else {
-  //     item.setAttribute('onClick', 'searchSong(`'+item.getAttribute("id")+'`)')
-  //   }
-  // })
   setClick('#modalsongs','artist','')
-  // document.querySelectorAll('#modalsongs .artistname a').forEach((item, i) => {
-  //   //item.setAttribute('href', '#')
-  //   if (document.querySelector("#termSearch").value.length === 0) {
-  //     item.setAttribute('onClick', 'history(`'+item.innerHTML+'`);searchArtist(`'+item.innerHTML+'`)')
-  //   } else {
-  //     item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
-  //   }
-  // })
+
   function decode(input) {
     const output = []
     for (let x = 1; x <= 10; x++) {

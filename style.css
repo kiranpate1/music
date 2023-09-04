@@ -8,6 +8,9 @@ a {color:#00a3ff}
   margin: 0;
   padding: 0;
 }
+*::-webkit-scrollbar {
+  display: none;
+}
 
 /* current */
 
