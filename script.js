@@ -776,20 +776,32 @@ async function browse() {
   }
 
   function description(key,operation,type) {
+    const descriptionNo1 = document.createElement("span")
+    descriptionNo1.classList.add('description-no1')
+    document.querySelector(".chart-description").appendChild(descriptionNo1)
     if (operation == 'no1') {
       if (type == 'hold') {
-        document.querySelector('.chart-description').innerHTML += "While " + key[0] + " remains at #1,"
+        document.querySelector('.description-no1').innerHTML += "While " + key[0] + " remains at #1,"
       } else if (type == 'return') {
-        document.querySelector('.chart-description').innerHTML += "While " + key[1] + " returns at #1,"
+        document.querySelector('.description-no1').innerHTML += "While " + key[1] + " returns at #1,"
       } else if (type == 'new') {
-        document.querySelector('.chart-description').innerHTML += "While " + key[1] + " lands at #1,"
+        document.querySelector('.description-no1').innerHTML += "While " + key[1] + " lands at #1,"
       }
     }
+    const descriptionEntries = document.createElement("span")
+    descriptionEntries.classList.add('description-entries')
+    document.querySelector(".chart-description").appendChild(descriptionEntries)
     if (operation == 'entry') {
       if (type == 'new') {
-        document.querySelector('.chart-description').innerHTML += key[0] + " enters the top 10,"
+        document.querySelector('.description-entries').innerHTML += key[0] + " enters the top 10,"
       } else if (type == 'newSole') {
-        document.querySelector('.chart-description').innerHTML += key[1] + " score nth top 10 hit with " + key[0] + ","
+        document.querySelector('.description-entries').innerHTML += key[1] + " score nth top 10 hit with " + key[0] + ","
+      } else if (type == 'newBatch') {
+        document.querySelector('.description-entries').innerHTML = ''
+        document.querySelector('.description-entries').innerHTML += key[1].newSongArtist + " scores top 10 hits with "
+        key.forEach((item, i) => {
+          document.querySelector('.description-entries').innerHTML += item.newSong + ", "
+        })
       } else if (type == 'return') {
 
       }
@@ -937,30 +949,22 @@ async function browse() {
         document.querySelector('#top10').appendChild(div)
       }
       var newSongArtist = decode(newSongIdList[i])[0][4].split(new RegExp(mapSeparators.join('|'), 'g'))[0]
-      var newSong = newSongIdList[i]
+      var newSong = decode(newSongIdList[i])[0][3]
       newArtistList.push({newSongArtist,newSong})
       // //for description
-      // var entries = [decode(newSongIdList[i])[0][4],decode(newSongIdList[i])[0][3]]
-      // if (decode(newSongIdList[i])[0][4].split(new RegExp(mapSeparators.join('|'), 'g')).length == 0) {
-      //   description(entries,'entry','newSole')
-      // } else {
-      //   description(entries,'entry','new')
-      // }
+      var entries = [decode(newSongIdList[i])[0][4],decode(newSongIdList[i])[0][3]]
+      if (decode(newSongIdList[i])[0][4].split(new RegExp(mapSeparators.join('|'), 'g')).length == 0) {
+        description(entries,'entry','newSole')
+      } else {
+        description(entries,'entry','new')
+      }
     })
-    console.log(newArtistList)
-    
     lookup = newArtistList.reduce((a, e) => {
       a[e.newSongArtist] = ++a[e.newSongArtist] || 0;
       return a;
     }, {});
+    description(newArtistList.filter(e => lookup[e.newSongArtist]),'entry','newBatch')
     
-    console.log(newArtistList.filter(e => lookup[e.newArtistList]));
-    // var fsdhsdfjkh = []
-    // for (let i = 0; i < newArtistList.length; i++) {
-    //   fsdhsdfjkh.push(newArtistList[i].newSongArtist)
-    // }
-    // console.log(fsdhsdfjkh.flat(1))
-    // console.log(fsdhsdfjkh.filter((e, i, a) => a.indexOf(e) !== i))
     repeatSongList.forEach((element, i) => { //this week
       var repeats = document.querySelector("#" + repeatSongIdList[i] + "")
       if(repeats !== null){
