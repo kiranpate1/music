@@ -3,6 +3,7 @@ var test1
 var browseHistory = []
 var mapObj = {' ft. ':"</a>&nbspft.&nbsp<a>",' / ':"</a>&nbsp/&nbsp<a>",', ':"</a>,&nbsp<a>"};
 var mapObj1 = {' ft. ':"separator",' / ':"separator",', ':"separator"};
+var mapSeparators = [' ft. ',' / ',', '];
 var re = new RegExp(Object.keys(mapObj).join("|"),"gi");
 var genrePool = ['#de7eea','#a16fd9','#9a82c8','#c295c8','#d700ff','#854d76','#ba2c8e','#ba3d3d','#b65f5f','#603232','#1a1a1a','#413630','#935b4a','#3ca33f','#308532','#638559','#6a9d32','#8eb371','#4aca4e','#97be9d','#a4d685','#c4c800','#a7ab00','#d5eb20','#ddf3a8','#c6ccae','#ceb8ae','#7085ef','#5666b8','#4d95b8','#623aff','#73e6e0','#3eadef','#ff6900','#f6b26b','#b3997a','#d49875','#c7cc86','#ffe381','#f5d8d8']
 
@@ -96,9 +97,17 @@ async function browse() {
     thisWeekText.innerHTML = "This Week - " + data[data.length - 1].week + " - " + data[data.length - 1].no1name + " by " + data[data.length - 1].no1artist + " is #1"
     document.querySelector("#this-week").appendChild(thisWeekText)
 
+    const initialDecadesTitle = document.createElement("h2")
+    initialDecadesTitle.innerHTML = "Decades"
+    document.querySelector("#browse-container").appendChild(initialDecadesTitle)
+
     const initialDecades = document.createElement("div")
     initialDecades.setAttribute("id", 'initial-decades-container')
     document.querySelector("#browse-container").appendChild(initialDecades)
+
+    const initialGenresTitle = document.createElement("h2")
+    initialGenresTitle.innerHTML = "Genres"
+    document.querySelector("#browse-container").appendChild(initialGenresTitle)
 
     const initialGenres = document.createElement("div")
     initialGenres.setAttribute("id", 'initial-genres-container')
@@ -177,10 +186,18 @@ async function browse() {
     chartTitle.classList.add('chart-title')
     document.querySelector("#chart-container").appendChild(chartTitle)
 
+    const descriptionGenres = document.createElement("div")
+    descriptionGenres.setAttribute("id", 'description-genres')
+    document.querySelector("#chart-container").appendChild(descriptionGenres)
+
+    const chartDescription = document.createElement("p")
+    chartDescription.classList.add('chart-description')
+    document.querySelector("#description-genres").appendChild(chartDescription)
+
     const topgenres = document.createElement("div")
     topgenres.setAttribute("id", 'genres')
     topgenres.classList.add('genres')
-    document.querySelector("#chart-container").appendChild(topgenres)
+    document.querySelector("#description-genres").appendChild(topgenres)
 
     genrePool.forEach((item, i) => {
       const li = document.createElement("li")
@@ -743,9 +760,44 @@ async function browse() {
     var results = reducedArray.sort((a,b) => b.score - a.score )
     return results
   }
+
+  function title(key,operation,type) {
+    if (operation == 'no1') {
+      if (type == 'hold') {
+        document.querySelector('.chart-intel').innerHTML = key[1][0] + " remains at #1 for " + key[2] + " weeks"
+      } else if (type == 'return') {
+        document.querySelector('.chart-intel').innerHTML = key[0] + " returns to #1 for " + key[2] + " weeks"
+      } else if (type == 'debut') {
+        document.querySelector('.chart-intel').innerHTML = key[0] + " debuts at #1"
+      } else if (type == 'new') {
+        document.querySelector('.chart-intel').innerHTML = key[0] + " hits #1"
+      }
+    }
+  }
+
+  function description(key,operation,type) {
+    if (operation == 'no1') {
+      if (type == 'hold') {
+        document.querySelector('.chart-description').innerHTML += "While " + key[0] + " remains at #1,"
+      } else if (type == 'return') {
+        document.querySelector('.chart-description').innerHTML += "While " + key[1] + " returns at #1,"
+      } else if (type == 'new') {
+        document.querySelector('.chart-description').innerHTML += "While " + key[1] + " lands at #1,"
+      }
+    }
+    if (operation == 'entry') {
+      if (type == 'new') {
+        document.querySelector('.chart-description').innerHTML += key[0] + " enters the top 10,"
+      } else if (type == 'newSole') {
+        document.querySelector('.chart-description').innerHTML += key[1] + " score nth top 10 hit with " + key[0] + ","
+      } else if (type == 'return') {
+
+      }
+    }
+  }
   
   function findWeek(weekno) {
-  
+    document.querySelector('.chart-description').innerHTML = ''
     document.querySelector('#artists').innerHTML = ''
     document.querySelector('#songs').innerHTML = ''
     document.querySelector('#genres').style.display = "none"
@@ -760,14 +812,24 @@ async function browse() {
         no1Count++
       }
     }
+    var no1name = data[weekno].no1name
+    var no1artist = data[weekno].no1artist.split(new RegExp(mapSeparators.join('|'), 'g'))
   
     if (currentWeek.no1id.includes(lastWeek.no1id)) {
-      document.querySelector('.chart-intel').innerHTML = data[weekno].no1name + " remains at #1 for " + no1Count + " weeks"
+      title([no1name,no1artist,no1Count],'no1','hold')
+      description([no1name,no1artist],'no1','hold')
     } else if (!currentWeek.no1id.includes(lastWeek.no1id) && no1Count > 1) {
-      document.querySelector('.chart-intel').innerHTML = data[weekno].no1name + " returns to #1 for " + no1Count + " weeks"
+      title([no1name,no1artist,no1Count],'no1','return')
+      description([no1name,no1artist],'no1','return')
     } else if (no1Count = 1) {
-      document.querySelector('.chart-intel').innerHTML = data[weekno].no1name + " hits #1"
+      if (data[weekno].no1direction.includes('★')) {
+        title([no1name,no1artist,no1Count],'no1','debut')
+      } else {
+        title([no1name,no1artist,no1Count],'no1','new')
+      }
     }
+
+    //detect multiple entries here, depending on amt, overwrite title
   
     var newList = [];
     var newIdList = [];
@@ -792,7 +854,7 @@ async function browse() {
           enterIdList.push(entersId);
         }
         if(currentWeek?.['no'+y+'name'] !== lastWeek?.['no'+z+'name']){
-          //const news = currentWeek?.['no'+y+'direction']+'<div style="width:16px;height:16px;background: '+currentWeek?.['no'+y+'genre']+';"></div>'+'<a onClick="modal(`visible`,`'+currentWeek?.['no'+y+'artist']+'`,`'+currentWeek?.['no'+y+'name']+'`,`modal`)">'+currentWeek?.['no'+y+'name']+'</a>&nbsp'+"-"+"&nbsp<a>"+currentWeek?.['no'+y+'artist'].replace(re, function(matched){return mapObj[matched]})+"</a>"
+          //const news = currentWeek?.['no'+y+'direction']+'<div style="width:16px;height:16px;background: '+currentWeek?.['no'+y+'genre']+';"></div>'+'<a onClick="modal(`flex`,`'+currentWeek?.['no'+y+'artist']+'`,`'+currentWeek?.['no'+y+'name']+'`,`modal`)">'+currentWeek?.['no'+y+'name']+'</a>&nbsp'+"-"+"&nbsp<a>"+currentWeek?.['no'+y+'artist'].replace(re, function(matched){return mapObj[matched]})+"</a>"
           const news = currentWeek?.['no'+y+'direction']+'<div style="width:16px;height:16px;background: '+currentWeek?.['no'+y+'genre']+';"></div>'+'<a class="songname" id="'+currentWeek?.['no'+y+'id']+'">'+currentWeek?.['no'+y+'name']+"</a>&nbsp-&nbsp<div class='artistname'><a>"+currentWeek?.['no'+y+'artist'].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
           const newsId = currentWeek?.['no'+y+'id']
           newList.push(news);
@@ -818,21 +880,21 @@ async function browse() {
     exitSongList.forEach((element, i) => { //from last week
       var exits = document.querySelector("#" + exitSongIdList[i] + "")
       if(exits){
-        exits.className = "";
+        exits.className = ""
         exits.classList.add('out')
         addToAttribute(exits, "pos", "out")
       } else {
-        const div = document.createElement("div");
-        div.setAttribute("id", exitSongIdList[i]);
+        const div = document.createElement("div")
+        div.setAttribute("id", exitSongIdList[i])
         div.setAttribute("pos", "out")
-        div.innerHTML = exitSongList[i];
-        div.className = "";
+        div.innerHTML = exitSongList[i]
+        div.className = ""
         div.classList.add('out')
-        document.querySelector('#top10').appendChild(div);
+        document.querySelector('#top10').appendChild(div)
       }
     })
     enterSongList.forEach((element, i) => { //before next week
-      var exists = document.querySelector("#" + enterSongIdList[i] + "");
+      var exists = document.querySelector("#" + enterSongIdList[i] + "")
       if(exists) {
         exists.className = "";
         if (enterSongList[i].includes('★')) {
@@ -845,59 +907,83 @@ async function browse() {
         const div = document.createElement("div");
         div.setAttribute("id", enterSongIdList[i]);
         div.setAttribute("pos", enterSongList[i].slice(0, 3))
-        div.innerHTML = enterSongList[i];
+        div.innerHTML = enterSongList[i]
         div.className = "";
         if (enterSongList[i].includes('★')) {
           div.classList.add('no'+enterSongList[i].slice(0, 2), 'debut')
         } else {
           div.classList.add('out')
         }
-        document.querySelector('#top10').appendChild(div);
+        document.querySelector('#top10').appendChild(div)
       }
     })
+    var newArtistList = [];
     newSongList.forEach((element, i) => { //this week
-      console.log(decode(newSongIdList[i])[0][4] + " - " + decode(newSongIdList[i])[0][3] + " enters top 10")
-      var exists = document.querySelector("#" + newSongIdList[i] + "");
+      var exists = document.querySelector("#" + newSongIdList[i] + "")
       if(exists) {
         addToAttribute(exists, "pos", newSongList[i].slice(0, 3))
-        exists.innerHTML = newSongList[i];
+        exists.innerHTML = newSongList[i]
         exists.className = "";
         exists.classList.add('no'+newSongList[i].slice(0, 2))
         exists.style.backgroundColor = 'gray'
       }else {
-        const div = document.createElement("div");
-        div.setAttribute("id", newSongIdList[i]);
+        const div = document.createElement("div")
+        div.setAttribute("id", newSongIdList[i])
         div.setAttribute("pos", newSongList[i].slice(0, 3))
-        div.innerHTML = newSongList[i];
+        div.innerHTML = newSongList[i]
         div.className = "";
         div.classList.add('no'+newSongList[i].slice(0, 2))
         div.style.backgroundColor = 'gray'
-        document.querySelector('#top10').appendChild(div);
+        document.querySelector('#top10').appendChild(div)
       }
+      var newSongArtist = decode(newSongIdList[i])[0][4].split(new RegExp(mapSeparators.join('|'), 'g'))[0]
+      var newSong = newSongIdList[i]
+      newArtistList.push({newSongArtist,newSong})
+      // //for description
+      // var entries = [decode(newSongIdList[i])[0][4],decode(newSongIdList[i])[0][3]]
+      // if (decode(newSongIdList[i])[0][4].split(new RegExp(mapSeparators.join('|'), 'g')).length == 0) {
+      //   description(entries,'entry','newSole')
+      // } else {
+      //   description(entries,'entry','new')
+      // }
     })
+    console.log(newArtistList)
+    
+    lookup = newArtistList.reduce((a, e) => {
+      a[e.newSongArtist] = ++a[e.newSongArtist] || 0;
+      return a;
+    }, {});
+    
+    console.log(newArtistList.filter(e => lookup[e.newArtistList]));
+    // var fsdhsdfjkh = []
+    // for (let i = 0; i < newArtistList.length; i++) {
+    //   fsdhsdfjkh.push(newArtistList[i].newSongArtist)
+    // }
+    // console.log(fsdhsdfjkh.flat(1))
+    // console.log(fsdhsdfjkh.filter((e, i, a) => a.indexOf(e) !== i))
     repeatSongList.forEach((element, i) => { //this week
-      var repeats = document.querySelector("#" + repeatSongIdList[i] + "");
+      var repeats = document.querySelector("#" + repeatSongIdList[i] + "")
       if(repeats !== null){
         addToAttribute(repeats, "pos", repeatSongList[i].slice(0, 3))
-        repeats.innerHTML = repeatSongList[i];
-        repeats.className = "";
-        repeats.classList.add('no'+repeatSongList[i].slice(0, 2));
+        repeats.innerHTML = repeatSongList[i]
+        repeats.className = ""
+        repeats.classList.add('no'+repeatSongList[i].slice(0, 2))
         repeats.style.backgroundColor = ''
       }else {
-        const div = document.createElement("div");
-        div.setAttribute("id", repeatSongIdList[i]);
+        const div = document.createElement("div")
+        div.setAttribute("id", repeatSongIdList[i])
         div.setAttribute("pos", repeatSongList[i].slice(0, 3))
-        div.innerHTML = repeatSongList[i];
-        div.className = "";
+        div.innerHTML = repeatSongList[i]
+        div.className = ""
         div.classList.add('no'+repeatSongList[i].slice(0, 2))
         div.style.backgroundColor = ''
-        document.querySelector('#top10').appendChild(div);
+        document.querySelector('#top10').appendChild(div)
       }
     })
   
-    document.querySelector('#weektitle').innerHTML = data[weekno].week;
+    document.querySelector('#weektitle').innerHTML = data[weekno].week
     function addToAttribute(element, attributeName, value) {
-      element.setAttribute(attributeName, value + (element.getAttribute(attributeName) || ''));
+      element.setAttribute(attributeName, value + (element.getAttribute(attributeName) || ''))
     }
   
     document.querySelectorAll('#top10 a.songname').forEach((item, i) => {
@@ -1045,7 +1131,7 @@ function setClick(container, request, id) {
       if (document.querySelector("#termSearch").value.length === 0) {
         item.setAttribute('onClick', 'history(`'+item.getAttribute(id)+'`,`song`);searchSong(`'+item.getAttribute(id)+'`)')
       } else {
-        item.setAttribute('onClick', 'searchSong(`'+item.innerHTML+'`)')
+        item.setAttribute('onClick', 'searchSong(`'+item.getAttribute(id)+'`)')
       }
     })
   } else if (request == 'artist') {
@@ -1068,14 +1154,14 @@ function modal(visibility) {
   document.querySelector("#covermodal").style.backgroundImage = ''
   document.querySelector("#modalsongs").innerHTML = ''
   document.querySelector('#modalstats').innerHTML = ''
-  document.querySelector("#modal").style.visibility = visibility
+  document.querySelector("#modal-wrapper").style.display = visibility
 }
 var modalHistory = []
 document.querySelector('#close').onclick = function(){
   for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
     document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
   }
-  modal('hidden')
+  modal('none')
   modalHistory = []
 }
 function history(term, request) {
@@ -1101,7 +1187,7 @@ function history(term, request) {
 //     for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
 //       document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
 //     }
-//     modal('hidden')
+//     modal('none')
 //     modalHistory.pop()
 //     const parent = document.querySelector("#history");
 //     [...parent.children].slice(-1).forEach(parent.removeChild.bind(parent));
@@ -1131,7 +1217,7 @@ function updateHistory(el) {
 }
 
 async function searchSong(id) {
-  modal(`visible`)
+  modal(`flex`)
   // history(id)
   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
   const response = await fetch(api_url);
@@ -1164,7 +1250,7 @@ async function searchSong(id) {
 }
 
 async function searchArtist(artist) {
-  modal('visible')
+  modal('flex')
   // history(artist)
   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
   const response = await fetch(api_url);
@@ -1294,7 +1380,7 @@ async function termSearch() {
     val.forEach((item, i) => {
       if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
         const line = document.createElement("li");
-        console.log(item.artist.slice(-10), decode(item.artist.slice(-10)))
+        // console.log(item.artist.slice(-10), decode(item.artist.slice(-10)))
         line.innerHTML = decode(item.artist.slice(-10))[0][3]
         line.addEventListener('click', function() {
           searchSong(item.artist.slice(-10)) 
