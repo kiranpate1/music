@@ -1063,6 +1063,9 @@ async function browse() {
     document.querySelector("#genre-artists").innerHTML = ""
     document.querySelector("#genre-info").innerHTML = ""
     document.querySelector("#genre-map").innerHTML = ""
+    for (let i = 0; i < document.querySelectorAll('#history li').length; i++) {
+      document.querySelectorAll('#history li')[i].style.opacity = '1'
+    }
     const description = document.createElement("h1")
     description.innerHTML = decodeGenre(key)[0] + " is a genre that includes the following subgenres:" + decodeGenre(key)[1]
     document.querySelector("#genre-info").appendChild(description)
@@ -1211,6 +1214,10 @@ function history(term, request) {
 // }
 
 function updateHistory(el) {
+  console.log("hi")
+  for (let i = 0; i < document.querySelectorAll('#history li').length; i++) {
+    document.querySelectorAll('#history li')[i].style.opacity = '1'
+  }
   el.style.opacity = '0.5'
 
   const i = Array.from(el.parentNode.children).indexOf(el)
