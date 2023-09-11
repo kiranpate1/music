@@ -1593,85 +1593,85 @@ function pic(termArtist, termSong, id) {
 function decodeGenre(input) {
 
   if (input == '#de7eea') {
-    output = ['Pop','Pop, Power pop']
+    output = ['Pop','Power pop']
   } else if (input == '#a16fd9') {
-    output = ['Dance-pop','Dance-pop, Synth-pop, Europop, Electropop']
+    output = ['Dance-pop','Synth-pop, Europop, Electropop']
   } else if (input == '#9a82c8') {
     output = ['Indie','Indie-pop, Indie-rock, Indie-folk, Indie-electronic, Indie-soul, Indie-dance, Indie-tronica, Indie-pop, Indie-rock, Indie-folk, Indie-electronic, Indie-soul, Indie-dance, Indie-tronica']
   } else if (input == '#c295c8') {
-    output = ['Pop rock','Pop rock, Soft rock, Pop punk']
+    output = ['Pop rock','Soft rock, Pop punk']
   } else if (input == '#d700ff') {
-    output = ['Disco','Disco, Nu-Disco, Euro disco, Italo disco, Space disco, Disco polo, Disco house, Disco rap, Disco polo, Disco house, Disco rap']
+    output = ['Disco','Nu-Disco, Euro disco, Italo disco, Space disco, Disco polo, Disco house, Disco rap, Disco polo, Disco house, Disco rap']
   } else if (input == '#854d76') {
-    output = ['Funk','Funk, Funk-pop, Boogie, Electro-funk, G-funk, P-Funk, Funktronica, Funk carioca, Funk carioca, Funk ostentação, Funk melody, Funk ousadi']
+    output = ['Funk','Funk-pop, Boogie, Electro-funk, G-funk, P-Funk, Funktronica, Funk carioca, Funk carioca, Funk ostentação, Funk melody, Funk ousadi']
   } else if (input == '#ba2c8e') {
-    output = ['Pop rap','Pop rap, Melodic rap, Pop trap']
+    output = ['Pop rap','Melodic rap, Pop trap']
   } else if (input == '#ba3d3d') {
     output = ['R&B','']
   } else if (input == '#b65f5f') {
-    output = ['New jack','New jack, Doo-wop, Swing']
+    output = ['New jack','Doo-wop, Swing']
   } else if (input == '#603232') {
     output = ['Hip Hop','']
   } else if (input == '#1a1a1a') {
-    output = ['Trap','Trap, Dirty, Southern hip hop, Crunk, Snap, Drill, Trap metal, Trap soul, Trapstep, Cloud rap, Trap rock, Trap jazz, Trap funk, Trap pop, Trapcore']
+    output = ['Trap','Dirty, Southern hip hop, Crunk, Snap, Drill, Trap metal, Trap soul, Trapstep, Cloud rap, Trap rock, Trap jazz, Trap funk, Trap pop, Trapcore']
   } else if (input == '#413630') {
-    output = ['Regional','Regional, Gangsta rap, G-funk, West Coast hip hop, East Coast hip hop']
+    output = ['Regional','Gangsta rap, G-funk, West Coast hip hop, East Coast hip hop']
   } else if (input == '#935b4a') {
-    output = ['Alt hip hop','Alternative hip hop, Experimental hip hop, Jazz rap, Conscious hip hop, Political hip hop, Horrorcore']
+    output = ['Alt hip hop','Experimental hip hop, Jazz rap, Conscious hip hop, Political hip hop, Horrorcore']
   } else if (input == '#3ca33f') {
     output = ['Rock','']
   } else if (input == '#308532') {
-    output = ['Hard rock','Hard rock, Metal, Heavy metal, Glam metal, Hair metal, Thrash metal, Death metal, Black metal, Doom metal, Grindcore, Metalcore, Industrial metal, Alternative metal, Nu metal']
+    output = ['Hard rock','Metal, Heavy metal, Glam metal, Hair metal, Thrash metal, Death metal, Black metal, Doom metal, Grindcore, Metalcore, Industrial metal, Alternative metal, Nu metal']
   } else if (input == '#638559') {
-    output = ['Grunge','Grunge, Post-grunge, Alternative metal, Nu metal']
+    output = ['Grunge','Post-grunge, Alternative metal, Nu grunge']
   } else if (input == '#6a9d32') {
-    output = ['Funk rock','Funk rock, Blues rock, Psychedelic rock, Jam rock']
+    output = ['Funk rock','Blues rock, Psychedelic rock, Jam rock']
   } else if (input == '#8eb371') {
-    output = ['Punk','Punk rock, New wave, Post-punk, Ska punk, Pop punk, Emo, Hardcore punk, Skate punk']
+    output = ['New Wave','Punk rock, New wave, Post-punk, Ska punk, Pop punk, Emo, Hardcore punk, Skate punk']
   } else if (input == '#4aca4e') {
-    output = ['Rock and Roll','Rock and roll, Rockabilly, Surf rock, Rock and roll revival']
+    output = ['Rock and Roll','Rockabilly, Surf rock, Rock and roll revival, Heartland Rock']
   } else if (input == '#97be9d') {
-    output = ['Alternative Rock','Alternative rock, Alternative metal']
+    output = ['Alternative Rock','']
   } else if (input == '#a4d685') {
-    output = ['Folk Rock','Folk rock, Folktronica, Folk pop, Folk punk, Folk metal, Folk jazz']
+    output = ['Folk Rock','Folktronica, Folk pop, Folk punk, Folk metal, Folk jazz']
   } else if (input == '#c4c800') {
-    output = ['Soul','Soul, Neo soul, Blue-eyed soul, Psychedelic soul, Soul jazz, Soul blues, Southern soul, Northern soul, Soul pop, Soultronica']
+    output = ['Soul','Neo soul, Blue-eyed soul, Psychedelic soul, Soul jazz, Soul blues, Southern soul, Northern soul, Soul pop, Soultronica']
   } else if (input == '#a7ab00') {
     output = ['Blues','']
   } else if (input == '#d5eb20') {
-    output = ['Jazz','Jazz, Jazz fusion, Acid jazz, Jazz rap, Nu jazz, Jazz funk, Jazz blues, Jazz pop, Jazz rock, Jazztronica, Nu jazz']
+    output = ['Jazz','Jazz fusion, Acid jazz, Jazz rap, Nu jazz, Jazz funk, Jazz blues, Jazz pop, Jazz rock, Jazztronica, Nu jazz']
   } else if (input == '#ddf3a8') {
-    output = ['Soca','Soca, Calypso, Chutney, Chutney soca, Chutney parang, Chutney rapso, Chutney dance']
+    output = ['Soca','Calypso, Chutney, Chutney soca, Chutney parang, Chutney rapso, Chutney dance']
   } else if (input == '#c6ccae') {
-    output = ['Gospel','Gospel, Worship, Christian rock, Christian hip hop, Christian metal, Christian hardcore, Christian punk, Christian alternative rock']
+    output = ['Gospel','Worship, Christian rock, Christian hip hop, Christian metal, Christian hardcore, Christian punk, Christian alternative rock']
   } else if (input == '#ceb8ae') {
-    output = ['World','World, New Age, World fusion, Worldbeat']
+    output = ['World','New Age, World fusion, Worldbeat']
   } else if (input == '#7085ef') {
-    output = ['Electronic','Electronic, EDM, Club, Electro, Electro house, Electroclash, Electro swing, Electro hop, Electro funk, Electro pop, Electronicore, Electronic dance']
+    output = ['Electronic','EDM, Club, Electro, Electro house, Electroclash, Electro swing, Electro hop, Electro funk, Electro pop, Electronicore, Electronic dance']
   } else if (input == '#5666b8') {
-    output = ['Dubstep','Dubstep, Brostep, Chillstep, Drumstep, Riddim, Dubstyl, Garage']
+    output = ['Dubstep','Brostep, Chillstep, Drumstep, Riddim, Dubstyl, Garage']
   } else if (input == '#4d95b8') {
-    output = ['Electro Rock','Electro rock, Electro funk, Electro rock, Electronic rock, Electronicore']
+    output = ['Electro Rock','Electro funk, Electronic rock, Electronicore']
   } else if (input == '#623aff') {
-    output = ['Reggae','Reggae, Dancehall, Afrobeats, Reggae fusion, Reggaeton, Reggae en Español, Reggae rock, Reggae pop, Reggae hip hop, Reggae metal']
+    output = ['Reggae','Dancehall, Afrobeats, Reggae fusion, Reggaeton, Reggae en Español, Reggae rock, Reggae pop, Reggae hip hop, Reggae metal']
   } else if (input == '#73e6e0') {
-    output = ['Eurodance','Eurodance, Trance, Euro disco, Italo disco, Space disco, Eurobeat, Euro house, Eurotrance']
+    output = ['Eurodance','Trance, Euro disco, Italo disco, Space disco, Eurobeat, Euro house, Eurotrance']
   } else if (input == '#3eadef') {
-    output = ['House','House, Deep house, Tech house, Progressive house, Tropical house, Future house, Acid house, Ambient house, Balearic house, Big room house, Bouncy house, Chicago house, Deep house, Electro house, Funky house, Ghetto house, Hard house, Hip house, Latin house, Microhouse, Minimal house, Progressive house, Tech house, Tribal house, UK hard house, Vocal house']
+    output = ['House','Deep house, Tech house, Progressive house, Tropical house, Future house, Acid house, Ambient house, Balearic house, Big room house, Bouncy house, Chicago house, Deep house, Electro house, Funky house, Ghetto house, Hard house, Hip house, Latin house, Microhouse, Minimal house, Progressive house, Tech house, Tribal house, UK hard house, Vocal house']
   } else if (input == '#ff6900') {
     output = ['Country','']
   } else if (input == '#f6b26b') {
-    output = ['Country Pop','Country pop, Folk pop']
+    output = ['Country Pop','Folk pop']
   } else if (input == '#b3997a') {
-    output = ['Country Rock','Country rock, Southern rock, Countrycore']
+    output = ['Country Rock','Southern rock, Countrycore']
   } else if (input == '#d49875') {
-    output = ['Country Rap','Country rap, Trap-country, Hick hop']
+    output = ['Country Rap','Trap-country, Hick hop']
   } else if (input == '#c7cc86') {
-    output = ['Folk','Folk, Bluegrass, Folktronica, Folk pop, Folk punk, Folk metal, Folk jazz']
+    output = ['Folk','Bluegrass, Folktronica, Folk pop, Folk punk, Folk metal, Folk jazz']
   } else if (input == '#ffe381') {
-    output = ['Latin','Latin, Latin pop, Latin rock, Salsa, Banda, Cumbia, Regional mexican, Tejano, Norteño, Mariachi, Ranchera']
+    output = ['Latin','Latin pop, Latin rock, Salsa, Banda, Cumbia, Regional mexican, Tejano, Norteño, Mariachi, Ranchera']
   } else if (input == '#f5d8d8') {
-    output = ['Tango','Tango, Polka, Contradanse']
+    output = ['Tango','Polka, Contradanse']
   }
   return output;
 }
