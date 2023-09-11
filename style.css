@@ -12,6 +12,15 @@ a {color:#00a3ff}
   display: none;
 }
 
+li {
+  list-style-type: none;
+  display: flex;
+  flex-direction: row;
+}
+li:hover, .top10 > div:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 /* current */
 
 .parent {
@@ -265,6 +274,7 @@ a {color:#00a3ff}
   position: absolute;
   display: flex;
   flex-direction: row;
+  width: 100%;
   transition: 0.4s ease;
 }
 .no01 {
@@ -321,7 +331,6 @@ a {color:#00a3ff}
   flex-direction: row;
 }
 .genres li {
-  list-style-type: none;
   /* display: grid;
   grid-template-columns: 16px 250px auto;
   grid-auto-rows: auto; */

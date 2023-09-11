@@ -755,6 +755,8 @@ async function browse() {
     return list.flat(1)
   }
 
+  
+
   function group(type) {
     var reducedArray = Object.values(type.reduce((hash, item) => {
       if (!hash[item.object]) {
@@ -1086,9 +1088,25 @@ async function browse() {
     document.querySelector("#genre-info").appendChild(description)
 
     group(dataList('genre', key, 'song')).forEach((item, i) => {
+      var id = item.key[1]
       const li = document.createElement("li")
-      li.innerHTML = item.score + ' <div style="display:inline-block;width:16px;height:16px;background: ' + item.key[0] + ';"></div><a class="songname" songid="'+ item.key[1] + '">' + item.key[2] + "</a>&nbsp-&nbsp<div class='artistname'><a>"+item.key[3].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
-      li.setAttribute('songId', item.key[1])
+      li.innerHTML = item.score + ' <div style="display:inline-block;width:16px;height:16px;background: ' + item.key[0] + ';"></div><a class="songname" songid="'+ id + '">' + item.key[2] + "</a>&nbsp-&nbsp<div class='artistname'><a>"+item.key[3].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
+      li.setAttribute('songId', id)
+      li.setAttribute('week', firstweek(id))
+      li.onmouseover = function() {
+        document.querySelectorAll("#genre-map .genre").forEach((item, i) => {
+          if (item.id !== id) {
+            item.style.opacity = '0.2'
+          } else {
+            item.style.opacity = '1'
+          }
+        })
+      }
+      li.onmouseout = function() {
+        document.querySelectorAll("#genre-map .genre").forEach((item, i) => {
+          item.style.opacity = '1'
+        })
+      }
       document.querySelector("#genre-songs").appendChild(li)
     })
     setClick('#genre-songs','song','songId')
@@ -1101,6 +1119,17 @@ async function browse() {
     })
     setClick('#genre-artists','artist','')
     map(key,'genre')
+  }
+
+  function firstweek(id) {
+    for (let pos = 1; pos <= 10; pos++) {
+      operator = 'no'+pos+'id'
+      for (let i = 0; i < data.length; i++) {
+        if (data[i]?.[operator].includes(id)) {
+          return data[i].week
+        }
+      }
+    }
   }
 
   function setClick(container, request, id) {
@@ -1257,9 +1286,9 @@ async function browse() {
     if (decode(item)[0][1] == '01') {
       no1Count++
     }
-    const div = document.createElement("div");
-    div.innerHTML = decode(item)[0][1]+'<div style="width:16px;height:16px;background: '+decode(item)[0][2]+';"></div>'+'<a class="songname" id="'+item+'">'+decode(item)[0][3]+'</a>&nbsp'+"-"+"&nbsp<div class='artistname'><a>"+decode(item)[0][4].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
-    document.querySelector("#modalsongs").appendChild(div);
+    const li = document.createElement("li");
+    li.innerHTML = decode(item)[0][1]+'<div style="width:16px;height:16px;background: '+decode(item)[0][2]+';"></div>'+'<a class="songname" id="'+item+'">'+decode(item)[0][3]+'</a>&nbsp'+"-"+"&nbsp<div class='artistname'><a>"+decode(item)[0][4].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
+    document.querySelector("#modalsongs").appendChild(li);
   })
   setClick('#modalsongs','song','id')
   setClick('#modalsongs','artist','')
@@ -1415,6 +1444,7 @@ async function browse() {
         } else if (request == 'genre') {
           if (data[pos]?.['no'+i+'genre'] == key) {
             tile.classList.add('genre')
+            tile.setAttribute('id', data[pos]?.['no'+i+'id'])
           } else {
             tile.style.height = '0'
           }
