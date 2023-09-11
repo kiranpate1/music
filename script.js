@@ -258,6 +258,7 @@ async function browse() {
 
     const genreMap = document.createElement("div")
     genreMap.setAttribute("id", 'genre-map')
+    genreMap.classList.add('map')
     document.querySelector("#genre-container").appendChild(genreMap)
 
     const genreDataList = document.createElement("div")
@@ -959,6 +960,11 @@ async function browse() {
         description(entries,'entry','new')
       }
     })
+    lookup1 = newArtistList.reduce((a, e) => {
+      a[e.newSongArtist] = ++a[e.newSongArtist] || 0;
+    }, {});
+    console.log(newArtistList.filter(e => lookup1[e.newSongArtist]))
+
     lookup = newArtistList.reduce((a, e) => {
       a[e.newSongArtist] = ++a[e.newSongArtist] || 0;
       return a;
@@ -1062,7 +1068,6 @@ async function browse() {
     document.querySelector("#genre-songs").innerHTML = ""
     document.querySelector("#genre-artists").innerHTML = ""
     document.querySelector("#genre-info").innerHTML = ""
-    document.querySelector("#genre-map").innerHTML = ""
     for (let i = 0; i < document.querySelectorAll('#history li').length; i++) {
       document.querySelectorAll('#history li')[i].style.opacity = '1'
     }
@@ -1088,40 +1093,6 @@ async function browse() {
     map(key,'genre')
   }
 
-  document.querySelector("#genre-map").style.gridTemplateColumns = "repeat(" + data.length + ", 1fr)";
-  function map(key, request) {
-    for (let z = 0; z < data.length; z++) {
-      const li = document.createElement("div")
-      li.setAttribute("id", 'week' + z)
-      li.classList.add('map-week')
-      document.querySelector("#genre-map").appendChild(li)
-      createLine(z)
-    }
-    function createLine(pos) {
-      for (let i = 1; i <= 10; i++) {
-        const tile = document.createElement("div")
-        tile.style.backgroundColor = data[pos]?.['no'+i+'genre']
-
-        if (request == 'artist') {
-          var separators = [' ft. ', ' / ', ', ']
-          const tokens = data[pos]?.['no'+i+'artist'].split(new RegExp(separators.join('|'), 'g'))
-    
-          if (tokens.some(r=> key.includes(r))) {
-            tile.style.opacity = '1'
-          } else {
-            tile.style.opacity = '0'
-          }
-        } else if (request == 'genre') {
-          if (data[pos]?.['no'+i+'genre'] == key) {
-            tile.classList.add('genre')
-          } else {
-            tile.style.height = '0'
-          }
-        }
-        document.querySelector('#week' + pos).appendChild(tile)
-      }
-    }
-  }
 }
 
 
@@ -1214,10 +1185,6 @@ function history(term, request) {
 // }
 
 function updateHistory(el) {
-  console.log("hi")
-  for (let i = 0; i < document.querySelectorAll('#history li').length; i++) {
-    document.querySelectorAll('#history li')[i].style.opacity = '1'
-  }
   el.style.opacity = '0.5'
 
   const i = Array.from(el.parentNode.children).indexOf(el)
@@ -1322,6 +1289,7 @@ async function searchArtist(artist) {
   // decode(dfsgfeg).then(results => {
   //   pic(results[0][4], results[0][3], 'modal')
   // })
+  map(artist,'artist')
   pic(decode(dfsgfeg)[0][4], decode(dfsgfeg)[0][3], 'videomodal')
   //pic(decode(totalList.artist)[0][4], decode(totalList.artist)[0][3], 'modal')
 }
@@ -1582,6 +1550,51 @@ function pic(termArtist, termSong, id) {
   }
 }
 
+async function map(key, request) {
+  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
+  const response = await fetch(api_url)
+  const data = await response.json()
+
+  document.querySelector("#artist-map").innerHTML = ""
+  document.querySelector("#genre-map").innerHTML = ""
+  document.querySelector("#genre-map").style.gridTemplateColumns = "repeat(" + data.length + ", 1fr)";
+  document.querySelector("#artist-map").style.gridTemplateColumns = "repeat(" + data.length + ", 1fr)";
+
+  for (let z = 0; z < data.length; z++) {
+    const li = document.createElement("div")
+    li.setAttribute("id", 'week' + z)
+    li.classList.add('map-week')
+    document.querySelector("#genre-map").appendChild(li)
+    document.querySelector('#artist-map').appendChild(li.cloneNode(true))
+    createLine(z)
+  }
+  function createLine(pos) {
+    for (let i = 1; i <= 10; i++) {
+      const tile = document.createElement("div")
+      tile.style.backgroundColor = data[pos]?.['no'+i+'genre']
+
+      if (request == 'artist') {
+        var separators = [' ft. ', ' / ', ', ']
+        const tokens = data[pos]?.['no'+i+'artist'].split(new RegExp(separators.join('|'), 'g'))
+  
+        if (tokens.some(r=> key.includes(r))) {
+          tile.classList.add('genre')
+        } else {
+          tile.style.opacity = '0'
+        }
+        document.querySelector('#artist-map #week' + pos).appendChild(tile)
+      } else if (request == 'genre') {
+        if (data[pos]?.['no'+i+'genre'] == key) {
+          tile.classList.add('genre')
+        } else {
+          tile.style.height = '0'
+        }
+        document.querySelector('#genre-map #week' + pos).appendChild(tile)
+      }
+    }
+  }
+}
+
 
 //map('');
 // const artistSearch = [];
@@ -1707,7 +1720,7 @@ function decodeGenre(input) {
   } else if (input == '#7085ef') {
     output = ['Electronic','Electronic, EDM, Club, Electro, Electro house, Electroclash, Electro swing, Electro hop, Electro funk, Electro pop, Electronicore, Electronic dance']
   } else if (input == '#5666b8') {
-    output = ['Dubstep','Dubstep, Brostep, Chillstep, Drumstep, Riddim, Dubstyl']
+    output = ['Dubstep','Dubstep, Brostep, Chillstep, Drumstep, Riddim, Dubstyl, Garage']
   } else if (input == '#4d95b8') {
     output = ['Electro Rock','Electro rock, Electro funk, Electro rock, Electronic rock, Electronicore']
   } else if (input == '#623aff') {
