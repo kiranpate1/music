@@ -146,7 +146,7 @@ async function browse() {
     document.querySelector("#chart-container").appendChild(chartNav)
 
     const navBack = document.createElement("div")
-    navBack.setAttribute("onClick", 'browse()')
+    navBack.addEventListener("click", function() { browseInitialize()})
     navBack.innerHTML = "<"
     document.querySelector("#chart-nav").appendChild(navBack)
 
@@ -246,7 +246,10 @@ async function browse() {
     genreNav.setAttribute("id", 'genre-nav')
     document.querySelector("#genre-container").appendChild(genreNav)
 
-    document.querySelector('#genre-nav').appendChild(navBack.cloneNode(true))
+    const navBack1 = document.createElement("div")
+    navBack1.addEventListener("click", function() { browseInitialize()})
+    navBack1.innerHTML = "<"
+    document.querySelector('#genre-nav').appendChild(navBack1)
 
     const genreNavSelection = document.createElement("div")
     genreNavSelection.setAttribute("id", 'genre-nav-selection')
