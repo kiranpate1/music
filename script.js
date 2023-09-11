@@ -1,5 +1,4 @@
 
-var test1
 var browseHistory = []
 var mapObj = {' ft. ':"</a>&nbspft.&nbsp<a>",' / ':"</a>&nbsp/&nbsp<a>",', ':"</a>,&nbsp<a>"};
 var mapObj1 = {' ft. ':"separator",' / ':"separator",', ':"separator"};
@@ -9,7 +8,7 @@ var genrePool = ['#de7eea','#a16fd9','#9a82c8','#c295c8','#d700ff','#854d76','#b
 
 homeInitialize()
 function homeInitialize() {
-  test1 = false
+  browse()
   document.querySelector("#main-content").innerHTML = ''
 
   const yeah = document.createElement("div")
@@ -79,8 +78,9 @@ async function browse() {
   }
 
   
-
-  browseInitialize()
+  document.querySelector("#browse").onclick = function(){
+    browseInitialize()
+  }
   function browseInitialize() {
     document.querySelector("#main-content").innerHTML = ''
 
@@ -298,6 +298,117 @@ async function browse() {
       // chartInitialize()
       // findWeek(browseHistory[browseHistory.length - 1])
     }
+
+    const searchFml = document.createElement("div")
+    searchFml.classList.add('search-container')
+    document.querySelector("#chart-nav").appendChild(searchFml)
+  
+    const yyyy = document.createElement("input")
+    yyyy.setAttribute("type", 'text')
+    yyyy.setAttribute("id", 'yearSearch')
+    yyyy.setAttribute("placeholder", 'YYYY')
+    yyyy.setAttribute("maxlength", '4')
+    document.querySelector(".search-container").appendChild(yyyy)
+  
+    const mm = document.createElement("input")
+    mm.setAttribute("type", 'text')
+    mm.setAttribute("id", 'monthSearch')
+    mm.setAttribute("placeholder", 'MM')
+    mm.setAttribute("maxlength", '2')
+    document.querySelector(".search-container").appendChild(mm)
+  
+    const dd = document.createElement("input")
+    dd.setAttribute("type", 'text')
+    dd.setAttribute("id", 'daySearch')
+    dd.setAttribute("placeholder", 'DD')
+    dd.setAttribute("maxlength", '2')
+    document.querySelector(".search-container").appendChild(dd)
+  
+    const searchWeekButton = document.createElement("button")
+    searchWeekButton.setAttribute("id", 'search-button')
+    searchWeekButton.onclick = function(){search()}
+    searchWeekButton.innerHTML = "search"
+    document.querySelector(".search-container").appendChild(searchWeekButton)
+  
+    const nextprev = document.createElement("div")
+    nextprev.classList.add('nextprev')
+    document.querySelector("#chart-nav").appendChild(nextprev)
+  
+    // const browseWeek = document.createElement("button")
+    // browseWeek.setAttribute("id", 'week')
+    // browseWeek.innerHTML = "Week"
+    // document.querySelector(".nextprev").appendChild(browseWeek)
+  
+    // const browseMonth = document.createElement("button")
+    // browseMonth.setAttribute("id", 'month')
+    // browseMonth.innerHTML = "Month"
+    // document.querySelector(".nextprev").appendChild(browseMonth)
+  
+    // const browseYear = document.createElement("button")
+    // browseYear.setAttribute("id", 'year')
+    // browseYear.innerHTML = "Year"
+    // document.querySelector(".nextprev").appendChild(browseYear)
+  
+    // const browseDecade = document.createElement("button")
+    // browseDecade.setAttribute("id", 'decade')
+    // browseDecade.innerHTML = "Decade"
+    // document.querySelector(".nextprev").appendChild(browseDecade)
+  
+    const prev = document.createElement("button")
+    prev.setAttribute("id", 'previous')
+    prev.innerHTML = "<"
+    document.querySelector(".nextprev").appendChild(prev)
+  
+    const next = document.createElement("button")
+    next.setAttribute("id", 'next')
+    next.innerHTML = ">"
+    document.querySelector(".nextprev").appendChild(next)
+  
+    const weekTitle = document.createElement("div")
+    weekTitle.setAttribute("id", 'weektitle')
+    document.querySelector(".chart-title").appendChild(weekTitle)
+  
+    const chartIntel = document.createElement("div")
+    chartIntel.classList.add('chart-intel')
+    document.querySelector(".chart-title").appendChild(chartIntel)
+  
+    const video1 = document.createElement("div")
+    video1.setAttribute("id", 'video1')
+    video1.classList.add('video')
+    document.querySelector("#videos").appendChild(video1)
+  
+    const video2 = document.createElement("div")
+    video2.setAttribute("id", 'video2')
+    video2.classList.add('video')
+    document.querySelector("#videos").appendChild(video2)
+  
+    const video3 = document.createElement("div")
+    video3.setAttribute("id", 'video3')
+    video3.classList.add('video')
+    document.querySelector("#videos").appendChild(video3)
+  
+    const chartDataList = document.createElement("div")
+    chartDataList.setAttribute("id", 'chart-datalist')
+    document.querySelector("#chart-container").appendChild(chartDataList)
+  
+    const top10 = document.createElement("div")
+    top10.setAttribute("id", 'top10')
+    top10.classList.add('top10')
+    document.querySelector("#chart-datalist").appendChild(top10)
+  
+    const nonweeklychart = document.createElement("div")
+    nonweeklychart.classList.add('nonweeklychart')
+    document.querySelector("#chart-datalist").appendChild(nonweeklychart)
+  
+    const topsongs = document.createElement("div")
+    topsongs.setAttribute("id", 'songs')
+    topsongs.classList.add('songs')
+    document.querySelector(".nonweeklychart").appendChild(topsongs)
+  
+    const topartists = document.createElement("div")
+    topartists.setAttribute("id", 'artists')
+    topartists.classList.add('artists')
+    document.querySelector(".nonweeklychart").appendChild(topartists)
   }
 
   
@@ -521,116 +632,7 @@ async function browse() {
 
 
 
-  const searchFml = document.createElement("div")
-  searchFml.classList.add('search-container')
-  document.querySelector("#chart-nav").appendChild(searchFml)
 
-  const yyyy = document.createElement("input")
-  yyyy.setAttribute("type", 'text')
-  yyyy.setAttribute("id", 'yearSearch')
-  yyyy.setAttribute("placeholder", 'YYYY')
-  yyyy.setAttribute("maxlength", '4')
-  document.querySelector(".search-container").appendChild(yyyy)
-
-  const mm = document.createElement("input")
-  mm.setAttribute("type", 'text')
-  mm.setAttribute("id", 'monthSearch')
-  mm.setAttribute("placeholder", 'MM')
-  mm.setAttribute("maxlength", '2')
-  document.querySelector(".search-container").appendChild(mm)
-
-  const dd = document.createElement("input")
-  dd.setAttribute("type", 'text')
-  dd.setAttribute("id", 'daySearch')
-  dd.setAttribute("placeholder", 'DD')
-  dd.setAttribute("maxlength", '2')
-  document.querySelector(".search-container").appendChild(dd)
-
-  const searchWeekButton = document.createElement("button")
-  searchWeekButton.setAttribute("id", 'search-button')
-  searchWeekButton.onclick = function(){search()}
-  searchWeekButton.innerHTML = "search"
-  document.querySelector(".search-container").appendChild(searchWeekButton)
-
-  const nextprev = document.createElement("div")
-  nextprev.classList.add('nextprev')
-  document.querySelector("#chart-nav").appendChild(nextprev)
-
-  // const browseWeek = document.createElement("button")
-  // browseWeek.setAttribute("id", 'week')
-  // browseWeek.innerHTML = "Week"
-  // document.querySelector(".nextprev").appendChild(browseWeek)
-
-  // const browseMonth = document.createElement("button")
-  // browseMonth.setAttribute("id", 'month')
-  // browseMonth.innerHTML = "Month"
-  // document.querySelector(".nextprev").appendChild(browseMonth)
-
-  // const browseYear = document.createElement("button")
-  // browseYear.setAttribute("id", 'year')
-  // browseYear.innerHTML = "Year"
-  // document.querySelector(".nextprev").appendChild(browseYear)
-
-  // const browseDecade = document.createElement("button")
-  // browseDecade.setAttribute("id", 'decade')
-  // browseDecade.innerHTML = "Decade"
-  // document.querySelector(".nextprev").appendChild(browseDecade)
-
-  const prev = document.createElement("button")
-  prev.setAttribute("id", 'previous')
-  prev.innerHTML = "<"
-  document.querySelector(".nextprev").appendChild(prev)
-
-  const next = document.createElement("button")
-  next.setAttribute("id", 'next')
-  next.innerHTML = ">"
-  document.querySelector(".nextprev").appendChild(next)
-
-  const weekTitle = document.createElement("div")
-  weekTitle.setAttribute("id", 'weektitle')
-  document.querySelector(".chart-title").appendChild(weekTitle)
-
-  const chartIntel = document.createElement("div")
-  chartIntel.classList.add('chart-intel')
-  document.querySelector(".chart-title").appendChild(chartIntel)
-
-  const video1 = document.createElement("div")
-  video1.setAttribute("id", 'video1')
-  video1.classList.add('video')
-  document.querySelector("#videos").appendChild(video1)
-
-  const video2 = document.createElement("div")
-  video2.setAttribute("id", 'video2')
-  video2.classList.add('video')
-  document.querySelector("#videos").appendChild(video2)
-
-  const video3 = document.createElement("div")
-  video3.setAttribute("id", 'video3')
-  video3.classList.add('video')
-  document.querySelector("#videos").appendChild(video3)
-
-  const chartDataList = document.createElement("div")
-  chartDataList.setAttribute("id", 'chart-datalist')
-  document.querySelector("#chart-container").appendChild(chartDataList)
-
-  const top10 = document.createElement("div")
-  top10.setAttribute("id", 'top10')
-  top10.classList.add('top10')
-  document.querySelector("#chart-datalist").appendChild(top10)
-
-  const nonweeklychart = document.createElement("div")
-  nonweeklychart.classList.add('nonweeklychart')
-  document.querySelector("#chart-datalist").appendChild(nonweeklychart)
-
-  const topsongs = document.createElement("div")
-  topsongs.setAttribute("id", 'songs')
-  topsongs.classList.add('songs')
-  document.querySelector(".nonweeklychart").appendChild(topsongs)
-
-  const topartists = document.createElement("div")
-  topartists.setAttribute("id", 'artists')
-  topartists.classList.add('artists')
-  document.querySelector(".nonweeklychart").appendChild(topartists)
 
 
 
@@ -670,18 +672,19 @@ async function browse() {
         // document.querySelector('#id' + item.key.slice(-6)).innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item.key + ';"></div><div>' + decodeGenre(item.key) + ": " + item.score + "</div><div class='bar' style='background:" + item.key + "'></div>"
         document.querySelector('#id' + item.key.slice(-6)).style.opacity = '1'
     })
-    document.querySelectorAll('#artists li a').forEach((item, i) => {
-      item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
-    })
     document.querySelector('.chart-intel').innerHTML = decode(group(dataList('week', yearno, 'song'))[0].key[1])[0][3] + " is the #1 song of " + yearno
 
     document.querySelectorAll('.nonweeklychart a.songname').forEach((item, i) => {
-      item.setAttribute('onClick', 'history(`'+item.getAttribute("songid")+'`,`song`);searchSong(`'+item.getAttribute("songid")+'`)')
-      //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
+      item.onclick = function(){
+        history(item.getAttribute("songid"),'song')
+        searchSong(item.getAttribute("songid"))
+      }
     })
     document.querySelectorAll('.nonweeklychart .artistname a').forEach((item, i) => {
-      item.setAttribute('onClick', 'history(`'+item.innerHTML+'`,`artist`);searchArtist(`'+item.innerHTML+'`)')
-      //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
+      item.onclick = function(){
+        history(item.innerHTML,'artist')
+        searchArtist(item.innerHTML)
+      }
     })
   }
 
@@ -960,16 +963,12 @@ async function browse() {
         description(entries,'entry','new')
       }
     })
-    lookup1 = newArtistList.reduce((a, e) => {
-      a[e.newSongArtist] = ++a[e.newSongArtist] || 0;
-    }, {});
-    console.log(newArtistList.filter(e => lookup1[e.newSongArtist]))
 
     lookup = newArtistList.reduce((a, e) => {
       a[e.newSongArtist] = ++a[e.newSongArtist] || 0;
       return a;
     }, {});
-    description(newArtistList.filter(e => lookup[e.newSongArtist]),'entry','newBatch')
+    // description(newArtistList.filter(e => lookup[e.newSongArtist]),'entry','newBatch')
     
     repeatSongList.forEach((element, i) => { //this week
       var repeats = document.querySelector("#" + repeatSongIdList[i] + "")
@@ -998,12 +997,20 @@ async function browse() {
   
     document.querySelectorAll('#top10 a.songname').forEach((item, i) => {
       //item.setAttribute('href', '#')
-      item.setAttribute('onClick', 'history(`'+item.getAttribute("id")+'`,`song`);searchSong(`'+item.getAttribute("id")+'`)')
+      item.addEventListener('click', function() {
+        history(item.getAttribute("id"),'song')
+        searchSong(item.getAttribute("id"))
+      })
+      //item.setAttribute('onClick', 'history(`'+item.getAttribute("id")+'`,`song`);searchSong(`'+item.getAttribute("id")+'`)')
       //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
     document.querySelectorAll('#top10 .artistname a').forEach((item, i) => {
       //item.setAttribute('href', '#')
-      item.setAttribute('onClick', 'history(`'+item.innerHTML+'`,`artist`);searchArtist(`'+item.innerHTML+'`)')
+      item.addEventListener('click', function() {
+        history(item.innerHTML,'artist')
+        searchArtist(item.innerHTML)
+      })
+      //item.setAttribute('onClick', 'history(`'+item.innerHTML+'`,`artist`);searchArtist(`'+item.innerHTML+'`)')
       //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
   
@@ -1093,146 +1100,132 @@ async function browse() {
     map(key,'genre')
   }
 
-}
-
-
-
-
-
-//old
-
-
-function setClick(container, request, id) {
-  if (request == 'song') {
-    document.querySelectorAll(container + ' a.songname').forEach((item, i) => {
-      //item.setAttribute('href', '#')
-      if (document.querySelector("#termSearch").value.length === 0) {
-        item.setAttribute('onClick', 'history(`'+item.getAttribute(id)+'`,`song`);searchSong(`'+item.getAttribute(id)+'`)')
-      } else {
-        item.setAttribute('onClick', 'searchSong(`'+item.getAttribute(id)+'`)')
-      }
-    })
-  } else if (request == 'artist') {
-    document.querySelectorAll(container + ' .artistname a').forEach((item, i) => {
-      //item.setAttribute('href', '#')
-      if (document.querySelector("#termSearch").value.length === 0) {
-        item.setAttribute('onClick', 'history(`'+item.innerHTML+'`,`artist`);searchArtist(`'+item.innerHTML+'`)')
-      } else {
-        item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
-      }
-    })
-  }
-}
-
-
-
-
-function modal(visibility) {
-  document.querySelector("#videomodal").style.backgroundImage = ''
-  document.querySelector("#covermodal").style.backgroundImage = ''
-  document.querySelector("#modalsongs").innerHTML = ''
-  document.querySelector('#modalstats').innerHTML = ''
-  document.querySelector("#modal-wrapper").style.display = visibility
-}
-var modalHistory = []
-document.querySelector('#close').onclick = function(){
-  for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
-    document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
-  }
-  modal('none')
-  modalHistory = []
-}
-function history(term, request) {
-  modalHistory.push(term)
-  
-  const historyItem = document.createElement("li")
-  historyItem.innerHTML = modalHistory[modalHistory.length - 1]
-  // if (term.slice(0, 2) == 'ix') {
-  if (request == 'song') {
-    historyItem.addEventListener('click', function() { history(term,'song');searchSong(term);updateHistory(historyItem) })
-    // historyItem.setAttribute('onClick', 'searchSong(`'+term+'`)')
-  } else if (request == 'artist') {
-    historyItem.addEventListener('click', function() { history(term,'artist');searchArtist(term);updateHistory(historyItem) })
-    // historyItem.setAttribute('onClick', 'searchArtist(`'+term+'`)')
-  }
-  document.querySelector("#history").appendChild(historyItem)
-}
-// document.querySelector('#back').onclick = function(){
-//   modalHistory.pop()
-//   var recent = modalHistory.length - 1
-  
-//   if (!modalHistory[recent]) {
-//     for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
-//       document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
-//     }
-//     modal('none')
-//     modalHistory.pop()
-//     const parent = document.querySelector("#history");
-//     [...parent.children].slice(-1).forEach(parent.removeChild.bind(parent));
-//   } else if (modalHistory[recent].slice(0, 2) == 'ix') {
-//     history(modalHistory[recent])
-//     searchSong(modalHistory[recent])
-//     modalHistory.pop()
-//     const parent = document.querySelector("#history");
-//     [...parent.children].slice(-2).forEach(parent.removeChild.bind(parent));
-//   } else {
-//     history(modalHistory[recent])
-//     searchArtist(modalHistory[recent])
-//     modalHistory.pop()
-//     const parent = document.querySelector("#history");
-//     [...parent.children].slice(-2).forEach(parent.removeChild.bind(parent));
-//   }
-// }
-
-function updateHistory(el) {
-  el.style.opacity = '0.5'
-
-  const i = Array.from(el.parentNode.children).indexOf(el)
-  var itemAheadLength = 0 - [document.querySelector("#history").children.length - i - 1]
-
-  const parent = document.querySelector("#history");
-  [...parent.children].slice(itemAheadLength).forEach(parent.removeChild.bind(parent));
-}
-
-async function searchSong(id) {
-  modal(`flex`)
-  // history(id)
-  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
-  const response = await fetch(api_url);
-  const data = await response.json();
-  var artist = decode(id)[0][4]
-  var name = decode(id)[0][3]
-  document.querySelector("#modalname").innerHTML = name+" by <div class='artistname'><a>"+artist.replace(re, function(matched){return mapObj[matched]})+"</a></div>"
-
-  list('id').then(function (val) {
-    val.forEach((item, i) => {
-      if (item.artist == id) {
-        document.querySelector('#modalstats').innerHTML = "#"+[i+1]+" all time • #"+decode(id)[0][1]+" peak • "+item.count+" weeks • "+decodeGenre(decode(id)[0][2])[0]
-        return
-      }
-    })
-  })
-  function decode(input) {
-    const output = []
-    for (let x = 1; x <= 10; x++) {
-      for (var a = 0; a < data.length; a++) {
-        if (data[a]?.['no'+x+'id'] == input) {
-          output.push(new Array(data[a]?.week,data[a]?.['no'+x+'direction'].slice(0, 2),data[a]?.['no'+x+'genre'],data[a]?.['no'+x+'name'],data[a]?.['no'+x+'artist']))
-          return output
+  function setClick(container, request, id) {
+    if (request == 'song') {
+      document.querySelectorAll(container + ' a.songname').forEach((item, i) => {
+        //item.setAttribute('href', '#')
+        if (document.querySelector("#termSearch").value.length === 0) {
+          item.addEventListener('click', function() {
+            history(item.getAttribute(id),'song')
+            searchSong(item.getAttribute(id))
+          })
+          // item.setAttribute('onClick', 'history(`'+item.getAttribute(id)+'`,`song`);searchSong(`'+item.getAttribute(id)+'`)')
+        } else {
+          item.addEventListener('click', function() {
+            searchSong(item.getAttribute(id))
+          })
+          // item.setAttribute('onClick', 'searchSong(`'+item.getAttribute(id)+'`)')
         }
-      }
+      })
+    } else if (request == 'artist') {
+      document.querySelectorAll(container + ' .artistname a').forEach((item, i) => {
+        //item.setAttribute('href', '#')
+        if (document.querySelector("#termSearch").value.length === 0) {
+          item.addEventListener('click', function() {
+            history(item.innerHTML,'artist')
+            searchArtist(item.innerHTML)
+          })
+          // item.setAttribute('onClick', 'history(`'+item.innerHTML+'`,`artist`);searchArtist(`'+item.innerHTML+'`)')
+        } else {
+          item.addEventListener('click', function() {
+            searchArtist(item.innerHTML)
+          })
+          // item.setAttribute('onClick', 'searchArtist(`'+item.innerHTML+'`)')
+        }
+      })
     }
   }
-  setClick('#modalname','artist','')
-  pic(artist,name,'videomodal')
-}
 
-async function searchArtist(artist) {
+  function modal(visibility) {
+    document.querySelector("#videomodal").style.backgroundImage = ''
+    document.querySelector("#covermodal").style.backgroundImage = ''
+    document.querySelector("#modalsongs").innerHTML = ''
+    document.querySelector('#modalstats').innerHTML = ''
+    document.querySelector("#modal-wrapper").style.display = visibility
+  }
+  var modalHistory = []
+  document.querySelector('#close').onclick = function(){
+    for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
+      document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
+    }
+    modal('none')
+    modalHistory = []
+  }
+  function history(term, request) {
+    modalHistory.push(term)
+    
+    const historyItem = document.createElement("li")
+    historyItem.innerHTML = modalHistory[modalHistory.length - 1]
+    // if (term.slice(0, 2) == 'ix') {
+    if (request == 'song') {
+      historyItem.addEventListener('click', function() { history(term,'song');searchSong(term);updateHistory(historyItem) })
+      // historyItem.setAttribute('onClick', 'searchSong(`'+term+'`)')
+    } else if (request == 'artist') {
+      historyItem.addEventListener('click', function() { history(term,'artist');searchArtist(term);updateHistory(historyItem) })
+      // historyItem.setAttribute('onClick', 'searchArtist(`'+term+'`)')
+    }
+    document.querySelector("#history").appendChild(historyItem)
+  }
+  // document.querySelector('#back').onclick = function(){
+  //   modalHistory.pop()
+  //   var recent = modalHistory.length - 1
+    
+  //   if (!modalHistory[recent]) {
+  //     for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
+  //       document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
+  //     }
+  //     modal('none')
+  //     modalHistory.pop()
+  //     const parent = document.querySelector("#history");
+  //     [...parent.children].slice(-1).forEach(parent.removeChild.bind(parent));
+  //   } else if (modalHistory[recent].slice(0, 2) == 'ix') {
+  //     history(modalHistory[recent])
+  //     searchSong(modalHistory[recent])
+  //     modalHistory.pop()
+  //     const parent = document.querySelector("#history");
+  //     [...parent.children].slice(-2).forEach(parent.removeChild.bind(parent));
+  //   } else {
+  //     history(modalHistory[recent])
+  //     searchArtist(modalHistory[recent])
+  //     modalHistory.pop()
+  //     const parent = document.querySelector("#history");
+  //     [...parent.children].slice(-2).forEach(parent.removeChild.bind(parent));
+  //   }
+  // }
+  
+  function updateHistory(el) {
+    el.style.opacity = '0.5'
+  
+    const i = Array.from(el.parentNode.children).indexOf(el)
+    var itemAheadLength = 0 - [document.querySelector("#history").children.length - i - 1]
+  
+    const parent = document.querySelector("#history");
+    [...parent.children].slice(itemAheadLength).forEach(parent.removeChild.bind(parent));
+  }
+  
+  function searchSong(id) {
+    modal(`flex`)
+    // history(id)
+    
+    var artist = decode(id)[0][4]
+    var name = decode(id)[0][3]
+    document.querySelector("#modalname").innerHTML = name+" by <div class='artistname'><a>"+artist.replace(re, function(matched){return mapObj[matched]})+"</a></div>"
+  
+    list('id').then(function (val) {
+      val.forEach((item, i) => {
+        if (item.artist == id) {
+          document.querySelector('#modalstats').innerHTML = "#"+[i+1]+" all time • #"+decode(id)[0][1]+" peak • "+item.count+" weeks • "+decodeGenre(decode(id)[0][2])[0]
+          return
+        }
+      })
+    })
+    setClick('#modalname','artist','')
+    pic(artist,name,'videomodal')
+  }
+
+  function searchArtist(artist) {
   modal('flex')
   // history(artist)
-  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
-  const response = await fetch(api_url);
-  const data = await response.json();
   document.querySelector("#modalname").innerHTML = artist
 
   var fullList = []
@@ -1247,7 +1240,7 @@ async function searchArtist(artist) {
     })
   }
   combinedUnique = [...new Set(fullList)]
-  var totalList = group(fullList)[0]
+  var totalList = group1(fullList)[0]
   var no1Count = 0
   list('artist').then(function (val) {
     val.forEach((item, i) => {
@@ -1294,114 +1287,146 @@ async function searchArtist(artist) {
   //pic(decode(totalList.artist)[0][4], decode(totalList.artist)[0][3], 'modal')
 }
 
-function group(type) {
-  let reducedArray = type.reduce( (acc, curr, _, arr) => {
-      if (acc.length == 0) acc.push({artist: curr, count: 1})
-      else if (acc.findIndex(f => f.artist === curr ) === -1) acc.push({artist: curr, count: 1})
-      else ++acc[acc.findIndex(f => f.artist === curr)].count
-      return acc
-  }, [])
-  var results = reducedArray.sort((a,b) => b.count - a.count )
-  return results
-}
 
-//CHANGE SEARCH TO CALCULATE RESULTS AT ONCE AND THEN APPEND RATHER THAN APPEND ONE BY ONE
 
-async function termSearch() {
+
+
+
+  //CHANGE SEARCH TO CALCULATE RESULTS AT ONCE AND THEN APPEND RATHER THAN APPEND ONE BY ONE
+
+  document.querySelector('#termSearch').onkeydown = function(){ 
+    const searchResults = document.querySelector("#searchResults")
+    const termSearch = document.querySelector("#termSearch")
+    const searchClose = document.querySelector("#searchClose")
   
-  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
-  const response = await fetch(api_url);
-  const data = await response.json();
+    searchResults.innerHTML = ''
+  
+    var searchValue = termSearch.value.toLowerCase();
+    if (termSearch !== null && termSearch.value === ""){
+      searchClose.innerHTML = ''
+      searchResults.innerHTML = ''
+      return
+    }
+  
+    //for artists
+    list('artist').then(function (val) {
+      searchResults.innerHTML = ''
+      val.forEach((item, i) => {
+        if (item.artist.toLowerCase().includes(searchValue)) {
+          const line = document.createElement("li");
+          line.innerHTML = item.artist
+          line.addEventListener('click', function() {
+            searchArtist(item.artist) 
+            for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
+              document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
+            }
+            line.style.backgroundColor = 'grey'
+          })
+          searchResults.appendChild(line)
+        }
+      })
+    }) //for songs
+    list('name','id').then(function (val) {
+      val.forEach((item, i) => {
+        if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
+          const line = document.createElement("li");
+          // console.log(item.artist.slice(-10), decode(item.artist.slice(-10)))
+          line.innerHTML = decode(item.artist.slice(-10))[0][3]
+          line.addEventListener('click', function() {
+            searchSong(item.artist.slice(-10)) 
+            for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
+              document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
+            }
+            line.style.backgroundColor = 'grey'
+          })
+          searchResults.appendChild(line)
+        }
+      })
+    }) //for songs by artist
+    list('artist','id').then(function (val) {
+      val.forEach((item, i) => {
+        if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
+          const line = document.createElement("li");
+          line.innerHTML = decode(item.artist.slice(-10))[0][3]
+          line.addEventListener('click', function() {
+            searchSong(item.artist.slice(-10)) 
+            for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
+              document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
+            }
+            line.style.backgroundColor = 'grey'
+          })
+          searchResults.appendChild(line)
+        }
+      })
+    })
+  
+    searchClose.innerHTML = ''
+  
+    const closeSearch = document.createElement("button")
+    closeSearch.setAttribute("id", 'closeSearch')
+    closeSearch.innerHTML = "X"
+    searchClose.appendChild(closeSearch)
+  
+    document.querySelector('#closeSearch').onclick = function(){
+      searchResults.innerHTML = ''
+      searchClose.innerHTML = ''
+      termSearch.value = ''
+    }
+  }
 
-  const searchResults = document.querySelector("#searchResults")
-  const termSearch = document.querySelector("#termSearch")
-  const searchClose = document.querySelector("#searchClose")
-
-  searchResults.innerHTML = ''
-
-  function decode(input) {
-    const output = []
-    for (let x = 1; x <= 10; x++) {
-      for (var a = 0; a < data.length; a++) {
-        if (data[a]?.['no'+x+'id'] == input) {
-          output.push(new Array(data[a]?.week,data[a]?.['no'+x+'direction'].slice(0, 2),data[a]?.['no'+x+'genre'],data[a]?.['no'+x+'name'],data[a]?.['no'+x+'artist']))
-          return output
+  function map(key, request) {
+    if (request == 'artist') {
+      document.querySelector("#artist-map").innerHTML = ""
+      document.querySelector("#artist-map").style.gridTemplateColumns = "repeat(" + data.length + ", 1fr)";
+    } else if (request == 'genre') {
+      document.querySelector("#genre-map").innerHTML = ""
+      document.querySelector("#genre-map").style.gridTemplateColumns = "repeat(" + data.length + ", 1fr)";
+    }
+  
+    for (let z = 0; z < data.length; z++) {
+      const li = document.createElement("div")
+      li.setAttribute("id", 'week' + z)
+      li.classList.add('map-week')
+      if (request == 'artist') {
+        document.querySelector("#artist-map").appendChild(li)
+      } else if (request == 'genre') {
+        document.querySelector("#genre-map").appendChild(li)
+      }
+      createLine(z)
+    }
+    function createLine(pos) {
+      for (let i = 1; i <= 10; i++) {
+        const tile = document.createElement("div")
+        tile.style.backgroundColor = data[pos]?.['no'+i+'genre']
+  
+        if (request == 'artist') {
+          var separators = [' ft. ', ' / ', ', ']
+          const tokens = data[pos]?.['no'+i+'artist'].split(new RegExp(separators.join('|'), 'g'))
+    
+          if (tokens.some(r=> key.includes(r))) {
+            tile.classList.add('genre')
+          } else {
+            tile.style.opacity = '0'
+          }
+          document.querySelector('#artist-map #week' + pos).appendChild(tile)
+        } else if (request == 'genre') {
+          if (data[pos]?.['no'+i+'genre'] == key) {
+            tile.classList.add('genre')
+          } else {
+            tile.style.height = '0'
+          }
+          document.querySelector('#genre-map #week' + pos).appendChild(tile)
         }
       }
     }
   }
-  var searchValue = termSearch.value.toLowerCase();
-  if (termSearch !== null && termSearch.value === ""){
-    searchClose.innerHTML = ''
-    searchResults.innerHTML = ''
-    return
-  }
-
-  //for artists
-  list('artist').then(function (val) {
-    searchResults.innerHTML = ''
-    val.forEach((item, i) => {
-      if (item.artist.toLowerCase().includes(searchValue)) {
-        const line = document.createElement("li");
-        line.innerHTML = item.artist
-        line.addEventListener('click', function() {
-          searchArtist(item.artist) 
-          for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
-            document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
-          }
-          line.style.backgroundColor = 'grey'
-        })
-        searchResults.appendChild(line)
-      }
-    })
-  }) //for songs
-  list('name','id').then(function (val) {
-    val.forEach((item, i) => {
-      if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
-        const line = document.createElement("li");
-        // console.log(item.artist.slice(-10), decode(item.artist.slice(-10)))
-        line.innerHTML = decode(item.artist.slice(-10))[0][3]
-        line.addEventListener('click', function() {
-          searchSong(item.artist.slice(-10)) 
-          for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
-            document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
-          }
-          line.style.backgroundColor = 'grey'
-        })
-        searchResults.appendChild(line)
-      }
-    })
-  }) //for songs by artist
-  list('artist','id').then(function (val) {
-    val.forEach((item, i) => {
-      if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
-        const line = document.createElement("li");
-        line.innerHTML = decode(item.artist.slice(-10))[0][3]
-        line.addEventListener('click', function() {
-          searchSong(item.artist.slice(-10)) 
-          for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
-            document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
-          }
-          line.style.backgroundColor = 'grey'
-        })
-        searchResults.appendChild(line)
-      }
-    })
-  })
-
-  searchClose.innerHTML = ''
-
-  const closeSearch = document.createElement("button")
-  closeSearch.setAttribute("id", 'closeSearch')
-  closeSearch.innerHTML = "X"
-  searchClose.appendChild(closeSearch)
-
-  document.querySelector('#closeSearch').onclick = function(){
-    searchResults.innerHTML = ''
-    searchClose.innerHTML = ''
-    termSearch.value = ''
-  }
 }
+
+
+
+
+
+//necessary async functions for performance sake
 
 async function list(component,comp2) {
   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
@@ -1424,7 +1449,18 @@ async function list(component,comp2) {
     });
   }
   var combinedList = list.flat(1)
-  return group(combinedList)
+  return group1(combinedList)
+}
+
+function group1(type) {
+  let reducedArray = type.reduce( (acc, curr, _, arr) => {
+      if (acc.length == 0) acc.push({artist: curr, count: 1})
+      else if (acc.findIndex(f => f.artist === curr ) === -1) acc.push({artist: curr, count: 1})
+      else ++acc[acc.findIndex(f => f.artist === curr)].count
+      return acc
+  }, [])
+  var results = reducedArray.sort((a,b) => b.count - a.count )
+  return results
 }
 
 //CHANGE TO RETURN A SINGULAR IMAGE
@@ -1550,116 +1586,6 @@ function pic(termArtist, termSong, id) {
   }
 }
 
-async function map(key, request) {
-  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
-  const response = await fetch(api_url)
-  const data = await response.json()
-
-  document.querySelector("#artist-map").innerHTML = ""
-  document.querySelector("#genre-map").innerHTML = ""
-  document.querySelector("#genre-map").style.gridTemplateColumns = "repeat(" + data.length + ", 1fr)";
-  document.querySelector("#artist-map").style.gridTemplateColumns = "repeat(" + data.length + ", 1fr)";
-
-  for (let z = 0; z < data.length; z++) {
-    const li = document.createElement("div")
-    li.setAttribute("id", 'week' + z)
-    li.classList.add('map-week')
-    document.querySelector("#genre-map").appendChild(li)
-    document.querySelector('#artist-map').appendChild(li.cloneNode(true))
-    createLine(z)
-  }
-  function createLine(pos) {
-    for (let i = 1; i <= 10; i++) {
-      const tile = document.createElement("div")
-      tile.style.backgroundColor = data[pos]?.['no'+i+'genre']
-
-      if (request == 'artist') {
-        var separators = [' ft. ', ' / ', ', ']
-        const tokens = data[pos]?.['no'+i+'artist'].split(new RegExp(separators.join('|'), 'g'))
-  
-        if (tokens.some(r=> key.includes(r))) {
-          tile.classList.add('genre')
-        } else {
-          tile.style.opacity = '0'
-        }
-        document.querySelector('#artist-map #week' + pos).appendChild(tile)
-      } else if (request == 'genre') {
-        if (data[pos]?.['no'+i+'genre'] == key) {
-          tile.classList.add('genre')
-        } else {
-          tile.style.height = '0'
-        }
-        document.querySelector('#genre-map #week' + pos).appendChild(tile)
-      }
-    }
-  }
-}
-
-
-//map('');
-// const artistSearch = [];
-// async function map(artist) {
-//   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
-//   const response = await fetch(api_url);
-//   const data = await response.json();
-//   const dfgdfg = formList(artist, '');
-//   dfgdfg.forEach((item, i) => {
-//     const button = document.createElement("button");
-//     button.innerHTML = item;
-//     button.setAttribute("onClick", 'formList(``,"'+item+'")');
-//     document.querySelector("#map-labels").appendChild(button);
-//   });
-//
-//   for (let i = 1; i <= 10; i++) {
-//     const li = document.createElement("div");
-//     li.setAttribute("id", 'id' + i);
-//     li.classList.add('gdfskgf')
-//     li.style.gridTemplateColumns = "repeat(" + data.length + ", 1fr)";
-//     document.querySelector("#map").appendChild(li);
-//     createLine(i);
-//   }
-//   function createLine(pos) {
-//
-//     for (let z = 0; z < data.length; z++) {
-//       const tile = document.createElement("div");
-//       tile.style.backgroundColor = data[z]?.['no'+pos+'genre'];
-//       var separators = [' ft. ', ' / ', ', '];
-//       const tokens = data[z]?.['no'+pos+'artist'].split(new RegExp(separators.join('|'), 'g'));
-//
-//       if (tokens.some(r=> dfgdfg.includes(r))) {
-//         tile.style.opacity = '1';
-//       } else {
-//         //tile.style.opacity = '0';
-//       }
-//       document.querySelector('#id' + pos).appendChild(tile);
-//     }
-//   }
-// }
-//
-// function formList(artistAdd, artistRemove) {
-//   artistAdd = artistAdd.replace("&amp;", "&");
-//   document.querySelector("#map").innerHTML = '';
-//   artistSearch.push(artistAdd);
-//
-//   if (artistRemove !== '') {
-//     console.log(artistRemove)
-//     // const index = artistSearch.indexOf(artistRemove);
-//     // if (index > -1) {
-//     //   artistSearch.splice(index, 1);
-//     // }
-//     var i = 0;
-//     while (i < artistSearch.length) {
-//       if (artistSearch[i] === artistRemove) {
-//           artistSearch.splice(i, 1);
-//       } else {
-//           ++i;
-//       }
-//     }
-//   }
-//   document.querySelector("#map-labels").innerHTML = '';
-//   console.log(artistSearch)
-//   return artistSearch;
-// }
 
 function decodeGenre(input) {
 

@@ -11,10 +11,9 @@
       <div id="nav">
         <div class="nav-top">
           <a onClick="homeInitialize()">home</a>
-          <a onClick="browse()">browse</a>
+          <a id="browse" onClick="browse()">browse</a>
           <div style="display:inline-block;">
-            <input type="text" id="termSearch" placeholder="Search" onkeydown="termSearch();">
-            <button id="" onclick="termSearch()">Go!</button>
+            <input type="text" id="termSearch" placeholder="Search">
             <div id="searchClose"></div>
           </div>
           <div id="history">
