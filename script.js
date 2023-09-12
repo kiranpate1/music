@@ -1170,7 +1170,7 @@ async function browse() {
 
   function modal(visibility) {
     document.querySelector("#videomodal").style.backgroundImage = ''
-    document.querySelector("#covermodal").style.backgroundImage = ''
+    // document.querySelector("#covermodal").style.backgroundImage = ''
     document.querySelector("#modalsongs").innerHTML = ''
     document.querySelector('#modalstats').innerHTML = ''
     document.querySelector("#modal-wrapper").style.display = visibility
