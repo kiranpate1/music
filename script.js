@@ -179,7 +179,7 @@ async function browse() {
     document.querySelector("#button-container").appendChild(weekContainer)
 
     const videoPic = document.createElement("div")
-    videoPic.setAttribute("id", 'videos')
+    videoPic.classList.add('videos')
     document.querySelector("#chart-container").appendChild(videoPic)
 
     const chartTitle = document.createElement("div")
@@ -378,17 +378,17 @@ async function browse() {
     const video1 = document.createElement("div")
     video1.setAttribute("id", 'video1')
     video1.classList.add('video')
-    document.querySelector("#videos").appendChild(video1)
+    document.querySelector(".videos").appendChild(video1)
   
     const video2 = document.createElement("div")
     video2.setAttribute("id", 'video2')
     video2.classList.add('video')
-    document.querySelector("#videos").appendChild(video2)
+    document.querySelector(".videos").appendChild(video2)
   
     const video3 = document.createElement("div")
     video3.setAttribute("id", 'video3')
     video3.classList.add('video')
-    document.querySelector("#videos").appendChild(video3)
+    document.querySelector(".videos").appendChild(video3)
   
     const chartDataList = document.createElement("div")
     chartDataList.setAttribute("id", 'chart-datalist')
