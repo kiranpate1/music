@@ -73,6 +73,7 @@ async function browse() {
       historyItem.innerHTML = decodeGenre(term)[0]
       historyItem.addEventListener("click", function() { genre(term);updateHistory(historyItem) })
     }
+    console.log(historyItem)
     history.appendChild(historyItem)
   
   }
@@ -1170,7 +1171,6 @@ async function browse() {
 
   function modal(visibility) {
     document.querySelector("#videomodal").style.backgroundImage = ''
-    // document.querySelector("#covermodal").style.backgroundImage = ''
     document.querySelector("#modalsongs").innerHTML = ''
     document.querySelector('#modalstats').innerHTML = ''
     document.querySelector("#modal-wrapper").style.display = visibility
@@ -1185,16 +1185,15 @@ async function browse() {
   }
   function history(term, request) {
     modalHistory.push(term)
+    var historyItemTerm = modalHistory[modalHistory.length - 1]
     
     const historyItem = document.createElement("li")
-    historyItem.innerHTML = modalHistory[modalHistory.length - 1]
-    // if (term.slice(0, 2) == 'ix') {
     if (request == 'song') {
+      historyItem.innerHTML = decode(historyItemTerm)[0][3]
       historyItem.addEventListener('click', function() { history(term,'song');searchSong(term);updateHistory(historyItem) })
-      // historyItem.setAttribute('onClick', 'searchSong(`'+term+'`)')
     } else if (request == 'artist') {
+      historyItem.innerHTML = historyItemTerm
       historyItem.addEventListener('click', function() { history(term,'artist');searchArtist(term);updateHistory(historyItem) })
-      // historyItem.setAttribute('onClick', 'searchArtist(`'+term+'`)')
     }
     document.querySelector("#history").appendChild(historyItem)
   }
