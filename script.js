@@ -675,7 +675,11 @@ async function browse() {
     document.querySelector('#artists').innerHTML = ''
     document.querySelector('#top10').innerHTML = ''
 
-    document.querySelector('#weektitle').innerHTML = yearno
+    if (yearno.length === 3) {
+      document.querySelector('#weektitle').innerHTML = yearno + "0s"
+    } else {
+      document.querySelector('#weektitle').innerHTML = yearno
+    }
   
     for (let i = 0; i < genrePool.length; i++) {
       document.querySelector('#id' + genrePool[i].slice(-6)).style.width = '0'
@@ -1324,14 +1328,6 @@ async function browse() {
     combinedUnique = [...new Set(fullList)]
     var totalList = group1(fullList)[0]
     var no1Count = 0
-    list('artist').then(function (val) {
-      val.forEach((item, i) => {
-        if (item.artist == artist) {
-          modalStats.innerHTML = "#"+[i+1]+" all time • "+no1Count+" #1s • "+[combinedUnique.length]+" top 10s"
-          return
-        }
-      })
-    })
     var genreList = []
     combinedUnique.forEach((item, i) => {
       if (decode(item)[0][1] == '01') {
@@ -1341,6 +1337,13 @@ async function browse() {
       const li = document.createElement("li");
       li.innerHTML = '#'+parseInt(decode(item)[0][1])+'<div style="width:16px;height:16px;background: '+decode(item)[0][2]+';"></div>'+'<a class="songname" id="'+item+'">'+decode(item)[0][3]+'</a>&nbsp'+"-"+"&nbsp<div class='artistname'><a>"+decode(item)[0][4].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
       document.querySelector("#modalsongs").appendChild(li);
+    })
+
+    group(dataList('week', '', 'artist')).forEach((item, i) => {
+      if (item.key == artist) {
+        modalStats.innerHTML = "#"+[i+1]+" all time • "+no1Count+" #1s • "+[combinedUnique.length]+" top 10s"
+        return
+      }
     })
     modalDescription.innerHTML = 'is a '+decodeGenre(mode(genreList))[1]+' artist with '+no1Count+' number 1s and '+[combinedUnique.length]+' top 10 hit'
     
