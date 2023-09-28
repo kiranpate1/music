@@ -756,6 +756,7 @@ async function browse() {
       }
       for (let i = 0; i < data.length; i++) {
         if (data[i]?.[operator].includes(key)) {
+          var count = 1
           var year = data[i].week.slice(0,4)
           var genre = data[i]?.['no'+pos+'genre']
           var id = data[i]?.['no'+pos+'id']
@@ -765,19 +766,19 @@ async function browse() {
           var score = 11 - pos + (1 / pos)
           score = multiplier(year,score)
           if (request == 'song') {
-            list.push({object,score})
+            list.push({object,score,count})
           } else if (request == 'artist') {
             var separators = [' ft. ', ' / ', ', ']
             var tokens = artist.split(new RegExp(separators.join('|'), 'g'))
             var fuck = []
             tokens.forEach((object, i) => {
               score = multiplier(year,(score + 10) * (1/(tokens.length)) + (5 / (i+1)))
-              fuck.push({object,score})
+              fuck.push({object,score,count})
             })
             list.push(fuck)
           } else if (request == 'genre') {
             object = genre
-            list.push({object,score})
+            list.push({object,score,count})
           }
         }
       }
@@ -790,9 +791,10 @@ async function browse() {
   function group(type) {
     var reducedArray = Object.values(type.reduce((hash, item) => {
       if (!hash[item.object]) {
-          hash[item.object] = { key: item.object, score: 0 };
+          hash[item.object] = { key: item.object, score: 0, count: 0 };
       }
       hash[item.object].score += item.score;
+      hash[item.object].count += item.count;
       
       return hash;
     }, {}))
@@ -1289,14 +1291,12 @@ async function browse() {
     var date = decode(id)[0][0]
     document.querySelector("#modaltitle").innerHTML = name+" by <div class='artistname'><a>"+artist.replace(re, function(matched){return mapObj[matched]})+"</a></div>"
   
-    list('id').then(function (val) {
-      val.forEach((item, i) => {
-        if (item.artist == id) {
-          document.querySelector("#modaldescription").innerHTML = 'is a '+genre+' song that peaked at #'+peak+' on '+decodeDate(date)+' while spending '+item.count+' weeks in the top 10.'
-          document.querySelector('#modalstats').innerHTML = "#"+[i+1]+" all time • #"+peak+" peak • "+item.count+" weeks • "+genre
-          return
-        }
-      })
+    group(dataList('week', '', 'song')).forEach((item, i) => {
+      if (item.key[1] == id) {
+        document.querySelector("#modaldescription").innerHTML = 'is a '+genre+' song that peaked at #'+peak+' on '+decodeDate(date)+' while spending '+item.count+' weeks in the top 10.'
+        document.querySelector('#modalstats').innerHTML = "#"+[i+1]+" all time • #"+peak+" peak • "+item.count+" weeks • "+genre
+        return
+      }
     })
     setClick('#modaltitle','artist','')
     pic(artist,name,'videomodal')
