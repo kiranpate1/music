@@ -73,7 +73,6 @@ async function browse() {
       historyItem.innerHTML = decodeGenre(term)[0]
       historyItem.addEventListener("click", function() { genre(term);updateHistory(historyItem) })
     }
-    console.log(historyItem)
     history.appendChild(historyItem)
   
   }
@@ -303,9 +302,38 @@ async function browse() {
       // findWeek(browseHistory[browseHistory.length - 1])
     }
 
-    const searchFml = document.createElement("div")
-    searchFml.classList.add('search-container')
-    document.querySelector("#chart-nav").appendChild(searchFml)
+    const searchContainer = document.createElement("div")
+    searchContainer.classList.add('search-container')
+    searchContainer.onkeyup = function(e) {
+      var target = e.srcElement;
+      var maxLength = parseInt(target.attributes["maxlength"].value, 10);
+      var myLength = target.value.length;
+      if (myLength >= maxLength) {
+        var next = target;
+        while (next = next.nextElementSibling) {
+          if (next == null)
+              break;
+          if (next.tagName.toLowerCase() == "input") {
+              next.focus();
+              break;
+          }
+        }
+      }
+      else if (myLength === 0) {
+        var previous = target;
+        while (previous = previous.previousElementSibling) {
+          if (previous == null)
+              break;
+          if (previous.tagName.toLowerCase() === "input") {
+              previous.focus();
+              break;
+          }
+        }
+      }
+    }
+    document.querySelector("#chart-nav").appendChild(searchContainer)
+
+    
   
     const yyyy = document.createElement("input")
     yyyy.setAttribute("type", 'text')
@@ -690,6 +718,7 @@ async function browse() {
         searchArtist(item.innerHTML)
       }
     })
+    description("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",'year','','')
   }
 
   function multiplier(year,score) {
@@ -785,35 +814,42 @@ async function browse() {
     }
   }
 
-  function description(key,operation,type) {
-    const descriptionNo1 = document.createElement("span")
-    descriptionNo1.classList.add('description-no1')
-    document.querySelector(".chart-description").appendChild(descriptionNo1)
-    if (operation == 'no1') {
-      if (type == 'hold') {
-        document.querySelector('.description-no1').innerHTML += "While " + key[0] + " remains at #1,"
-      } else if (type == 'return') {
-        document.querySelector('.description-no1').innerHTML += "While " + key[1] + " returns at #1,"
-      } else if (type == 'new') {
-        document.querySelector('.description-no1').innerHTML += "While " + key[1] + " lands at #1,"
-      }
+  function description(key,request,operation,type) {
+    //for decade, year, month
+    if (request == 'year') {
+      document.querySelector('.chart-description').innerHTML = key
     }
-    const descriptionEntries = document.createElement("span")
-    descriptionEntries.classList.add('description-entries')
-    document.querySelector(".chart-description").appendChild(descriptionEntries)
-    if (operation == 'entry') {
-      if (type == 'new') {
-        document.querySelector('.description-entries').innerHTML += key[0] + " enters the top 10,"
-      } else if (type == 'newSole') {
-        document.querySelector('.description-entries').innerHTML += key[1] + " score nth top 10 hit with " + key[0] + ","
-      } else if (type == 'newBatch') {
-        document.querySelector('.description-entries').innerHTML = ''
-        document.querySelector('.description-entries').innerHTML += key[1].newSongArtist + " scores top 10 hits with "
-        key.forEach((item, i) => {
-          document.querySelector('.description-entries').innerHTML += item.newSong + ", "
-        })
-      } else if (type == 'return') {
+    //for week
+    if (request == 'week') {
+      const descriptionNo1 = document.createElement("span")
+      descriptionNo1.classList.add('description-no1')
+      document.querySelector(".chart-description").appendChild(descriptionNo1)
+      if (operation == 'no1') {
+        if (type == 'hold') {
+          document.querySelector('.description-no1').innerHTML = "While " + key[0] + " remains at #1,"
+        } else if (type == 'return') {
+          document.querySelector('.description-no1').innerHTML = "While " + key[1] + " returns at #1,"
+        } else if (type == 'new') {
+          document.querySelector('.description-no1').innerHTML = "While " + key[1] + " lands at #1,"
+        }
+      }
+      const descriptionEntries = document.createElement("span")
+      descriptionEntries.classList.add('description-entries')
+      document.querySelector(".chart-description").appendChild(descriptionEntries)
+      if (operation == 'entry') {
+        if (type == 'new') {
+          document.querySelector('.description-entries').innerHTML += key[0] + " enters the top 10,"
+        } else if (type == 'newSole') {
+          document.querySelector('.description-entries').innerHTML += key[1] + " score nth top 10 hit with " + key[0] + ","
+        } else if (type == 'newBatch') {
+          document.querySelector('.description-entries').innerHTML = ''
+          document.querySelector('.description-entries').innerHTML += key[1].newSongArtist + " scores top 10 hits with "
+          key.forEach((item, i) => {
+            document.querySelector('.description-entries').innerHTML += item.newSong + ", "
+          })
+        } else if (type == 'return') {
 
+        }
       }
     }
   }
@@ -839,10 +875,10 @@ async function browse() {
   
     if (currentWeek.no1id.includes(lastWeek.no1id)) {
       title([no1name,no1artist,no1Count],'no1','hold')
-      description([no1name,no1artist],'no1','hold')
+      description([no1name,no1artist],'week','no1','hold')
     } else if (!currentWeek.no1id.includes(lastWeek.no1id) && no1Count > 1) {
       title([no1name,no1artist,no1Count],'no1','return')
-      description([no1name,no1artist],'no1','return')
+      description([no1name,no1artist],'week','no1','return')
     } else if (no1Count = 1) {
       if (data[weekno].no1direction.includes('★')) {
         title([no1name,no1artist,no1Count],'no1','debut')
@@ -964,9 +1000,9 @@ async function browse() {
       // //for description
       var entries = [decode(newSongIdList[i])[0][4],decode(newSongIdList[i])[0][3]]
       if (decode(newSongIdList[i])[0][4].split(new RegExp(mapSeparators.join('|'), 'g')).length == 0) {
-        description(entries,'entry','newSole')
+        description(entries,'week','entry','newSole')
       } else {
-        description(entries,'entry','new')
+        description(entries,'week','entry','new')
       }
     })
 
@@ -974,7 +1010,7 @@ async function browse() {
       a[e.newSongArtist] = ++a[e.newSongArtist] || 0;
       return a;
     }, {});
-    // description(newArtistList.filter(e => lookup[e.newSongArtist]),'entry','newBatch')
+    // description(newArtistList.filter(e => lookup[e.newSongArtist]),'week','entry','newBatch')
     
     repeatSongList.forEach((element, i) => { //this week
       var repeats = document.querySelector("#" + repeatSongIdList[i] + "")
@@ -1043,6 +1079,7 @@ async function browse() {
       return false;
     }
   }
+  
   function search() {
     var date = document.getElementById("yearSearch").value + "/" + document.getElementById("monthSearch").value + "/" + document.getElementById("daySearch").value
     document.querySelector('#songs').innerHTML = ""
@@ -1085,7 +1122,7 @@ async function browse() {
       document.querySelectorAll('#history li')[i].style.opacity = '1'
     }
     const description = document.createElement("h1")
-    description.innerHTML = decodeGenre(key)[0] + " is a genre that includes the following subgenres:" + decodeGenre(key)[1]
+    description.innerHTML = decodeGenre(key)[0] + " is a subgenre within "+decodeGenre(key)[1]+" that includes " + decodeGenre(key)[2]
     document.querySelector("#genre-info").appendChild(description)
 
     group(dataList('genre', key, 'song')).forEach((item, i) => {
@@ -1233,6 +1270,13 @@ async function browse() {
     const parent = document.querySelector("#history");
     [...parent.children].slice(itemAheadLength).forEach(parent.removeChild.bind(parent));
   }
+
+  function mode(arr){
+    return arr.sort((a,b) =>
+          arr.filter(v => v===a).length
+        - arr.filter(v => v===b).length
+    ).pop();
+  }
   
   function searchSong(id) {
     modal(`flex`)
@@ -1240,83 +1284,105 @@ async function browse() {
     
     var artist = decode(id)[0][4]
     var name = decode(id)[0][3]
-    document.querySelector("#modalname").innerHTML = name+" by <div class='artistname'><a>"+artist.replace(re, function(matched){return mapObj[matched]})+"</a></div>"
+    var genre = decodeGenre(decode(id)[0][2])[0]
+    var peak = decode(id)[0][1]
+    var date = decode(id)[0][0]
+    document.querySelector("#modaltitle").innerHTML = name+" by <div class='artistname'><a>"+artist.replace(re, function(matched){return mapObj[matched]})+"</a></div>"
   
     list('id').then(function (val) {
       val.forEach((item, i) => {
         if (item.artist == id) {
-          document.querySelector('#modalstats').innerHTML = "#"+[i+1]+" all time • #"+decode(id)[0][1]+" peak • "+item.count+" weeks • "+decodeGenre(decode(id)[0][2])[0]
+          document.querySelector("#modaldescription").innerHTML = 'is a '+genre+' song that peaked at #'+peak+' on '+decodeDate(date)+' while spending '+item.count+' weeks in the top 10.'
+          document.querySelector('#modalstats').innerHTML = "#"+[i+1]+" all time • #"+peak+" peak • "+item.count+" weeks • "+genre
           return
         }
       })
     })
-    setClick('#modalname','artist','')
+    setClick('#modaltitle','artist','')
     pic(artist,name,'videomodal')
   }
 
   function searchArtist(artist) {
-  modal('flex')
-  // history(artist)
-  document.querySelector("#modalname").innerHTML = artist
+    var modalTitle = document.querySelector("#modaltitle")
+    var modalDescription = document.querySelector("#modaldescription")
+    var modalStats = document.querySelector("#modalstats")
+    modal('flex')
+    // history(artist)
+    modalTitle.innerHTML = artist
 
-  var fullList = []
-  for (let x = 1; x <= 10; x++) {
-    data.forEach((item, i) => {
-      if (item?.['no'+x+'artist'].includes(artist)) {
-        var artistCell = item?.['no'+x+'artist'].replace(re, function(matched){return mapObj1[matched]}).split("separator")
-        if (artistCell.includes(artist)) {
-          fullList.push(item?.['no'+x+'id'])
-        }
-      }
-    })
-  }
-  combinedUnique = [...new Set(fullList)]
-  var totalList = group1(fullList)[0]
-  var no1Count = 0
-  list('artist').then(function (val) {
-    val.forEach((item, i) => {
-      if (item.artist == artist) {
-        document.querySelector('#modalstats').innerHTML = "#"+[i+1]+" all time • "+no1Count+" #1s • "+[combinedUnique.length]+" top 10s"
-        return
-      }
-    })
-  })
-  combinedUnique.forEach((item, i) => {
-    if (decode(item)[0][1] == '01') {
-      no1Count++
-    }
-    const li = document.createElement("li");
-    li.innerHTML = decode(item)[0][1]+'<div style="width:16px;height:16px;background: '+decode(item)[0][2]+';"></div>'+'<a class="songname" id="'+item+'">'+decode(item)[0][3]+'</a>&nbsp'+"-"+"&nbsp<div class='artistname'><a>"+decode(item)[0][4].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
-    document.querySelector("#modalsongs").appendChild(li);
-  })
-  setClick('#modalsongs','song','id')
-  setClick('#modalsongs','artist','')
-
-  function decode(input) {
-    const output = []
+    var fullList = []
     for (let x = 1; x <= 10; x++) {
-      for (var a = 0; a < data.length; a++) {
-        if (data[a]?.['no'+x+'id'] == input) {
-          output.push(new Array(data[a]?.week,data[a]?.['no'+x+'direction'].slice(0, 2),data[a]?.['no'+x+'genre'],data[a]?.['no'+x+'name'],data[a]?.['no'+x+'artist']))
-          return output
+      data.forEach((item, i) => {
+        if (item?.['no'+x+'artist'].includes(artist)) {
+          var artistCell = item?.['no'+x+'artist'].replace(re, function(matched){return mapObj1[matched]}).split("separator")
+          if (artistCell.includes(artist)) {
+            fullList.push(item?.['no'+x+'id'])
+          }
         }
+      })
+    }
+    combinedUnique = [...new Set(fullList)]
+    var totalList = group1(fullList)[0]
+    var no1Count = 0
+    list('artist').then(function (val) {
+      val.forEach((item, i) => {
+        if (item.artist == artist) {
+          modalStats.innerHTML = "#"+[i+1]+" all time • "+no1Count+" #1s • "+[combinedUnique.length]+" top 10s"
+          return
+        }
+      })
+    })
+    var genreList = []
+    combinedUnique.forEach((item, i) => {
+      if (decode(item)[0][1] == '01') {
+        no1Count++
       }
+      genreList.push(decode(item)[0][2])
+      const li = document.createElement("li");
+      li.innerHTML = '#'+parseInt(decode(item)[0][1])+'<div style="width:16px;height:16px;background: '+decode(item)[0][2]+';"></div>'+'<a class="songname" id="'+item+'">'+decode(item)[0][3]+'</a>&nbsp'+"-"+"&nbsp<div class='artistname'><a>"+decode(item)[0][4].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
+      document.querySelector("#modalsongs").appendChild(li);
+    })
+    modalDescription.innerHTML = 'is a '+decodeGenre(mode(genreList))[1]+' artist with '+no1Count+' number 1s and '+[combinedUnique.length]+' top 10 hit'
+    
+    // songs description
+    if (combinedUnique.length > 3) {
+      modalDescription.innerHTML += "s including "
+      combinedUnique.slice(0, 3).forEach((item, i) => {
+        modalDescription.innerHTML += decode(item)[0][3] + ", "
+      })
+      modalDescription.innerHTML += "and more."
+    } else if (combinedUnique.length == 3 || combinedUnique.length == 2) {
+      modalDescription.innerHTML += "s "
+      combinedUnique.slice(0, 3).forEach((item, i) => {
+        if (i == combinedUnique.slice(0, 3).length - 1) {
+          modalDescription.innerHTML += "and "
+          modalDescription.innerHTML += decode(item)[0][3] + "."
+        } else {
+          modalDescription.innerHTML += decode(item)[0][3] + ", "
+        }
+      })
+    } else if (combinedUnique.length == 1) {
+      modalDescription.innerHTML += ", " + decode(combinedUnique[0])[0][3] + "."
     }
+
+
+    setClick('#modalsongs','song','id')
+    setClick('#modalsongs','artist','')
+
+    var filteredDecode = combinedUnique.filter(function(item){
+      var leadArtist = decode(item)[0][4].replace(re, function(matched){return mapObj1[matched]}).split("separator")
+      if (leadArtist[0] == artist) {
+        return item !== undefined;
+      }
+    })
+    var dfsgfeg = filteredDecode.concat(combinedUnique)[0]
+    // decode(dfsgfeg).then(results => {
+    //   pic(results[0][4], results[0][3], 'modal')
+    // })
+    map(artist,'artist')
+    pic(decode(dfsgfeg)[0][4], decode(dfsgfeg)[0][3], 'videomodal')
+    //pic(decode(totalList.artist)[0][4], decode(totalList.artist)[0][3], 'modal')
   }
-  var filteredDecode = combinedUnique.filter(function(item){
-    var leadArtist = decode(item)[0][4].replace(re, function(matched){return mapObj1[matched]}).split("separator")
-    if (leadArtist[0] == artist) {
-      return item !== undefined;
-    }
-  })
-  var dfsgfeg = filteredDecode.concat(combinedUnique)[0]
-  // decode(dfsgfeg).then(results => {
-  //   pic(results[0][4], results[0][3], 'modal')
-  // })
-  map(artist,'artist')
-  pic(decode(dfsgfeg)[0][4], decode(dfsgfeg)[0][3], 'videomodal')
-  //pic(decode(totalList.artist)[0][4], decode(totalList.artist)[0][3], 'modal')
-}
 
 
 
@@ -1620,87 +1686,93 @@ function pic(termArtist, termSong, id) {
 
 
 function decodeGenre(input) {
-
   if (input == '#de7eea') {
-    output = ['Pop','Power pop']
+    output = ['Pop','pop','Power pop']
   } else if (input == '#a16fd9') {
-    output = ['Dance-pop','Synth-pop, Europop, Electropop']
+    output = ['Dance-pop','pop','Synth-pop, Europop, Electropop']
   } else if (input == '#9a82c8') {
-    output = ['Indie','Indie-pop, Indie-rock, Indie-folk, Indie-electronic, Indie-soul, Indie-dance, Indie-tronica, Indie-pop, Indie-rock, Indie-folk, Indie-electronic, Indie-soul, Indie-dance, Indie-tronica']
+    output = ['Indie','pop','Indie-pop, Indie-rock, Indie-folk, Indie-electronic, Indie-soul, Indie-dance, Indie-tronica, Indie-pop, Indie-rock, Indie-folk, Indie-electronic, Indie-soul, Indie-dance, Indie-tronica']
   } else if (input == '#c295c8') {
-    output = ['Pop rock','Soft rock, Pop punk']
+    output = ['Pop rock','pop','Soft rock, Pop punk']
   } else if (input == '#d700ff') {
-    output = ['Disco','Nu-Disco, Euro disco, Italo disco, Space disco, Disco polo, Disco house, Disco rap, Disco polo, Disco house, Disco rap']
+    output = ['Disco','pop','Nu-Disco, Euro disco, Italo disco, Space disco, Disco polo, Disco house, Disco rap, Disco polo, Disco house, Disco rap']
   } else if (input == '#854d76') {
-    output = ['Funk','Funk-pop, Boogie, Electro-funk, G-funk, P-Funk, Funktronica, Funk carioca, Funk carioca, Funk ostentação, Funk melody, Funk ousadi']
+    output = ['Funk','pop','Funk-pop, Boogie, Electro-funk, G-funk, P-Funk, Funktronica, Funk carioca, Funk carioca, Funk ostentação, Funk melody, Funk ousadi']
   } else if (input == '#ba2c8e') {
-    output = ['Pop rap','Melodic rap, Pop trap']
+    output = ['Pop rap','rap','Melodic rap, Pop trap']
   } else if (input == '#ba3d3d') {
-    output = ['R&B','']
+    output = ['R&B','R&B','']
   } else if (input == '#b65f5f') {
-    output = ['New jack','Doo-wop, Swing']
+    output = ['New jack','R&B','Doo-wop, Swing']
   } else if (input == '#603232') {
-    output = ['Hip Hop','']
+    output = ['Hip Hop','hip hop','']
   } else if (input == '#1a1a1a') {
-    output = ['Trap','Dirty, Southern hip hop, Crunk, Snap, Drill, Trap metal, Trap soul, Trapstep, Cloud rap, Trap rock, Trap jazz, Trap funk, Trap pop, Trapcore']
+    output = ['Trap','hip hop','Dirty, Southern hip hop, Crunk, Snap, Drill, Trap metal, Trap soul, Trapstep, Cloud rap, Trap rock, Trap jazz, Trap funk, Trap pop, Trapcore']
   } else if (input == '#413630') {
-    output = ['Regional','Gangsta rap, G-funk, West Coast hip hop, East Coast hip hop']
+    output = ['Regional','hip hop','Gangsta rap, G-funk, West Coast hip hop, East Coast hip hop']
   } else if (input == '#935b4a') {
-    output = ['Alt hip hop','Experimental hip hop, Jazz rap, Conscious hip hop, Political hip hop, Horrorcore']
+    output = ['Alt hip hop','hip hop','Experimental hip hop, Jazz rap, Conscious hip hop, Political hip hop, Horrorcore']
   } else if (input == '#3ca33f') {
-    output = ['Rock','']
+    output = ['Rock','rock','']
   } else if (input == '#308532') {
-    output = ['Hard rock','Metal, Heavy metal, Glam metal, Hair metal, Thrash metal, Death metal, Black metal, Doom metal, Grindcore, Metalcore, Industrial metal, Alternative metal, Nu metal']
+    output = ['Hard rock','rock','Metal, Heavy metal, Glam metal, Hair metal, Thrash metal, Death metal, Black metal, Doom metal, Grindcore, Metalcore, Industrial metal, Alternative metal, Nu metal']
   } else if (input == '#638559') {
-    output = ['Grunge','Post-grunge, Alternative metal, Nu grunge']
+    output = ['Grunge','rock','Post-grunge, Alternative metal, Nu grunge']
   } else if (input == '#6a9d32') {
-    output = ['Funk rock','Blues rock, Psychedelic rock, Jam rock']
+    output = ['Funk rock','rock','Blues rock, Psychedelic rock, Jam rock']
   } else if (input == '#8eb371') {
-    output = ['New Wave','Punk rock, New wave, Post-punk, Ska punk, Pop punk, Emo, Hardcore punk, Skate punk']
+    output = ['New Wave','rock','Punk rock, New wave, Post-punk, Ska punk, Pop punk, Emo, Hardcore punk, Skate punk']
   } else if (input == '#4aca4e') {
-    output = ['Rock and Roll','Rockabilly, Surf rock, Rock and roll revival, Heartland Rock']
+    output = ['Rock and Roll','rock','Rockabilly, Surf rock, Rock and roll revival, Heartland Rock']
   } else if (input == '#97be9d') {
-    output = ['Alternative Rock','']
+    output = ['Alternative Rock','rock','']
   } else if (input == '#a4d685') {
-    output = ['Folk Rock','Folktronica, Folk pop, Folk punk, Folk metal, Folk jazz']
+    output = ['Folk Rock','rock','Folktronica, Folk pop, Folk punk, Folk metal, Folk jazz']
   } else if (input == '#c4c800') {
-    output = ['Soul','Neo soul, Blue-eyed soul, Psychedelic soul, Soul jazz, Soul blues, Southern soul, Northern soul, Soul pop, Soultronica']
+    output = ['Soul','soul','Neo soul, Blue-eyed soul, Psychedelic soul, Soul jazz, Soul blues, Southern soul, Northern soul, Soul pop, Soultronica']
   } else if (input == '#a7ab00') {
-    output = ['Blues','']
+    output = ['Blues','blues','']
   } else if (input == '#d5eb20') {
-    output = ['Jazz','Jazz fusion, Acid jazz, Jazz rap, Nu jazz, Jazz funk, Jazz blues, Jazz pop, Jazz rock, Jazztronica, Nu jazz']
+    output = ['Jazz','jazz','Jazz fusion, Acid jazz, Jazz rap, Nu jazz, Jazz funk, Jazz blues, Jazz pop, Jazz rock, Jazztronica, Nu jazz']
   } else if (input == '#ddf3a8') {
-    output = ['Soca','Calypso, Chutney, Chutney soca, Chutney parang, Chutney rapso, Chutney dance']
+    output = ['Soca','soca','Calypso, Chutney, Chutney soca, Chutney parang, Chutney rapso, Chutney dance']
   } else if (input == '#c6ccae') {
-    output = ['Gospel','Worship, Christian rock, Christian hip hop, Christian metal, Christian hardcore, Christian punk, Christian alternative rock']
+    output = ['Gospel','gospel','Worship, Christian rock, Christian hip hop, Christian metal, Christian hardcore, Christian punk, Christian alternative rock']
   } else if (input == '#ceb8ae') {
-    output = ['World','New Age, World fusion, Worldbeat']
+    output = ['World','world','New Age, World fusion, Worldbeat']
   } else if (input == '#7085ef') {
-    output = ['Electronic','EDM, Club, Electro, Electro house, Electroclash, Electro swing, Electro hop, Electro funk, Electro pop, Electronicore, Electronic dance']
+    output = ['Electronic','electronic','EDM, Club, Electro, Electro house, Electroclash, Electro swing, Electro hop, Electro funk, Electro pop, Electronicore, Electronic dance']
   } else if (input == '#5666b8') {
-    output = ['Dubstep','Brostep, Chillstep, Drumstep, Riddim, Dubstyl, Garage']
+    output = ['Dubstep','electronic','Brostep, Chillstep, Drumstep, Riddim, Dubstyl, Garage']
   } else if (input == '#4d95b8') {
-    output = ['Electro Rock','Electro funk, Electronic rock, Electronicore']
+    output = ['Electro Rock','electronic','Electro funk, Electronic rock, Electronicore']
   } else if (input == '#623aff') {
-    output = ['Reggae','Dancehall, Afrobeats, Reggae fusion, Reggaeton, Reggae en Español, Reggae rock, Reggae pop, Reggae hip hop, Reggae metal']
+    output = ['Reggae','reggae','Dancehall, Afrobeats, Reggae fusion, Reggaeton, Reggae en Español, Reggae rock, Reggae pop, Reggae hip hop, Reggae metal']
   } else if (input == '#73e6e0') {
-    output = ['Eurodance','Trance, Euro disco, Italo disco, Space disco, Eurobeat, Euro house, Eurotrance']
+    output = ['Eurodance','electronic','Trance, Euro disco, Italo disco, Space disco, Eurobeat, Euro house, Eurotrance']
   } else if (input == '#3eadef') {
-    output = ['House','Deep house, Tech house, Progressive house, Tropical house, Future house, Acid house, Ambient house, Balearic house, Big room house, Bouncy house, Chicago house, Deep house, Electro house, Funky house, Ghetto house, Hard house, Hip house, Latin house, Microhouse, Minimal house, Progressive house, Tech house, Tribal house, UK hard house, Vocal house']
+    output = ['House','electronic','Deep house, Tech house, Progressive house, Tropical house, Future house, Acid house, Ambient house, Balearic house, Big room house, Bouncy house, Chicago house, Deep house, Electro house, Funky house, Ghetto house, Hard house, Hip house, Latin house, Microhouse, Minimal house, Progressive house, Tech house, Tribal house, UK hard house, Vocal house']
   } else if (input == '#ff6900') {
-    output = ['Country','']
+    output = ['Country','country','']
   } else if (input == '#f6b26b') {
-    output = ['Country Pop','Folk pop']
+    output = ['Country Pop','country','Folk pop']
   } else if (input == '#b3997a') {
-    output = ['Country Rock','Southern rock, Countrycore']
+    output = ['Country Rock','country','Southern rock, Countrycore']
   } else if (input == '#d49875') {
-    output = ['Country Rap','Trap-country, Hick hop']
+    output = ['Country Rap','country','Trap-country, Hick hop']
   } else if (input == '#c7cc86') {
-    output = ['Folk','Bluegrass, Folktronica, Folk pop, Folk punk, Folk metal, Folk jazz']
+    output = ['Folk','folk','Bluegrass, Folktronica, Folk pop, Folk punk, Folk metal, Folk jazz']
   } else if (input == '#ffe381') {
-    output = ['Latin','Latin pop, Latin rock, Salsa, Banda, Cumbia, Regional mexican, Tejano, Norteño, Mariachi, Ranchera']
+    output = ['Latin','latin','Latin pop, Latin rock, Salsa, Banda, Cumbia, Regional mexican, Tejano, Norteño, Mariachi, Ranchera']
   } else if (input == '#f5d8d8') {
-    output = ['Tango','Polka, Contradanse']
+    output = ['Tango','tango','Polka, Contradanse']
   }
   return output;
+}
+function decodeDate(input) {
+  var months = ['January','February','March','April','May','June','July','August','September','October','November','December']
+  var month = months[parseInt(input.slice(5,7)) - 1]
+  var day = parseInt(input.slice(8,10))
+  var year = input.slice(0,4)
+  return month + ' ' + day + ', ' + year
 }
