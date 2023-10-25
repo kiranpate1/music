@@ -82,36 +82,37 @@ async function browse() {
     browseInitialize()
   }
   function browseInitialize() {
-    document.querySelector("#main-content").innerHTML = ''
+    const mainContent = document.querySelector("#main-content")
+    mainContent.innerHTML = ''
 
     const browseContainer = document.createElement("div")
     browseContainer.setAttribute("id", 'browse-container')
-    document.querySelector("#main-content").appendChild(browseContainer)
+    mainContent.appendChild(browseContainer)
     
     const thisWeek = document.createElement("div")
     thisWeek.setAttribute("id", 'this-week')
-    document.querySelector("#browse-container").appendChild(thisWeek)
+    browseContainer.appendChild(thisWeek)
     pic(data[data.length - 1].no1artist, data[data.length - 1].no1name, 'this-week')
 
     const thisWeekText = document.createElement("h1")
     thisWeekText.innerHTML = "This Week - " + data[data.length - 1].week + " - " + data[data.length - 1].no1name + " by " + data[data.length - 1].no1artist + " is #1"
-    document.querySelector("#this-week").appendChild(thisWeekText)
+    thisWeek.appendChild(thisWeekText)
 
     const initialDecadesTitle = document.createElement("h2")
     initialDecadesTitle.innerHTML = "Decades"
-    document.querySelector("#browse-container").appendChild(initialDecadesTitle)
+    browseContainer.appendChild(initialDecadesTitle)
 
     const initialDecades = document.createElement("div")
     initialDecades.setAttribute("id", 'initial-decades-container')
-    document.querySelector("#browse-container").appendChild(initialDecades)
+    browseContainer.appendChild(initialDecades)
 
     const initialGenresTitle = document.createElement("h2")
     initialGenresTitle.innerHTML = "Genres"
-    document.querySelector("#browse-container").appendChild(initialGenresTitle)
+    browseContainer.appendChild(initialGenresTitle)
 
     const initialGenres = document.createElement("div")
     initialGenres.setAttribute("id", 'initial-genres-container')
-    document.querySelector("#browse-container").appendChild(initialGenres)
+    browseContainer.appendChild(initialGenres)
 
     const genresCount = []
     for (let i = 1; i <= 10; i++) {
@@ -139,65 +140,65 @@ async function browse() {
     const chartContainer = document.createElement("div")
     chartContainer.setAttribute("id", 'chart-container')
     chartContainer.style.display = "none"
-    document.querySelector("#main-content").appendChild(chartContainer)
+    mainContent.appendChild(chartContainer)
 
     const chartNav = document.createElement("div")
     chartNav.setAttribute("id", 'chart-nav')
-    document.querySelector("#chart-container").appendChild(chartNav)
+    chartContainer.appendChild(chartNav)
 
     const navBack = document.createElement("div")
     navBack.addEventListener("click", function() { browseInitialize()})
     navBack.innerHTML = "<"
-    document.querySelector("#chart-nav").appendChild(navBack)
+    chartNav.appendChild(navBack)
 
     const buttonContainer = document.createElement("div")
     buttonContainer.setAttribute("id", 'button-container')
-    document.querySelector("#chart-nav").appendChild(buttonContainer)
+    chartNav.appendChild(buttonContainer)
 
     const decadeContainer = document.createElement("div")
     decadeContainer.classList.add('button-container')
     decadeContainer.setAttribute("id", 'decade-container')
     decadeContainer.style.gridTemplateColumns = 'repeat('+uniqueDecades.length+', 1fr)'
-    document.querySelector("#button-container").appendChild(decadeContainer)
+    buttonContainer.appendChild(decadeContainer)
 
     const yearContainer = document.createElement("div")
     yearContainer.classList.add('button-container')
     yearContainer.setAttribute("id", 'year-container')
     yearContainer.style.gridTemplateColumns = 'repeat(10, 1fr)'
-    document.querySelector("#button-container").appendChild(yearContainer)
+    buttonContainer.appendChild(yearContainer)
 
     const monthContainer = document.createElement("div")
     monthContainer.classList.add('button-container')
     monthContainer.setAttribute("id", 'month-container')
     monthContainer.style.gridTemplateColumns = 'repeat(12, 1fr)'
-    document.querySelector("#button-container").appendChild(monthContainer)
+    buttonContainer.appendChild(monthContainer)
     
     const weekContainer = document.createElement("div")
     weekContainer.classList.add('button-container')
     weekContainer.setAttribute("id", 'week-container')
     weekContainer.style.gridTemplateColumns = 'repeat(53, 1fr)'
-    document.querySelector("#button-container").appendChild(weekContainer)
+    buttonContainer.appendChild(weekContainer)
 
     const videoPic = document.createElement("div")
     videoPic.classList.add('videos')
-    document.querySelector("#chart-container").appendChild(videoPic)
+    chartContainer.appendChild(videoPic)
 
     const chartTitle = document.createElement("div")
     chartTitle.classList.add('chart-title')
-    document.querySelector("#chart-container").appendChild(chartTitle)
+    chartContainer.appendChild(chartTitle)
 
     const descriptionGenres = document.createElement("div")
     descriptionGenres.setAttribute("id", 'description-genres')
-    document.querySelector("#chart-container").appendChild(descriptionGenres)
+    chartContainer.appendChild(descriptionGenres)
 
     const chartDescription = document.createElement("p")
     chartDescription.classList.add('chart-description')
-    document.querySelector("#description-genres").appendChild(chartDescription)
+    descriptionGenres.appendChild(chartDescription)
 
     const topgenres = document.createElement("div")
     topgenres.setAttribute("id", 'genres')
     topgenres.classList.add('genres')
-    document.querySelector("#description-genres").appendChild(topgenres)
+    descriptionGenres.appendChild(topgenres)
 
     genrePool.forEach((item, i) => {
       const li = document.createElement("li")
@@ -205,12 +206,12 @@ async function browse() {
       li.style.order = i + 1
       // li.innerHTML = '<div style="display:inline-block;background: ' + item + ';"></div>'
       // li.innerHTML = '<div style="display:inline-block;width:16px;height:16px;background: ' + item + ';"></div>'
-      document.querySelector("#genres").appendChild(li)
+      topgenres.appendChild(li)
     })
 
     const childrenContainer = document.createElement("div")
     childrenContainer.setAttribute("id", 'children-container')
-    document.querySelector("#chart-container").appendChild(childrenContainer)
+    chartContainer.appendChild(childrenContainer)
 
     uniqueDecades.forEach((item, i) => {
       drawCalendar(item,'decade')
@@ -221,8 +222,8 @@ async function browse() {
      
       token.setAttribute("id", 'initialDecade-'+item.replaceAll('/','-'))
       token.onclick = function(){
-        document.querySelector("#chart-container").style.display = "block"
-        document.querySelector('#initial-decades-container').innerHTML = ''
+        chartContainer.style.display = "block"
+        initialDecades.innerHTML = ''
 
         var requestIndex = item
         testfml(requestIndex.replaceAll('/','-'),'decade','initialize')
@@ -234,49 +235,49 @@ async function browse() {
         })
       }
 
-      document.querySelector('#initial-decades-container').appendChild(token)
+      initialDecades.appendChild(token)
     })
 
     const genreContainer = document.createElement("div")
     genreContainer.setAttribute("id", 'genre-container')
     genreContainer.style.display = "none"
-    document.querySelector("#main-content").appendChild(genreContainer)
+    mainContent.appendChild(genreContainer)
 
     const genreNav = document.createElement("div")
     genreNav.setAttribute("id", 'genre-nav')
-    document.querySelector("#genre-container").appendChild(genreNav)
+    genreContainer.appendChild(genreNav)
 
     const navBack1 = document.createElement("div")
     navBack1.addEventListener("click", function() { browseInitialize()})
     navBack1.innerHTML = "<"
-    document.querySelector('#genre-nav').appendChild(navBack1)
+    genreNav.appendChild(navBack1)
 
     const genreNavSelection = document.createElement("div")
     genreNavSelection.setAttribute("id", 'genre-nav-selection')
-    document.querySelector("#genre-container").appendChild(genreNavSelection)
+    genreContainer.appendChild(genreNavSelection)
 
     const genreInfo = document.createElement("div")
     genreInfo.setAttribute("id", 'genre-info')
-    document.querySelector("#genre-container").appendChild(genreInfo)
+    genreContainer.appendChild(genreInfo)
 
     const genreMap = document.createElement("div")
     genreMap.setAttribute("id", 'genre-map')
     genreMap.classList.add('map')
-    document.querySelector("#genre-container").appendChild(genreMap)
+    genreContainer.appendChild(genreMap)
 
     const genreDataList = document.createElement("div")
     genreDataList.setAttribute("id", 'genre-datalist')
-    document.querySelector("#genre-container").appendChild(genreDataList)
+    genreContainer.appendChild(genreDataList)
 
     const genreSongs = document.createElement("div")
     genreSongs.setAttribute("id", 'genre-songs')
     genreSongs.classList.add('songs')
-    document.querySelector("#genre-datalist").appendChild(genreSongs)
+    genreDataList.appendChild(genreSongs)
 
     const genreArtists = document.createElement("div")
     genreArtists.setAttribute("id", 'genre-artists')
     genreArtists.classList.add('artists')
-    document.querySelector("#genre-datalist").appendChild(genreArtists)
+    genreDataList.appendChild(genreArtists)
 
     // const top10 = document.createElement("div")
     // top10.setAttribute("id", 'top10')
@@ -294,7 +295,7 @@ async function browse() {
         genre(item)
         testHistory(item,'genre')
       }
-      document.querySelector("#genre-nav-selection").appendChild(button)
+      genreNavSelection.appendChild(button)
     })
 
     if (browseHistory.length !== 0) {
@@ -331,7 +332,7 @@ async function browse() {
         }
       }
     }
-    document.querySelector("#chart-nav").appendChild(searchContainer)
+    chartNav.appendChild(searchContainer)
 
     
   
@@ -340,31 +341,31 @@ async function browse() {
     yyyy.setAttribute("id", 'yearSearch')
     yyyy.setAttribute("placeholder", 'YYYY')
     yyyy.setAttribute("maxlength", '4')
-    document.querySelector(".search-container").appendChild(yyyy)
+    searchContainer.appendChild(yyyy)
   
     const mm = document.createElement("input")
     mm.setAttribute("type", 'text')
     mm.setAttribute("id", 'monthSearch')
     mm.setAttribute("placeholder", 'MM')
     mm.setAttribute("maxlength", '2')
-    document.querySelector(".search-container").appendChild(mm)
+    searchContainer.appendChild(mm)
   
     const dd = document.createElement("input")
     dd.setAttribute("type", 'text')
     dd.setAttribute("id", 'daySearch')
     dd.setAttribute("placeholder", 'DD')
     dd.setAttribute("maxlength", '2')
-    document.querySelector(".search-container").appendChild(dd)
+    searchContainer.appendChild(dd)
   
     const searchWeekButton = document.createElement("button")
     searchWeekButton.setAttribute("id", 'search-button')
     searchWeekButton.onclick = function(){search()}
     searchWeekButton.innerHTML = "search"
-    document.querySelector(".search-container").appendChild(searchWeekButton)
+    searchContainer.appendChild(searchWeekButton)
   
     const nextprev = document.createElement("div")
     nextprev.classList.add('nextprev')
-    document.querySelector("#chart-nav").appendChild(nextprev)
+    chartNav.appendChild(nextprev)
   
     // const browseWeek = document.createElement("button")
     // browseWeek.setAttribute("id", 'week')
@@ -389,12 +390,12 @@ async function browse() {
     const prev = document.createElement("button")
     prev.setAttribute("id", 'previous')
     prev.innerHTML = "<"
-    document.querySelector(".nextprev").appendChild(prev)
+    nextprev.appendChild(prev)
   
     const next = document.createElement("button")
     next.setAttribute("id", 'next')
     next.innerHTML = ">"
-    document.querySelector(".nextprev").appendChild(next)
+    nextprev.appendChild(next)
   
     const weekTitle = document.createElement("div")
     weekTitle.setAttribute("id", 'weektitle')
@@ -1283,6 +1284,44 @@ async function browse() {
         - arr.filter(v => v===b).length
     ).pop();
   }
+
+  function similar(operation, key, request) {
+    //find a song with similar genre(same or same header) and similar year
+    //find an artist with similar genre(same or same header) and similar years active, along with similar stats
+    var list = []
+    var operator
+    for (let i = 1; i <= 10; i++) {
+      searchYearly(i)
+    }
+    function searchYearly(pos) {
+      for (let i = 0; i < data.length; i++) {
+        if ((data[i]?.['no'+pos+'genre'].includes(key[0])) && (data[i]?.week.slice(0,4) == key[1])) {
+          var count = 1
+          var year = data[i].week.slice(0,4)
+          var genre = data[i]?.['no'+pos+'genre']
+          var id = data[i]?.['no'+pos+'id']
+          var name = data[i]?.['no'+pos+'name']
+          var artist = data[i]?.['no'+pos+'artist']
+          var object = [genre,id,name,artist]
+          var score = 11 - pos + (1 / pos)
+          score = multiplier(year,score)
+          if (request == 'song') {
+            list.push({object,score,count})
+          } else if (request == 'artist') {
+            var separators = [' ft. ', ' / ', ', ']
+            var tokens = artist.split(new RegExp(separators.join('|'), 'g'))
+            var fuck = []
+            tokens.forEach((object, i) => {
+              score = multiplier(year,(score + 10) * (1/(tokens.length)) + (5 / (i+1)))
+              fuck.push({object,score,count})
+            })
+            list.push(fuck)
+          }
+        }
+      }
+    }
+    return list.flat(1)
+  }
   
   function searchSong(id) {
     modal(`flex`)
@@ -1302,8 +1341,15 @@ async function browse() {
         return
       }
     })
+
+    group(similar(['genre','week'], [decode(id)[0][2],date.slice(0,4)], 'song')).forEach((item, i) => {
+      console.log(item)
+    })
+    
     setClick('#modaltitle','artist','')
     pic(artist,name,'videomodal')
+
+    
   }
 
   function searchArtist(artist) {
@@ -1566,7 +1612,7 @@ function group1(type) {
 
 //CHANGE TO RETURN A SINGULAR IMAGE
 
-function pic(termArtist, termSong, id) {
+async function pic(termArtist, termSong, id) {
   var allArtists = termArtist.replace(' ft. ',' ').toLowerCase()
   var artists = termArtist;
 
