@@ -149,7 +149,7 @@ a {cursor: pointer;}
   background-repeat: no-repeat;
 }
 
-#initial-genres-container, #initial-decades-container {
+#initial-genres-container, #initial-decades-container, #initial-flashback-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   width: 100%;
