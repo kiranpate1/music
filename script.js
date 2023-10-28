@@ -146,19 +146,26 @@ async function browse() {
     browseContainer.appendChild(initialFlashback)
 
     const flashbackCount = []
-    //function flashBack() {
-      for (let i = 0; i < (uniqueYears.length / 5); i++) {
-        var increment = uniqueYears[uniqueYears.length - 1] - (i * 5)
-        if (i == 0) {
-          increment = uniqueYears[uniqueYears.length - 1] - 1
-        }
-        flashbackCount.push(increment)
+    for (let i = 0; i < (uniqueYears.length / 5); i++) {
+      var increment = uniqueYears[uniqueYears.length - 1] - (i * 5)
+      if (i == 0) {
+        increment = uniqueYears[uniqueYears.length - 1] - 1
       }
-    //}
-    console.log(flashbackCount)
+      flashbackCount.push(increment)
+    }
+    flashbackCount.forEach((item, i) => {
+      const button = document.createElement("button")
+      button.innerHTML = item
+      button.onclick = function(){
+        chartContainer.style.display = "block"
+        var monthDay = data[data.length - 1].week.slice(4)
+        var dateSearch = item + '/' + monthDay
+        searchWeek(dateSearch)
+        testHistory(item,'time')
+      }
+      initialFlashback.appendChild(button)
+    })
       
-
-
     const chartContainer = document.createElement("div")
     chartContainer.setAttribute("id", 'chart-container')
     chartContainer.style.display = "none"
@@ -1124,7 +1131,7 @@ async function browse() {
   
   function search() {
     var date = document.getElementById("yearSearch").value + "/" + document.getElementById("monthSearch").value + "/" + document.getElementById("daySearch").value
-    topsongs.innerHTML = ""
+    document.querySelector('#songs').innerHTML = ""
     searchWeek(date)
   }
   function searchWeek(searchRequest) {
@@ -1416,7 +1423,7 @@ async function browse() {
       }
       genreList.push(decode(item)[0][2])
       const li = document.createElement("li");
-      li.innerHTML = '#'+parseInt(decode(item)[0][1])+'<div style="width:16px;height:16px;background: '+decode(item)[0][2]+';"></div>'+'<a class="songname" id="'+item+'">'+decode(item)[0][3]+'</a>&nbsp'+"-"+"&nbsp<div class='artistname'><a>"+decode(item)[0][4].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
+      li.innerHTML = '#'+parseInt(decode(item)[0][1])+'<div style="width:16px;height:16px;background: '+decode(item)[0][2]+';"></div>'+'<a class="songname" id="'+item+'">'+decode(item)[0][3]+'</a>&nbsp'+"-"+"&nbsp<div class='artistname'><a>"+decode(item)[0][4].replace(re, function(matched){return mapObj[matched]})+"</a>"+decode(item)[0][0]+"</div>"
       document.querySelector("#modalsongs").appendChild(li);
     })
 
@@ -1426,7 +1433,7 @@ async function browse() {
         return
       }
     })
-    modalDescription.innerHTML = 'is a '+decodeGenre(mode(genreList))[1]+' artist with '+no1Count+' number 1s and '+[combinedUnique.length]+' top 10 hit'
+    modalDescription.innerHTML = 'is a '+decodeGenre(mode(genreList))[1]+' artist that first reached the top 10 in '+decode(combinedUnique[0])[0][0].slice(-4)+ ', with '+no1Count+' number 1s and '+[combinedUnique.length]+' top 10 hit'
     
     // songs description
     if (combinedUnique.length > 3) {
@@ -1446,7 +1453,7 @@ async function browse() {
         }
       })
     } else if (combinedUnique.length == 1) {
-      modalDescription.innerHTML += ", " + decode(combinedUnique[0])[0][3] + "."
+      modalDescription.innerHTML += "—" + decode(combinedUnique[0])[0][3] + "."
     }
 
 
