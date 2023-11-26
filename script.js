@@ -1867,3 +1867,4 @@ function decodeDate(input) {
   var year = input.slice(0,4)
   return month + ' ' + day + ', ' + year
 }
+
