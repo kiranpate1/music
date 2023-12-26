@@ -1778,7 +1778,7 @@ async function pic(termArtist, termSong, id) {
 
 function decodeGenre(input) {
   if (input == '#de7eea') {
-    output = ['Pop','pop','Power pop']
+    output = ['Pop','pop','Power pop','Bubblegum pop']
   } else if (input == '#a16fd9') {
     output = ['Dance-pop','pop','Synth-pop, Europop, Electropop']
   } else if (input == '#9a82c8') {
@@ -1792,7 +1792,7 @@ function decodeGenre(input) {
   } else if (input == '#ba2c8e') {
     output = ['Pop rap','rap','Melodic rap, Pop trap']
   } else if (input == '#ba3d3d') {
-    output = ['R&B','R&B','']
+    output = ['R&B','R&B','Quiet storm, Contemporary R&B']
   } else if (input == '#b65f5f') {
     output = ['New jack','R&B','Doo-wop, Swing']
   } else if (input == '#603232') {
@@ -1814,7 +1814,7 @@ function decodeGenre(input) {
   } else if (input == '#8eb371') {
     output = ['New Wave','rock','Punk rock, New wave, Post-punk, Ska punk, Pop punk, Emo, Hardcore punk, Skate punk']
   } else if (input == '#4aca4e') {
-    output = ['Rock and Roll','rock','Rockabilly, Surf rock, Rock and roll revival, Heartland Rock']
+    output = ['Rock and Roll','rock','Rockabilly, Surf rock, Rock and roll revival, Heartland rock', 'Roots rock']
   } else if (input == '#97be9d') {
     output = ['Alternative Rock','rock','']
   } else if (input == '#a4d685') {
