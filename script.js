@@ -1415,7 +1415,7 @@ async function browse() {
     }
     combinedUnique = [...new Set(fullList)]
     var totalList = group1(fullList)[0]
-
+    
     var firstYear = decode(combinedUnique[0])[0][0].slice(0,4)
     var top10Count = combinedUnique.length
     var no1Count = 0
@@ -1444,6 +1444,31 @@ async function browse() {
 
       if (top10Count > 1) {
         modalDescription.innerHTML += ' first reached the top 10 in '+firstYear
+        if (no1Count > 1) {
+          modalDescription.innerHTML += ' and has since notched '+no1Count+' number 1s and '
+        } else if (no1Count == 1) {
+          modalDescription.innerHTML += ' and has since collected a number 1 and '
+        } else if (no1Count == 0) {
+          modalDescription.innerHTML += ' and has since scored '
+        }
+        modalDescription.innerHTML += [top10Count]+' top 10 hit'
+        if (top10Count > 3) {
+          modalDescription.innerHTML += "s including "
+          combinedUnique.slice(0, 3).forEach((item, i) => {
+            modalDescription.innerHTML += decode(item)[0][3] + ", "
+          })
+          modalDescription.innerHTML += "and more."
+        } else if (top10Count == 3 || top10Count == 2) {
+          modalDescription.innerHTML += "s—"
+          combinedUnique.slice(0, 3).forEach((item, i) => {
+            if (i == combinedUnique.slice(0, 3).length - 1) {
+              modalDescription.innerHTML += "and "
+              modalDescription.innerHTML += decode(item)[0][3] + "."
+            } else {
+              modalDescription.innerHTML += decode(item)[0][3] + ", "
+            }
+          })
+        }
       } else if (top10Count == 1) {
         if (no1Count == 1) {
           modalDescription.innerHTML += ' reached number 1 in '+firstYear
@@ -1451,40 +1476,6 @@ async function browse() {
           modalDescription.innerHTML += ' reached the top 10 in '+firstYear
         }
         modalDescription.innerHTML += ' with ' + decode(combinedUnique[0])[0][3] + "."
-        return
-      }
-
-      if (no1Count > 1) {
-        modalDescription.innerHTML += ' and has since notched '+no1Count+' number 1s and '
-      } else if (no1Count == 1) {
-        // if (top10Count > 1) {
-        //   modalDescription.innerHTML += ' and has since notched a number 1 and '
-        // } else if (top10Count == 1) {
-        //   modalDescription.innerHTML += ' and has since notched a number 1.'
-        // }
-        modalDescription.innerHTML += ' and has since collected a number 1 and '
-      } else if (no1Count == 0) {
-        modalDescription.innerHTML += ' and has since notched '
-      }
-
-      modalDescription.innerHTML += [top10Count]+' top 10 hit'
-
-      if (top10Count > 3) {
-        modalDescription.innerHTML += "s including "
-        combinedUnique.slice(0, 3).forEach((item, i) => {
-          modalDescription.innerHTML += decode(item)[0][3] + ", "
-        })
-        modalDescription.innerHTML += "and more."
-      } else if (top10Count == 3 || top10Count == 2) {
-        modalDescription.innerHTML += "s—"
-        combinedUnique.slice(0, 3).forEach((item, i) => {
-          if (i == combinedUnique.slice(0, 3).length - 1) {
-            modalDescription.innerHTML += "and "
-            modalDescription.innerHTML += decode(item)[0][3] + "."
-          } else {
-            modalDescription.innerHTML += decode(item)[0][3] + ", "
-          }
-        })
       }
     }
 
