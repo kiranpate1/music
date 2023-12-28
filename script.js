@@ -1778,13 +1778,13 @@ async function pic(termArtist, termSong, id) {
 
 function decodeGenre(input) {
   if (input == '#de7eea') {
-    output = ['Pop','pop','Power pop','Bubblegum pop']
+    output = ['Pop','pop','']
   } else if (input == '#a16fd9') {
-    output = ['Dance-pop','pop','Synth-pop, Europop, Electropop']
+    output = ['Dance-pop','pop','Synth-pop, Europop, Electropop, Dance rock, Synth rock, Dream pop, Bubblegum pop, Teen pop']
   } else if (input == '#9a82c8') {
-    output = ['Indie','pop','Indie-pop, Indie-rock, Indie-folk, Indie-electronic, Indie-soul, Indie-dance, Indie-tronica, Indie-pop, Indie-rock, Indie-folk, Indie-electronic, Indie-soul, Indie-dance, Indie-tronica']
+    output = ['Indie','pop','Indie-pop, Indie-rock, Indie-folk, Indie-electronic, Indie-soul, Indie-dance, Indie-tronica, Indie-pop, Indie-rock, Indie-folk, Indie-electronic, Indie-soul, Indie-dance, Indie-tronica, Psychedelic, Baroque pop']
   } else if (input == '#c295c8') {
-    output = ['Pop rock','pop','Soft rock, Pop punk']
+    output = ['Pop rock','pop','Soft rock, Pop punk, Power pop, Garage rock']
   } else if (input == '#d700ff') {
     output = ['Disco','pop','Nu-Disco, Euro disco, Italo disco, Space disco, Disco polo, Disco house, Disco rap, Disco polo, Disco house, Disco rap']
   } else if (input == '#854d76') {
@@ -1826,13 +1826,13 @@ function decodeGenre(input) {
   } else if (input == '#d5eb20') {
     output = ['Jazz','jazz','Jazz fusion, Acid jazz, Jazz rap, Nu jazz, Jazz funk, Jazz blues, Jazz pop, Jazz rock, Jazztronica, Nu jazz']
   } else if (input == '#ddf3a8') {
-    output = ['Soca','soca','Calypso, Chutney, Chutney soca, Chutney parang, Chutney rapso, Chutney dance']
+    output = ['Soca','soca','Calypso, Chutney, Parang, Rapso']
   } else if (input == '#c6ccae') {
     output = ['Gospel','gospel','Worship, Christian rock, Christian hip hop, Christian metal, Christian hardcore, Christian punk, Christian alternative rock']
   } else if (input == '#ceb8ae') {
     output = ['World','world','New Age, World fusion, Worldbeat']
   } else if (input == '#7085ef') {
-    output = ['Electronic','electronic','EDM, Club, Electro, Electro house, Electroclash, Electro swing, Electro hop, Electro funk, Electro pop, Electronicore, Electronic dance']
+    output = ['Electronic','electronic','EDM, Club, Electro, Electro house, Electroclash, Electro swing, Electro hop, Electro funk, Electro pop, Electronicore, Electronic dance, Freestyle, Electro-hip-hop']
   } else if (input == '#5666b8') {
     output = ['Dubstep','electronic','Brostep, Chillstep, Drumstep, Riddim, Dubstyl, Garage']
   } else if (input == '#4d95b8') {
