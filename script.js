@@ -165,6 +165,88 @@ async function browse() {
       }
       initialFlashback.appendChild(button)
     })
+
+    const goatTitle = document.createElement("h2")
+    goatTitle.innerHTML = "Greatest Of All Time"
+    browseContainer.appendChild(goatTitle)
+
+    const initialGoat = document.createElement("div")
+    initialGoat.setAttribute("id", 'initial-goat-container')
+    browseContainer.appendChild(initialGoat)
+
+    const goatSongs = document.createElement("button")
+    goatSongs.innerHTML = "Songs"
+    goatSongs.onclick = function(){
+      fuckthisshit('')
+      function fuckthisshit(key) {
+        document.querySelector("#genre-container").style.display = "block"
+        document.querySelector("#genre-songs").innerHTML = ""
+        document.querySelector("#genre-artists").innerHTML = ""
+        document.querySelector("#genre-info").innerHTML = ""
+    
+        group1(dataList1('genre', key, 'song')).forEach((item, i) => {
+          var id = item.key[1]
+          const li = document.createElement("li")
+          li.innerHTML = '<div>' + item.key[0] + '</div> <div>' + item.key[2] + "</div> <div>"+item.key[3]+"</div>"
+          li.setAttribute('songId', id)
+          li.setAttribute('week', firstweek(id))
+          document.querySelector("#genre-songs").appendChild(li)
+        })
+
+        function group1(type) {
+          var reducedArray = Object.values(type.reduce((hash, item) => {
+            if (!hash[item.object]) {
+                hash[item.object] = { key: item.object, score: 0, count: 0 };
+            }
+            hash[item.object].score += item.score;
+            hash[item.object].count += item.count;
+            
+            return hash;
+          }, {}))
+          return reducedArray
+        }
+
+        function dataList1(operation, key, request) {
+          var list = []
+          var operator
+          for (let i = 0; i < data.length; i++) {
+            searchYearly(i)
+          }
+          function searchYearly(i) {
+
+              for (let pos = 1; pos <= 10; pos++) {
+                var count = 1
+                var year = data[i].week.slice(0,4)
+                var genre = data[i]?.['no'+pos+'genre']
+                var id = data[i]?.['no'+pos+'id']
+                var name = data[i]?.['no'+pos+'name']
+                var artist = data[i]?.['no'+pos+'artist']
+                var object = [genre,id,name,artist]
+                var score = 11 - pos + (1 / pos)
+                score = multiplier(year,score)
+                if (request == 'song') {
+                  list.push({object,score,count})
+                } else if (request == 'artist') {
+                  var separators = [' ft. ', ' / ', ', ']
+                  var tokens = artist.split(new RegExp(separators.join('|'), 'g'))
+                  var fuck = []
+                  tokens.forEach((object, i) => {
+                    score = multiplier(year,(score + 10) * (1/(tokens.length)) + (5 / (i+1)))
+                    fuck.push({object,score,count})
+                  })
+                  list.push(fuck)
+                } else if (request == 'genre') {
+                  object = genre
+                  list.push({object,score,count})
+                }
+              }
+          }
+          return list.flat(1)
+        }
+      }
+      testHistory('','goat')
+    }
+    initialGoat.appendChild(goatSongs)
       
     const chartContainer = document.createElement("div")
     chartContainer.setAttribute("id", 'chart-container')
@@ -1415,7 +1497,7 @@ async function browse() {
     }
     combinedUnique = [...new Set(fullList)]
     var totalList = group1(fullList)[0]
-    
+
     var firstYear = decode(combinedUnique[0])[0][0].slice(0,4)
     var top10Count = combinedUnique.length
     var no1Count = 0
@@ -1440,42 +1522,42 @@ async function browse() {
     artistDescription();
 
     function artistDescription() {
-      modalDescription.innerHTML = 'is a '+decodeGenre(mode(genreList))[1]+' artist that'  
+      modalDescription.innerHTML = `is a `+decodeGenre(mode(genreList))[1]+` artist that`  
 
       if (top10Count > 1) {
-        modalDescription.innerHTML += ' first reached the top 10 in '+firstYear
+        modalDescription.innerHTML += ` first reached the top 10 in `+firstYear
         if (no1Count > 1) {
-          modalDescription.innerHTML += ' and has since notched '+no1Count+' number 1s and '
+          modalDescription.innerHTML += ` and has since notched ${no1Count} number 1s and `
         } else if (no1Count == 1) {
-          modalDescription.innerHTML += ' and has since collected a number 1 and '
+          modalDescription.innerHTML += ` and has since collected a number 1 and `
         } else if (no1Count == 0) {
-          modalDescription.innerHTML += ' and has since scored '
+          modalDescription.innerHTML += ` and has since scored `
         }
-        modalDescription.innerHTML += [top10Count]+' top 10 hit'
+        modalDescription.innerHTML += [top10Count]+` top 10 hits`
         if (top10Count > 3) {
-          modalDescription.innerHTML += "s including "
+          modalDescription.innerHTML += ` including `
           combinedUnique.slice(0, 3).forEach((item, i) => {
-            modalDescription.innerHTML += decode(item)[0][3] + ", "
+            modalDescription.innerHTML += decode(item)[0][3] + `, `
           })
-          modalDescription.innerHTML += "and more."
+          modalDescription.innerHTML += `and more.`
         } else if (top10Count == 3 || top10Count == 2) {
-          modalDescription.innerHTML += "s—"
+          modalDescription.innerHTML += ` in total—`
           combinedUnique.slice(0, 3).forEach((item, i) => {
             if (i == combinedUnique.slice(0, 3).length - 1) {
-              modalDescription.innerHTML += "and "
-              modalDescription.innerHTML += decode(item)[0][3] + "."
+              modalDescription.innerHTML += `and `
+              modalDescription.innerHTML += decode(item)[0][3] + `.`
             } else {
-              modalDescription.innerHTML += decode(item)[0][3] + ", "
+              modalDescription.innerHTML += decode(item)[0][3] + `, `
             }
           })
         }
       } else if (top10Count == 1) {
         if (no1Count == 1) {
-          modalDescription.innerHTML += ' reached number 1 in '+firstYear
+          modalDescription.innerHTML += ` reached number 1 in `+firstYear
         } else if (no1Count == 0) {
-          modalDescription.innerHTML += ' reached the top 10 in '+firstYear
+          modalDescription.innerHTML += ` reached the top 10 in `+firstYear
         }
-        modalDescription.innerHTML += ' with ' + decode(combinedUnique[0])[0][3] + "."
+        modalDescription.innerHTML += ` with ${decode(combinedUnique[0])[0][3]}.`
       }
     }
 

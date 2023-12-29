@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <table class="table">
+      
+      
+    </table>
+    <script>
+      browse()
+      async function browse() {
+        const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
+        const response = await fetch(api_url);
+        const data = await response.json();
+
+        fuckthisshit('')
+        function fuckthisshit(key) {
+          const table = document.querySelector('.table')
+          table.innerHTML = ""
+
+          const tableHead = document.createElement("thead")
+          tableHead.innerHTML = `<tr><th>No</th><th>Name</th><th>Artist</th><th>Genre</th><th>ID</th></tr>`
+          table.appendChild(tableHead)
+
+      
+          group1(dataList1('genre', key, 'song')).forEach((item, i) => {
+            const tableBody = document.createElement("tbody")
+            tableBody.innerHTML = '<tr><td>'+i+'</td><td>' + item.key[2] + '</td> <td>' + item.key[3] + "</td> <td>"+item.key[0]+"</td><td>"+item.key[1]+"</td></tr>"
+            
+            table.appendChild(tableBody)
+          })
+
+          function group1(type) {
+            var reducedArray = Object.values(type.reduce((hash, item) => {
+              if (!hash[item.object]) {
+                  hash[item.object] = { key: item.object, score: 0, count: 0 };
+              }
+              hash[item.object].score += item.score;
+              hash[item.object].count += item.count;
+              
+              return hash;
+            }, {}))
+            return reducedArray
+          }
+
+          function dataList1(operation, key, request) {
+            var list = []
+            var operator
+            for (let i = 0; i < data.length; i++) {
+              searchYearly(i)
+            }
+            function searchYearly(i) {
+
+                for (let pos = 1; pos <= 10; pos++) {
+                  var count = 1
+                  var year = data[i].week.slice(0,4)
+                  var genre = data[i]?.['no'+pos+'genre']
+                  var id = data[i]?.['no'+pos+'id']
+                  var name = data[i]?.['no'+pos+'name']
+                  var artist = data[i]?.['no'+pos+'artist']
+                  var object = [genre,id,name,artist]
+                  var score = 11 - pos + (1 / pos)
+                  if (request == 'song') {
+                    list.push({object,score,count})
+                  } else if (request == 'artist') {
+                    var separators = [' ft. ', ' / ', ', ']
+                    var tokens = artist.split(new RegExp(separators.join('|'), 'g'))
+                    var fuck = []
+                    tokens.forEach((object, i) => {
+                      fuck.push({object,score,count})
+                    })
+                    list.push(fuck)
+                  } else if (request == 'genre') {
+                    object = genre
+                    list.push({object,score,count})
+                  }
+                }
+            }
+            return list.flat(1)
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
