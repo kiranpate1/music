@@ -177,73 +177,7 @@ async function browse() {
     const goatSongs = document.createElement("button")
     goatSongs.innerHTML = "Songs"
     goatSongs.onclick = function(){
-      fuckthisshit('')
-      function fuckthisshit(key) {
-        document.querySelector("#genre-container").style.display = "block"
-        document.querySelector("#genre-songs").innerHTML = ""
-        document.querySelector("#genre-artists").innerHTML = ""
-        document.querySelector("#genre-info").innerHTML = ""
-    
-        group1(dataList1('genre', key, 'song')).forEach((item, i) => {
-          var id = item.key[1]
-          const li = document.createElement("li")
-          li.innerHTML = '<div>' + item.key[0] + '</div> <div>' + item.key[2] + "</div> <div>"+item.key[3]+"</div>"
-          li.setAttribute('songId', id)
-          li.setAttribute('week', firstweek(id))
-          document.querySelector("#genre-songs").appendChild(li)
-        })
-
-        function group1(type) {
-          var reducedArray = Object.values(type.reduce((hash, item) => {
-            if (!hash[item.object]) {
-                hash[item.object] = { key: item.object, score: 0, count: 0 };
-            }
-            hash[item.object].score += item.score;
-            hash[item.object].count += item.count;
-            
-            return hash;
-          }, {}))
-          return reducedArray
-        }
-
-        function dataList1(operation, key, request) {
-          var list = []
-          var operator
-          for (let i = 0; i < data.length; i++) {
-            searchYearly(i)
-          }
-          function searchYearly(i) {
-
-              for (let pos = 1; pos <= 10; pos++) {
-                var count = 1
-                var year = data[i].week.slice(0,4)
-                var genre = data[i]?.['no'+pos+'genre']
-                var id = data[i]?.['no'+pos+'id']
-                var name = data[i]?.['no'+pos+'name']
-                var artist = data[i]?.['no'+pos+'artist']
-                var object = [genre,id,name,artist]
-                var score = 11 - pos + (1 / pos)
-                score = multiplier(year,score)
-                if (request == 'song') {
-                  list.push({object,score,count})
-                } else if (request == 'artist') {
-                  var separators = [' ft. ', ' / ', ', ']
-                  var tokens = artist.split(new RegExp(separators.join('|'), 'g'))
-                  var fuck = []
-                  tokens.forEach((object, i) => {
-                    score = multiplier(year,(score + 10) * (1/(tokens.length)) + (5 / (i+1)))
-                    fuck.push({object,score,count})
-                  })
-                  list.push(fuck)
-                } else if (request == 'genre') {
-                  object = genre
-                  list.push({object,score,count})
-                }
-              }
-          }
-          return list.flat(1)
-        }
-      }
+      genre('')
       testHistory('','goat')
     }
     initialGoat.appendChild(goatSongs)

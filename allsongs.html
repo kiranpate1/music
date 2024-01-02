@@ -10,78 +10,156 @@
       
     </table>
     <script>
-      browse()
-      async function browse() {
+      const fullList = []
+      var mapObj = {' ft. ':"</a>&nbspft.&nbsp<a>",' / ':"</a>&nbsp/&nbsp<a>",', ':"</a>,&nbsp<a>"};
+      var mapObj1 = {' ft. ':"separator",' / ':"separator",', ':"separator"};
+      var re = new RegExp(Object.keys(mapObj).join("|"),"gi");
+
+
+      browse('')
+      async function browse(key) {
         const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
         const response = await fetch(api_url);
         const data = await response.json();
 
-        fuckthisshit('')
-        function fuckthisshit(key) {
-          const table = document.querySelector('.table')
-          table.innerHTML = ""
+        const table = document.querySelector('.table')
+        table.innerHTML = ""
 
-          const tableHead = document.createElement("thead")
-          tableHead.innerHTML = `<tr><th>No</th><th>Name</th><th>Artist</th><th>Genre</th><th>ID</th></tr>`
-          table.appendChild(tableHead)
+        const tableHead = document.createElement("thead")
+        tableHead.innerHTML = `<tr><th>no</th><th>name</th><th>artist</th><th>genre</th><th>id</th></tr>`
+        table.appendChild(tableHead)
 
-      
-          group1(dataList1('genre', key, 'song')).forEach((item, i) => {
-            const tableBody = document.createElement("tbody")
-            tableBody.innerHTML = '<tr><td>'+i+'</td><td>' + item.key[2] + '</td> <td>' + item.key[3] + "</td> <td>"+item.key[0]+"</td><td>"+item.key[1]+"</td></tr>"
-            
-            table.appendChild(tableBody)
-          })
+    
+        group(dataList('genre', key, 'song')).forEach((item, i) => {
+          const tableBody = document.createElement("tbody")
+          tableBody.innerHTML = '<tr><td>'+i+'</td><td>' + item.key[2] + '</td> <td>' + item.key[3] + "</td> <td>"+item.key[0]+"</td><td>"+item.key[1]+"</td></tr>"
+          fullList.push({no:i,name:item.key[2],artist:item.key[3],genre:item.key[0],id:item.key[1]})
+          
+          table.appendChild(tableBody)
+        })
 
-          function group1(type) {
-            var reducedArray = Object.values(type.reduce((hash, item) => {
-              if (!hash[item.object]) {
-                  hash[item.object] = { key: item.object, score: 0, count: 0 };
-              }
-              hash[item.object].score += item.score;
-              hash[item.object].count += item.count;
-              
-              return hash;
-            }, {}))
-            return reducedArray
-          }
+        test(Math.floor(Math.random() * (fullList.length)))
+        function test(i) {
+          const item = fullList[i]
+          console.log(item.artist, item.name)
+          info(item.artist, item.name)
+        }
 
-          function dataList1(operation, key, request) {
-            var list = []
-            var operator
-            for (let i = 0; i < data.length; i++) {
-              searchYearly(i)
+
+        function group(type) {
+          var reducedArray = Object.values(type.reduce((hash, item) => {
+            if (!hash[item.object]) {
+                hash[item.object] = { key: item.object, score: 0, count: 0 };
             }
-            function searchYearly(i) {
+            hash[item.object].score += item.score;
+            hash[item.object].count += item.count;
+            
+            return hash;
+          }, {}))
+          return reducedArray
+        }
 
-                for (let pos = 1; pos <= 10; pos++) {
-                  var count = 1
-                  var year = data[i].week.slice(0,4)
-                  var genre = data[i]?.['no'+pos+'genre']
-                  var id = data[i]?.['no'+pos+'id']
-                  var name = data[i]?.['no'+pos+'name']
-                  var artist = data[i]?.['no'+pos+'artist']
-                  var object = [genre,id,name,artist]
-                  var score = 11 - pos + (1 / pos)
-                  if (request == 'song') {
-                    list.push({object,score,count})
-                  } else if (request == 'artist') {
-                    var separators = [' ft. ', ' / ', ', ']
-                    var tokens = artist.split(new RegExp(separators.join('|'), 'g'))
-                    var fuck = []
-                    tokens.forEach((object, i) => {
-                      fuck.push({object,score,count})
-                    })
-                    list.push(fuck)
-                  } else if (request == 'genre') {
-                    object = genre
-                    list.push({object,score,count})
+        function dataList(operation, key, request) {
+          var list = []
+          var operator
+          for (let i = 0; i < data.length; i++) {
+            searchYearly(i)
+          }
+          function searchYearly(i) {
+
+              for (let pos = 1; pos <= 10; pos++) {
+                var count = 1
+                var year = data[i].week.slice(0,4)
+                var genre = data[i]?.['no'+pos+'genre']
+                var id = data[i]?.['no'+pos+'id']
+                var name = data[i]?.['no'+pos+'name']
+                var artist = data[i]?.['no'+pos+'artist']
+                var object = [genre,id,name,artist]
+                var score = 11 - pos + (1 / pos)
+                if (request == 'song') {
+                  list.push({object,score,count})
+                } else if (request == 'artist') {
+                  var separators = [' ft. ', ' / ', ', ']
+                  var tokens = artist.split(new RegExp(separators.join('|'), 'g'))
+                  var fuck = []
+                  tokens.forEach((object, i) => {
+                    fuck.push({object,score,count})
+                  })
+                  list.push(fuck)
+                } else if (request == 'genre') {
+                  object = genre
+                  list.push({object,score,count})
+                }
+              }
+          }
+          return list.flat(1)
+        }
+      }
+
+
+      async function info(termArtist, termSong) {
+        
+        var allArtists = termArtist.replace(' ft. ',' ').toLowerCase()
+        var artists = termArtist;
+
+        const artistsList = artists.replace(re, function(matched){return mapObj1[matched]}).split("separator");
+
+        termArtist = artistsList[0].toLowerCase()
+        termSong = termSong.toLowerCase()
+        const songInfo = `https://itunes.apple.com/search?term=${allArtists + ' - ' + termSong}&media=music`;
+        const songVideo = `https://itunes.apple.com/search?term=${allArtists + ' - ' + termSong}&media=musicVideo`;
+
+        var infoList = []
+        var videoList = []
+        fetch(songInfo)
+            .then((Response) => Response.json())
+            .then((data) => {
+              findPic()
+              function findPic() {
+                for (var i = 0; i < data.results.length; i++) {
+                  if (termSong.includes(data.results[i].trackName.toLowerCase()))  {
+                    infoList.push(data.results[i]);
+                    console.log(data.results[i])
+                    return
                   }
                 }
-            }
-            return list.flat(1)
-          }
-        }
+                for (var i = 0; i < data.results.length; i++) {
+                  infoList.push(data.results[i])
+                  
+                  console.log(data.results[i])
+                  return
+                }
+              }
+        })
+        fetch(songVideo)
+            .then((Response) => Response.json())
+            .then((data) => {
+              findPic()
+              function findPic() {
+                for (var i = 0; i < data.results.length; i++) {
+                  if (termSong.includes(data.results[i].trackName.toLowerCase()))  {
+                    videoList.push(data.results[i]);
+                    return
+                  }
+                }
+                for (var i = 0; i < data.results.length; i++) {
+                  videoList.push(data.results[i])
+                  return
+                }
+              }
+              let con = videoList.concat(infoList)
+              let videoUrl
+              setTimeout(() => {
+                if (con.length == 0) {
+                  console.log("no")
+                  videoUrl = infoList[0].artworkUrl100.replace('100x100', '800x800')
+                } else {
+                  videoUrl = con[0].artworkUrl100.replace('100x100', '800x800')
+                }
+                console.log({artistName:termArtist,trackName:termSong,videoUrl:videoUrl,album:infoList[0].collectionName,release:infoList[0].releaseDate,preview:infoList[0].previewUrl,coverUrl:infoList[0].artworkUrl100})
+
+              }, 4000);
+        })
       }
     </script>
   </body>
