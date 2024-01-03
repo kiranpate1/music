@@ -92,7 +92,7 @@ async function browse() {
     const thisWeek = document.createElement("div")
     thisWeek.setAttribute("id", 'this-week')
     browseContainer.appendChild(thisWeek)
-    pic(data[data.length - 1].no1artist, data[data.length - 1].no1name, 'this-week')
+    pic(data[data.length - 1].no1id, 'this-week')
 
     const thisWeekText = document.createElement("h1")
     thisWeekText.innerHTML = "This Week - " + data[data.length - 1].week + " - " + data[data.length - 1].no1name + " by " + data[data.length - 1].no1artist + " is #1"
@@ -546,27 +546,28 @@ async function browse() {
 
     //FIND PICS FOR EVERY DECADE/YEAR/MONTH/WEEK
     
-    // var songList = []
-    // for (let i = 1; i <= 10; i++) {
-    //   searchYearly(i)
-    // }
-    // function searchYearly(pos) {
-    //   for (let i = 0; i < data.length; i++) {
-    //     if (data[i].week.includes(input)) {
-    //       var name = data[i]?.['no'+pos+'name']
-    //       var artist = data[i]?.['no'+pos+'artist']
-    //       var genre = data[i]?.['no'+pos+'genre']
-    //       var object = [genre,name,artist]
-    //       var score = 11 - pos
-    //       songList.push({object,score})
-    //     }
-    //   }
-    // }
-    // group(songList).forEach((item, i) => {
-    //   if (i == '0') {
-    //     pic(item.key[2], item.key[1], 'children-'+input.replaceAll('/','-'))
-    //   }
-    // })
+    var songList = []
+    for (let i = 1; i <= 10; i++) {
+      searchYearly(i)
+    }
+    function searchYearly(pos) {
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].week.includes(input)) {
+          var name = data[i]?.['no'+pos+'name']
+          var id = data[i]?.['no'+pos+'id']
+          var artist = data[i]?.['no'+pos+'artist']
+          var genre = data[i]?.['no'+pos+'genre']
+          var object = [id,genre,name,artist]
+          var score = 11 - pos
+          songList.push({object,score})
+        }
+      }
+    }
+    group(songList).forEach((item, i) => {
+      if (i == '0') {
+        pic(item.key[0], 'children-'+input.replaceAll('/','-'))
+      }
+    })
   }
 
 
@@ -746,7 +747,7 @@ async function browse() {
     
     group(dataList('week', yearno, 'song')).forEach((item, i) => {
       if (i == '0') {
-        pic(item.key[3], item.key[2], 'video2')
+        pic(item.key[1], 'video2')
       }
       const li = document.createElement("li")
       li.innerHTML = item.score + ' <div style="display:inline-block;width:16px;height:16px;background: ' + item.key[0] + ';"></div><a class="songname" songid="'+ item.key[1] + '">' + item.key[2] + "</a>&nbsp-&nbsp<div class='artistname'><a>"+item.key[3].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
@@ -1121,9 +1122,9 @@ async function browse() {
       //item.setAttribute('onClick', 'map("' + item.innerHTML + '");')
     })
   
-    pic(lastWeek.no1artist, lastWeek.no1name, 'video1')
-    pic(currentWeek.no1artist, currentWeek.no1name, 'video2')
-    pic(nextWeek.no1artist, nextWeek.no1name, 'video3')
+    pic(lastWeek.no1id, 'video1')
+    pic(currentWeek.no1id, 'video2')
+    pic(nextWeek.no1id, 'video3')
   }
 
   function decode(input) {
@@ -1394,18 +1395,18 @@ async function browse() {
   
     group(dataList('week', '', 'song')).forEach((item, i) => {
       if (item.key[1] == id) {
-        document.querySelector("#modaldescription").innerHTML = 'is a '+genre+' song that peaked at #'+peak+' on '+decodeDate(date)+' while spending '+item.count+' weeks in the top 10.'
+        document.querySelector("#modaldescription").innerHTML = `is a ${genre} song<span class="album"> from <span class="album-name"></span></span><span class="release"> released on <span class="release-date"></span></span> that peaked at #${peak} on ${decodeDate(date)} while spending ${item.count} weeks in the top 10.`
         document.querySelector('#modalstats').innerHTML = "#"+[i+1]+" all time • #"+peak+" peak • "+item.count+" weeks • "+genre
         return
       }
     })
 
     group(similar(['genre','week'], [decode(id)[0][2],date.slice(0,4)], 'song')).forEach((item, i) => {
-      console.log(item)
+      // console.log(item)
     })
     
     setClick('#modaltitle','artist','')
-    pic(artist,name,'videomodal')
+    pic(id,'videomodal')
 
     
   }
@@ -1507,11 +1508,11 @@ async function browse() {
     })
     var dfsgfeg = filteredDecode.concat(combinedUnique)[0]
     // decode(dfsgfeg).then(results => {
-    //   pic(results[0][4], results[0][3], 'modal')
+    //   pic(dfsgfeg, 'modal')
     // })
     map(artist,'artist')
-    pic(decode(dfsgfeg)[0][4], decode(dfsgfeg)[0][3], 'videomodal')
-    //pic(decode(totalList.artist)[0][4], decode(totalList.artist)[0][3], 'modal')
+    pic(dfsgfeg, 'videomodal')
+    //pic(dfsgfeg, 'modal')
   }
 
 
@@ -1693,126 +1694,142 @@ function group1(type) {
 
 //CHANGE TO RETURN A SINGULAR IMAGE
 
-async function pic(termArtist, termSong, id) {
-  var allArtists = termArtist.replace(' ft. ',' ').toLowerCase()
-  var artists = termArtist;
+async function pic(id, location) {
+  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allSongs';
+  const response = await fetch(api_url)
+  const data = await response.json()
 
-  const artistsList = artists.replace(re, function(matched){return mapObj1[matched]}).split("separator");
-
-  termArtist = artistsList[0].toLowerCase()
-  termSong = termSong.toLowerCase()
-  var term = termArtist + ' - ' + termSong
-  const url0 = `https://itunes.apple.com/search?term=${term}`;
-  const url1 = `https://itunes.apple.com/search?term=${allArtists + ' - ' + termSong}&media=musicVideo`;
-  const url2 = `https://itunes.apple.com/search?term=${term}&media=musicVideo`;
-
-  var coverList = []
-  var videoList = []
-  fetch(url0)
-      .then((Response) => Response.json())
-      .then((data) => {
-        findPic()
-        function findPic() {
-          for (var i = 0; i < data.results.length; i++) {
-            if (termArtist.includes(data.results[i].artistName.toLowerCase()) && data.results[i].trackName.toLowerCase().includes(termSong))  {
-              coverList.push(data.results[i]);
-              return
-            }
-          }
-          for (var i = 0; i < data.results.length; i++) {
-            if (termArtist.indexOf(data.results[i].artistName.toLowerCase()) || data.results[i].trackName.toLowerCase().indexOf(termSong))  {
-              coverList.push(data.results[i]);
-              return
-            }
-          }
-        }
-        //let str = coverList[0].artworkUrl100.replace('100x100', '200x200')
-        //document.querySelector('#'+id).style.backgroundImage = 'url(' + str + ')'
-  })
-  fetch(url1)
-      .then((Response) => Response.json())
-      .then((data) => {
-        findPic()
-        function findPic() {
-          for (var i = 0; i < data.results.length; i++) {
-            if (termSong.includes(data.results[i].trackName.toLowerCase()))  {
-              videoList.push(data.results[i]);
-              return
-            }
-          }
-          for (var i = 0; i < data.results.length; i++) {
-            videoList.push(data.results[i])
-            return
-          }
-        }
-        let con = videoList.concat(coverList)
-        if (con.length == 0) {
-          console.log("no")
-          setTimeout(() => {
-            let str = coverList[0].artworkUrl100.replace('100x100', '800x800')
-            document.querySelector('#'+id).style.backgroundImage = 'url(' + str + ')'
-            // color(str)
-          }, 2000);
-        } else {
-          let str = con[0].artworkUrl100.replace('100x100', '800x800')
-          document.querySelector('#'+id).style.backgroundImage = 'url(' + str + ')'
-          // color(str)
-        }
-  })
-  // var video2 = fetch(url2)
-  //     .then((Response) => Response.json())
-  //     .then((data) => {
-  //       var authList = []
-  //       findPic()
-  //       function findPic() {
-  //         for (var i = 0; i < data.results.length; i++) {
-  //           if (termSong.includes(data.results[i].trackName.toLowerCase()))  {
-  //             authList.push(data.results[i]);
-  //             return
-  //           }
-  //         }
-  //       }
-  //       return authList
-  // })
-  // Promise.all([video1, songCover]).then(function(valArray) {
-  //   const videoList = valArray[0].concat(valArray[1],valArray[2])
-  //   let str = videoList[0].artworkUrl100.replace('100x100', '800x800')
-  //   document.querySelector('#'+id).style.backgroundImage = 'url(' + str + ')'
-  // });
-  //
-  // songCover.then(function (val) {
-  //   let str = val[0].artworkUrl100.replace('100x100', '300x300')
-  //   document.querySelector('#cover'+id).style.backgroundImage = 'url(' + str + ')'
-  //   //console.log(str + ', done loading')
-  // });
-  function color(pic) {
-    var img = document.createElement('img');
-    img.setAttribute('src', pic)
-    img.crossOrigin = "Anonymous";
-
-    // img.addEventListener('load', function() {
-    //     var vibrant = new Vibrant(img);
-    //     new Vibrant(
-    //         img,
-    //         64, /* amount of colors in initial palette from which the swatches will be generated, defaults to 64 */
-    //         5 /* quality. 0 is highest, but takes way more processing. defaults to 5. */
-    //     )
-    //     var swatches = vibrant.swatches()
-    //     for (var swatch in swatches)
-    //     //if (swatches['DarkVibrant']) {
-    //     //  document.querySelector('html').style.background = swatches['DarkVibrant'].getHex()
-    //     //  //WRITE FUNCTION TO REMOVE HUE OR SATURATION WHEN TOO EXTREME
-    //     //} else {
-    //     //  document.querySelector('html').style.background = swatches['DarkMuted'].getHex()
-    //     //}
-    //     document.querySelectorAll('#palette div')[0].style.background = swatches['Vibrant'].getHex()
-    //     document.querySelectorAll('#palette div')[1].style.background = swatches['Muted'].getHex()
-    //     document.querySelectorAll('#palette div')[2].style.background = swatches['DarkVibrant'].getHex()
-    //     document.querySelectorAll('#palette div')[3].style.background = swatches['DarkMuted'].getHex()
-    //     document.querySelectorAll('#palette div')[4].style.background = swatches['LightVibrant'].getHex()
-    // });
+  for (let i = 0; i < data.length; i++) {
+    if (data[i]?.[`id`] == id) {
+      console.log(location)
+      document.querySelector('#'+location).style.backgroundImage = 'url(' + data[i]?.[`video`] + ')'
+      return
+    }
   }
+
 }
+
+
+// async function pic(termArtist, termSong, id) {
+//   var allArtists = termArtist.replace(' ft. ',' ').toLowerCase()
+//   var artists = termArtist;
+
+//   const artistsList = artists.replace(re, function(matched){return mapObj1[matched]}).split("separator");
+
+//   termArtist = artistsList[0].toLowerCase()
+//   termSong = termSong.toLowerCase()
+//   var term = termArtist + ' - ' + termSong
+//   const url0 = `https://itunes.apple.com/search?term=${term}`;
+//   const url1 = `https://itunes.apple.com/search?term=${allArtists + ' - ' + termSong}&media=musicVideo`;
+//   const url2 = `https://itunes.apple.com/search?term=${term}&media=musicVideo`;
+
+//   var coverList = []
+//   var videoList = []
+//   fetch(url0)
+//       .then((Response) => Response.json())
+//       .then((data) => {
+//         findPic()
+//         function findPic() {
+//           for (var i = 0; i < data.results.length; i++) {
+//             if (termArtist.includes(data.results[i].artistName.toLowerCase()) && data.results[i].trackName.toLowerCase().includes(termSong))  {
+//               coverList.push(data.results[i]);
+//               return
+//             }
+//           }
+//           for (var i = 0; i < data.results.length; i++) {
+//             if (termArtist.indexOf(data.results[i].artistName.toLowerCase()) || data.results[i].trackName.toLowerCase().indexOf(termSong))  {
+//               coverList.push(data.results[i]);
+//               return
+//             }
+//           }
+//         }
+//         //let str = coverList[0].artworkUrl100.replace('100x100', '200x200')
+//         //document.querySelector('#'+id).style.backgroundImage = 'url(' + str + ')'
+//   })
+//   fetch(url1)
+//       .then((Response) => Response.json())
+//       .then((data) => {
+//         findPic()
+//         function findPic() {
+//           for (var i = 0; i < data.results.length; i++) {
+//             if (termSong.includes(data.results[i].trackName.toLowerCase()))  {
+//               videoList.push(data.results[i]);
+//               return
+//             }
+//           }
+//           for (var i = 0; i < data.results.length; i++) {
+//             videoList.push(data.results[i])
+//             return
+//           }
+//         }
+//         let con = videoList.concat(coverList)
+//         if (con.length == 0) {
+//           console.log("no")
+//           setTimeout(() => {
+//             let str = coverList[0].artworkUrl100.replace('100x100', '800x800')
+//             document.querySelector('#'+id).style.backgroundImage = 'url(' + str + ')'
+//             // color(str)
+//           }, 2000);
+//         } else {
+//           let str = con[0].artworkUrl100.replace('100x100', '800x800')
+//           document.querySelector('#'+id).style.backgroundImage = 'url(' + str + ')'
+//           // color(str)
+//         }
+//   })
+//   // var video2 = fetch(url2)
+//   //     .then((Response) => Response.json())
+//   //     .then((data) => {
+//   //       var authList = []
+//   //       findPic()
+//   //       function findPic() {
+//   //         for (var i = 0; i < data.results.length; i++) {
+//   //           if (termSong.includes(data.results[i].trackName.toLowerCase()))  {
+//   //             authList.push(data.results[i]);
+//   //             return
+//   //           }
+//   //         }
+//   //       }
+//   //       return authList
+//   // })
+//   // Promise.all([video1, songCover]).then(function(valArray) {
+//   //   const videoList = valArray[0].concat(valArray[1],valArray[2])
+//   //   let str = videoList[0].artworkUrl100.replace('100x100', '800x800')
+//   //   document.querySelector('#'+id).style.backgroundImage = 'url(' + str + ')'
+//   // });
+//   //
+//   // songCover.then(function (val) {
+//   //   let str = val[0].artworkUrl100.replace('100x100', '300x300')
+//   //   document.querySelector('#cover'+id).style.backgroundImage = 'url(' + str + ')'
+//   //   //console.log(str + ', done loading')
+//   // });
+//   function color(pic) {
+//     var img = document.createElement('img');
+//     img.setAttribute('src', pic)
+//     img.crossOrigin = "Anonymous";
+
+//     // img.addEventListener('load', function() {
+//     //     var vibrant = new Vibrant(img);
+//     //     new Vibrant(
+//     //         img,
+//     //         64, /* amount of colors in initial palette from which the swatches will be generated, defaults to 64 */
+//     //         5 /* quality. 0 is highest, but takes way more processing. defaults to 5. */
+//     //     )
+//     //     var swatches = vibrant.swatches()
+//     //     for (var swatch in swatches)
+//     //     //if (swatches['DarkVibrant']) {
+//     //     //  document.querySelector('html').style.background = swatches['DarkVibrant'].getHex()
+//     //     //  //WRITE FUNCTION TO REMOVE HUE OR SATURATION WHEN TOO EXTREME
+//     //     //} else {
+//     //     //  document.querySelector('html').style.background = swatches['DarkMuted'].getHex()
+//     //     //}
+//     //     document.querySelectorAll('#palette div')[0].style.background = swatches['Vibrant'].getHex()
+//     //     document.querySelectorAll('#palette div')[1].style.background = swatches['Muted'].getHex()
+//     //     document.querySelectorAll('#palette div')[2].style.background = swatches['DarkVibrant'].getHex()
+//     //     document.querySelectorAll('#palette div')[3].style.background = swatches['DarkMuted'].getHex()
+//     //     document.querySelectorAll('#palette div')[4].style.background = swatches['LightVibrant'].getHex()
+//     // });
+//   }
+// }
 
 
 function decodeGenre(input) {
