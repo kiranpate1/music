@@ -15,7 +15,6 @@
       var re = new RegExp(Object.keys(mapObj).join("|"),"gi");
       const fullList = []
 
-
       run('')
       async function run(key) {
         const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
@@ -55,9 +54,8 @@
           }
         }
 
-        // log();
-        // const intervalId = setInterval(log, 5000);
-
+        log();
+        const intervalId = setInterval(log, 5000);
 
         function group(type) {
           var reducedArray = Object.values(type.reduce((hash, item) => {
@@ -184,68 +182,6 @@
       }
 
 
-      // async function info(termArtist, termSong) {
-      //   var allArtists = termArtist.replace(' ft. ',' ').toLowerCase()
-      //   var artists = termArtist;
-
-      //   const artistsList = artists.replace(re, function(matched){return mapObj1[matched]}).split("separator");
-
-      //   termArtist = artistsList[0].toLowerCase()
-      //   termSong = termSong.toLowerCase()
-        
-      //   const api_url1 = `https://itunes.apple.com/search?term=${allArtists + ' - ' + termSong}&media=music`;
-      //   const response1 = await fetch(api_url1);
-      //   const data1 = await response1.json();
-
-      //   const api_url2 = `https://itunes.apple.com/search?term=${allArtists + ' - ' + termSong}&media=musicVideo`;
-      //   const response2 = await fetch(api_url2);
-      //   const data2 = await response2.json();
-
-      //   var infoList = []
-      //   var videoList = []
-      //         findPic()
-      //         function findPic() {
-      //           for (var i = 0; i < data1.results.length; i++) {
-      //             if (termSong.includes(data1.results[i].trackName.toLowerCase()))  {
-      //               infoList.push(data1.results[i]);
-      //               findPic1()
-      //               return
-      //             }
-      //           }
-      //           for (var i = 0; i < data1.results.length; i++) {
-      //             infoList.push(data1.results[i])
-      //             findPic1()
-      //             return
-      //           }
-      //         }
-      //         function findPic1() {
-      //           for (var i = 0; i < data2.results.length; i++) {
-      //             if (termSong.includes(data2.results[i].trackName.toLowerCase()))  {
-      //               videoList.push(data2.results[i]);
-      //               findPic2()
-      //               return
-      //             }
-      //           }
-      //           for (var i = 0; i < data2.results.length; i++) {
-      //             videoList.push(data2.results[i])
-      //             findPic2()
-      //             return
-      //           }
-      //         }
-      //         function findPic2() {
-      //           let con = videoList.concat(infoList)
-      //           let videoUrl
-      //             if (con.length == 0) {
-      //               console.log("no")
-      //               videoUrl = infoList[0].artworkUrl100.replace('100x100', '800x800')
-      //             } else {
-      //               videoUrl = con[0].artworkUrl100.replace('100x100', '800x800')
-      //             }
-      //             var infoItem = infoList[0]
-      //             console.log({artistName:termArtist,trackName:termSong,videoUrl:videoUrl,album:infoItem.collectionName,release:infoItem.releaseDate,preview:infoItem.previewUrl,coverUrl:infoItem.artworkUrl100})
-
-      //         }
-      // }
     </script>
   </body>
 </html>
