@@ -10,14 +10,14 @@
       
     </table>
     <script>
-      const fullList = []
       var mapObj = {' ft. ':"</a>&nbspft.&nbsp<a>",' / ':"</a>&nbsp/&nbsp<a>",', ':"</a>,&nbsp<a>"};
       var mapObj1 = {' ft. ':"separator",' / ':"separator",', ':"separator"};
       var re = new RegExp(Object.keys(mapObj).join("|"),"gi");
+      const fullList = []
 
 
-      browse('')
-      async function browse(key) {
+      run('')
+      async function run(key) {
         const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
         const response = await fetch(api_url);
         const data = await response.json();
@@ -26,24 +26,37 @@
         table.innerHTML = ""
 
         const tableHead = document.createElement("thead")
-        tableHead.innerHTML = `<tr><th>no</th><th>name</th><th>artist</th><th>genre</th><th>id</th></tr>`
+        tableHead.innerHTML = `<tr><th>no</th><th>name</th><th>artist</th><th>genre</th><th>id</th><th>video</th><th>cover</th><th>album</th><th>release</th><th>preview</th><th>view</th></tr>`
         table.appendChild(tableHead)
 
+        const tableBody = document.createElement("tbody")
+        tableBody.innerHTML = `<tbody></tbody>`
+        table.appendChild(tableBody)
     
         group(dataList('genre', key, 'song')).forEach((item, i) => {
-          const tableBody = document.createElement("tbody")
-          tableBody.innerHTML = '<tr><td>'+i+'</td><td>' + item.key[2] + '</td> <td>' + item.key[3] + "</td> <td>"+item.key[0]+"</td><td>"+item.key[1]+"</td></tr>"
+          const tr = document.createElement("tr")
+          tr.innerHTML = '<td>'+i+'</td><td>' + item.key[2] + '</td> <td>' + item.key[3] + "</td> <td>"+item.key[0]+"</td><td>"+item.key[1]+`</td><td class="video">video</td><td class="cover">cover</td><td class="album">album</td><td class="release">release</td><td class="preview">preview</td><td class="view">view</td>`
           fullList.push({no:i,name:item.key[2],artist:item.key[3],genre:item.key[0],id:item.key[1]})
           
-          table.appendChild(tableBody)
+          tableBody.appendChild(tr)
         })
 
-        test(Math.floor(Math.random() * (fullList.length)))
-        function test(i) {
-          const item = fullList[i]
-          console.log(item.artist, item.name)
-          info(item.artist, item.name)
+        let index = 0;
+
+        function log() {
+          if (index < fullList.length) {
+            const item = fullList[index]
+            console.log(`logging: ${item.artist} - ${item.name}`)
+            info(index,item.artist, item.name)
+            index++;
+          } else {
+            clearInterval(intervalId);
+            console.log('Finished processing the array.');
+          }
         }
+
+        // log();
+        // const intervalId = setInterval(log, 5000);
 
 
         function group(type) {
@@ -96,9 +109,11 @@
         }
       }
 
+    
 
-      async function info(termArtist, termSong) {
-        
+      async function info(index, termArtist, termSong) {
+        var tBodyTr = document.querySelectorAll('tbody tr')
+
         var allArtists = termArtist.replace(' ft. ',' ').toLowerCase()
         var artists = termArtist;
 
@@ -118,49 +133,119 @@
               function findPic() {
                 for (var i = 0; i < data.results.length; i++) {
                   if (termSong.includes(data.results[i].trackName.toLowerCase()))  {
-                    infoList.push(data.results[i]);
-                    console.log(data.results[i])
+                    infoList.push(data.results[i])
+                    shit()
                     return
                   }
                 }
                 for (var i = 0; i < data.results.length; i++) {
                   infoList.push(data.results[i])
-                  
-                  console.log(data.results[i])
+                  shit()
                   return
                 }
               }
         })
-        fetch(songVideo)
-            .then((Response) => Response.json())
-            .then((data) => {
-              findPic()
-              function findPic() {
-                for (var i = 0; i < data.results.length; i++) {
-                  if (termSong.includes(data.results[i].trackName.toLowerCase()))  {
-                    videoList.push(data.results[i]);
+        function shit() {
+          fetch(songVideo)
+              .then((Response) => Response.json())
+              .then((data) => {
+                findPic()
+                function findPic() {
+                  for (var i = 0; i < data.results.length; i++) {
+                    if (termSong.includes(data.results[i].trackName.toLowerCase()))  {
+                      videoList.push(data.results[i]);
+                      return
+                    }
+                  }
+                  for (var i = 0; i < data.results.length; i++) {
+                    videoList.push(data.results[i])
                     return
                   }
                 }
-                for (var i = 0; i < data.results.length; i++) {
-                  videoList.push(data.results[i])
-                  return
-                }
-              }
-              let con = videoList.concat(infoList)
-              let videoUrl
-              setTimeout(() => {
+                let con = videoList.concat(infoList)
+                let videoUrl
                 if (con.length == 0) {
                   console.log("no")
-                  videoUrl = infoList[0].artworkUrl100.replace('100x100', '800x800')
+                    videoUrl = infoList[0].artworkUrl100.replace('100x100', '800x800')
                 } else {
                   videoUrl = con[0].artworkUrl100.replace('100x100', '800x800')
                 }
-                console.log({artistName:termArtist,trackName:termSong,videoUrl:videoUrl,album:infoList[0].collectionName,release:infoList[0].releaseDate,preview:infoList[0].previewUrl,coverUrl:infoList[0].artworkUrl100})
-
-              }, 4000);
-        })
+                var infoItem = infoList[0]
+                tBodyTr[index].querySelector('.video').innerHTML = videoUrl
+                tBodyTr[index].querySelector('.cover').innerHTML = infoItem.artworkUrl100
+                tBodyTr[index].querySelector('.album').innerHTML = infoItem.collectionName
+                tBodyTr[index].querySelector('.release').innerHTML = infoItem.releaseDate
+                tBodyTr[index].querySelector('.preview').innerHTML = infoItem.previewUrl
+                tBodyTr[index].querySelector('.view').innerHTML = infoItem.collectionViewUrl
+                
+                //console.log({video:videoUrl,cover:infoItem.artworkUrl100,album:infoItem.collectionName,release:infoItem.releaseDate,preview:infoItem.previewUrl,view:infoItem.collectionViewUrl})
+          })
+        }
       }
+
+
+      // async function info(termArtist, termSong) {
+      //   var allArtists = termArtist.replace(' ft. ',' ').toLowerCase()
+      //   var artists = termArtist;
+
+      //   const artistsList = artists.replace(re, function(matched){return mapObj1[matched]}).split("separator");
+
+      //   termArtist = artistsList[0].toLowerCase()
+      //   termSong = termSong.toLowerCase()
+        
+      //   const api_url1 = `https://itunes.apple.com/search?term=${allArtists + ' - ' + termSong}&media=music`;
+      //   const response1 = await fetch(api_url1);
+      //   const data1 = await response1.json();
+
+      //   const api_url2 = `https://itunes.apple.com/search?term=${allArtists + ' - ' + termSong}&media=musicVideo`;
+      //   const response2 = await fetch(api_url2);
+      //   const data2 = await response2.json();
+
+      //   var infoList = []
+      //   var videoList = []
+      //         findPic()
+      //         function findPic() {
+      //           for (var i = 0; i < data1.results.length; i++) {
+      //             if (termSong.includes(data1.results[i].trackName.toLowerCase()))  {
+      //               infoList.push(data1.results[i]);
+      //               findPic1()
+      //               return
+      //             }
+      //           }
+      //           for (var i = 0; i < data1.results.length; i++) {
+      //             infoList.push(data1.results[i])
+      //             findPic1()
+      //             return
+      //           }
+      //         }
+      //         function findPic1() {
+      //           for (var i = 0; i < data2.results.length; i++) {
+      //             if (termSong.includes(data2.results[i].trackName.toLowerCase()))  {
+      //               videoList.push(data2.results[i]);
+      //               findPic2()
+      //               return
+      //             }
+      //           }
+      //           for (var i = 0; i < data2.results.length; i++) {
+      //             videoList.push(data2.results[i])
+      //             findPic2()
+      //             return
+      //           }
+      //         }
+      //         function findPic2() {
+      //           let con = videoList.concat(infoList)
+      //           let videoUrl
+      //             if (con.length == 0) {
+      //               console.log("no")
+      //               videoUrl = infoList[0].artworkUrl100.replace('100x100', '800x800')
+      //             } else {
+      //               videoUrl = con[0].artworkUrl100.replace('100x100', '800x800')
+      //             }
+      //             var infoItem = infoList[0]
+      //             console.log({artistName:termArtist,trackName:termSong,videoUrl:videoUrl,album:infoItem.collectionName,release:infoItem.releaseDate,preview:infoItem.previewUrl,coverUrl:infoItem.artworkUrl100})
+
+      //         }
+      // }
     </script>
   </body>
 </html>
