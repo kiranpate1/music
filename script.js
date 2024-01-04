@@ -269,7 +269,7 @@ async function browse() {
       item = item.slice(0,3)
       token.innerHTML = item + "0s"
      
-      token.setAttribute("id", 'initialDecade-'+item.replaceAll('/','-'))
+      token.setAttribute("id", 'children-'+item.replaceAll('/','-'))
       token.onclick = function(){
         chartContainer.style.display = "block"
         initialDecades.innerHTML = ''
@@ -569,7 +569,8 @@ async function browse() {
     }
     group(songList).forEach((item, i) => {
       if (i == '0') {
-        // pic(item.key[0], 'children-'+input.replaceAll('/','-'))
+        console.log(input.replaceAll('/','-'))
+        pic(item.key[0], 'children-'+input.replaceAll('/','-'))
       }
     })
   }
@@ -730,6 +731,7 @@ async function browse() {
     var topsongs = document.querySelector('#songs')
     var topartists = document.querySelector('#artists')
     var top10 = document.querySelector('#top10')
+    document.querySelector('#genres').style.display = "flex"
 
     topsongs.innerHTML = ''
     topartists.innerHTML = ''
@@ -1390,7 +1392,6 @@ async function browse() {
     document.querySelector("#modal-wrapper").style.display = 'flex'
 
     if (type == 'song') {
-      // history(id)
       var id = input
     
       var artist = decode(id)[0][4]
@@ -1533,13 +1534,18 @@ async function browse() {
   
   function searchSong(id) {
     modal(id,'song')
-    
   }
 
   function searchArtist(artist) {
     modal(artist,'artist')
-    // history(artist)
-    
+  }
+
+  async function pic(id, location) {
+    for (let i = 0; i < songsData.length; i++) {
+      if (songsData[i]?.[`id`] == id) {
+        document.querySelector('#'+location).style.backgroundImage = 'url(' + songsData[i]?.[`video`] + ')'
+      }
+    }
   }
 
 
@@ -1549,70 +1555,89 @@ async function browse() {
 
   //CHANGE SEARCH TO CALCULATE RESULTS AT ONCE AND THEN APPEND RATHER THAN APPEND ONE BY ONE
 
-  document.querySelector('#termSearch').onkeydown = function(){ 
+  document.querySelector('#termSearch').onkeyup = function(){ 
     const searchResults = document.querySelector("#searchResults")
-    const termSearch = document.querySelector("#termSearch")
+    var termSearch = document.querySelector("#termSearch")
     const searchClose = document.querySelector("#searchClose")
   
     searchResults.innerHTML = ''
   
-    var searchValue = termSearch.value.toLowerCase();
+    var searchValue = this.value.toLowerCase();
     if (termSearch !== null && termSearch.value === ""){
       searchClose.innerHTML = ''
       searchResults.innerHTML = ''
       return
     }
+    const artistList = list('artist')
+    const songList = list('name','id')
+    const songList2 = list('artist','id')
+
+    var searchLimit = 10
   
     //for artists
-    list('artist').then(function (val) {
+    artistList.then(function (val) {
       searchResults.innerHTML = ''
-      val.forEach((item, i) => {
-        if (item.artist.toLowerCase().includes(searchValue)) {
-          const line = document.createElement("li");
-          line.innerHTML = item.artist
-          line.addEventListener('click', function() {
-            searchArtist(item.artist) 
-            for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
-              document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
-            }
-            line.style.backgroundColor = 'grey'
-          })
-          searchResults.appendChild(line)
+      let count = 0
+      for (let i = 0; i < val.length; i++) {
+        if (val[i].artist.toLowerCase().includes(searchValue)) {
+          if (count < searchLimit) {
+            const line = document.createElement("li");
+            line.innerHTML = val[i].artist
+            line.addEventListener('click', function() {
+              searchArtist(val[i].artist) 
+              for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
+                document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
+              }
+              line.style.backgroundColor = 'grey'
+            })
+            searchResults.appendChild(line)
+            count++
+          }
         }
-      })
-    }) //for songs
-    list('name','id').then(function (val) {
-      val.forEach((item, i) => {
-        if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
-          const line = document.createElement("li");
-          // console.log(item.artist.slice(-10), decode(item.artist.slice(-10)))
-          line.innerHTML = decode(item.artist.slice(-10))[0][3]
-          line.addEventListener('click', function() {
-            searchSong(item.artist.slice(-10)) 
-            for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
-              document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
-            }
-            line.style.backgroundColor = 'grey'
-          })
-          searchResults.appendChild(line)
+      }
+    }) 
+    //for songs
+    songList.then(function (val) {
+      let count = 0
+      for(let i = 0; i < val.length; i++) {
+        if (val[i].artist.slice(0,-10).toLowerCase().includes(searchValue)) {
+          if (count < searchLimit) {
+            const line = document.createElement("li");
+            // console.log(item.artist.slice(-10), decode(item.artist.slice(-10)))
+            line.innerHTML = decode(val[i].artist.slice(-10))[0][3]
+            line.addEventListener('click', function() {
+              searchSong(val[i].artist.slice(-10)) 
+              for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
+                document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
+              }
+              line.style.backgroundColor = 'grey'
+            })
+            searchResults.appendChild(line)
+            count++
+          }
         }
-      })
-    }) //for songs by artist
-    list('artist','id').then(function (val) {
-      val.forEach((item, i) => {
-        if (item.artist.slice(0,-10).toLowerCase().includes(searchValue)) {
-          const line = document.createElement("li");
-          line.innerHTML = decode(item.artist.slice(-10))[0][3]
-          line.addEventListener('click', function() {
-            searchSong(item.artist.slice(-10)) 
-            for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
-              document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
-            }
-            line.style.backgroundColor = 'grey'
-          })
-          searchResults.appendChild(line)
+      }
+    }) 
+    //for songs by artist
+    songList2.then(function (val) {
+      let count = 0
+      for(let i = 0; i < val.length; i++) {
+        if (val[i].artist.slice(0,-10).toLowerCase().includes(searchValue)) {
+          if (count < searchLimit) {
+            const line = document.createElement("li");
+            line.innerHTML = decode(val[i].artist.slice(-10))[0][3]
+            line.addEventListener('click', function() {
+              searchSong(val[i].artist.slice(-10)) 
+              for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
+                document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
+              }
+              line.style.backgroundColor = 'grey'
+            })
+            searchResults.appendChild(line)
+            count++
+          }
         }
-      })
+      }
     })
   
     searchClose.innerHTML = ''
@@ -1676,6 +1701,33 @@ async function browse() {
       }
     }
   }
+
+  async function list(component,component2) {
+  
+    var list = []
+    for (let i = 1; i < songsData.length; i++) {
+        var separators = [' ft. ', ' / ', ', '];
+        if (component2) {
+          var tokens = songsData[i]?.[component].split(new RegExp(separators.join('|'), 'g')) + ' ' + songsData[i]?.[component2];
+        } else {
+          var tokens = songsData[i]?.[component].split(new RegExp(separators.join('|'), 'g'));
+        }
+        list.push(tokens)
+    }
+    var combinedList = list.flat(1)
+    return group1(combinedList)
+  }
+  
+  function group1(type) {
+    let reducedArray = type.reduce( (acc, curr, _, arr) => {
+        if (acc.length == 0) acc.push({artist: curr, count: 1})
+        else if (acc.findIndex(f => f.artist === curr ) === -1) acc.push({artist: curr, count: 1})
+        else ++acc[acc.findIndex(f => f.artist === curr)].count
+        return acc
+    }, [])
+    var results = reducedArray.sort((a,b) => b.count - a.count )
+    return results
+  }
 }
 
 
@@ -1684,177 +1736,6 @@ async function browse() {
 
 //necessary async functions for performance sake
 
-async function list(component,comp2) {
-  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
-  const response = await fetch(api_url)
-  const data = await response.json()
-
-  var list = []
-  for (let i = 1; i <= 10; i++) {
-    searchYearly(i)
-  }
-  function searchYearly(pos) {
-    data.forEach((item, i) => {
-      var separators = [' ft. ', ' / ', ', '];
-      if (comp2) {
-        var tokens = item?.['no'+pos+component].split(new RegExp(separators.join('|'), 'g')) + ' ' + item?.['no'+pos+comp2];
-      } else {
-        var tokens = item?.['no'+pos+component].split(new RegExp(separators.join('|'), 'g'));
-      }
-      list.push(tokens)
-    });
-  }
-  var combinedList = list.flat(1)
-  return group1(combinedList)
-}
-
-function group1(type) {
-  let reducedArray = type.reduce( (acc, curr, _, arr) => {
-      if (acc.length == 0) acc.push({artist: curr, count: 1})
-      else if (acc.findIndex(f => f.artist === curr ) === -1) acc.push({artist: curr, count: 1})
-      else ++acc[acc.findIndex(f => f.artist === curr)].count
-      return acc
-  }, [])
-  var results = reducedArray.sort((a,b) => b.count - a.count )
-  return results
-}
-
-//CHANGE TO RETURN A SINGULAR IMAGE
-
-async function pic(id, location) {
-  const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allSongs';
-  const response = await fetch(api_url)
-  const data = await response.json()
-
-  for (let i = 0; i < data.length; i++) {
-    if (data[i]?.[`id`] == id) {
-      console.log(location)
-      document.querySelector('#'+location).style.backgroundImage = 'url(' + data[i]?.[`video`] + ')'
-    }
-  }
-}
-
-
-// async function pic(termArtist, termSong, id) {
-//   var allArtists = termArtist.replace(' ft. ',' ').toLowerCase()
-//   var artists = termArtist;
-
-//   const artistsList = artists.replace(re, function(matched){return mapObj1[matched]}).split("separator");
-
-//   termArtist = artistsList[0].toLowerCase()
-//   termSong = termSong.toLowerCase()
-//   var term = termArtist + ' - ' + termSong
-//   const url0 = `https://itunes.apple.com/search?term=${term}`;
-//   const url1 = `https://itunes.apple.com/search?term=${allArtists + ' - ' + termSong}&media=musicVideo`;
-//   const url2 = `https://itunes.apple.com/search?term=${term}&media=musicVideo`;
-
-//   var coverList = []
-//   var videoList = []
-//   fetch(url0)
-//       .then((Response) => Response.json())
-//       .then((data) => {
-//         findPic()
-//         function findPic() {
-//           for (var i = 0; i < data.results.length; i++) {
-//             if (termArtist.includes(data.results[i].artistName.toLowerCase()) && data.results[i].trackName.toLowerCase().includes(termSong))  {
-//               coverList.push(data.results[i]);
-//               return
-//             }
-//           }
-//           for (var i = 0; i < data.results.length; i++) {
-//             if (termArtist.indexOf(data.results[i].artistName.toLowerCase()) || data.results[i].trackName.toLowerCase().indexOf(termSong))  {
-//               coverList.push(data.results[i]);
-//               return
-//             }
-//           }
-//         }
-//         //let str = coverList[0].artworkUrl100.replace('100x100', '200x200')
-//         //document.querySelector('#'+id).style.backgroundImage = 'url(' + str + ')'
-//   })
-//   fetch(url1)
-//       .then((Response) => Response.json())
-//       .then((data) => {
-//         findPic()
-//         function findPic() {
-//           for (var i = 0; i < data.results.length; i++) {
-//             if (termSong.includes(data.results[i].trackName.toLowerCase()))  {
-//               videoList.push(data.results[i]);
-//               return
-//             }
-//           }
-//           for (var i = 0; i < data.results.length; i++) {
-//             videoList.push(data.results[i])
-//             return
-//           }
-//         }
-//         let con = videoList.concat(coverList)
-//         if (con.length == 0) {
-//           console.log("no")
-//           setTimeout(() => {
-//             let str = coverList[0].artworkUrl100.replace('100x100', '800x800')
-//             document.querySelector('#'+id).style.backgroundImage = 'url(' + str + ')'
-//             // color(str)
-//           }, 2000);
-//         } else {
-//           let str = con[0].artworkUrl100.replace('100x100', '800x800')
-//           document.querySelector('#'+id).style.backgroundImage = 'url(' + str + ')'
-//           // color(str)
-//         }
-//   })
-//   // var video2 = fetch(url2)
-//   //     .then((Response) => Response.json())
-//   //     .then((data) => {
-//   //       var authList = []
-//   //       findPic()
-//   //       function findPic() {
-//   //         for (var i = 0; i < data.results.length; i++) {
-//   //           if (termSong.includes(data.results[i].trackName.toLowerCase()))  {
-//   //             authList.push(data.results[i]);
-//   //             return
-//   //           }
-//   //         }
-//   //       }
-//   //       return authList
-//   // })
-//   // Promise.all([video1, songCover]).then(function(valArray) {
-//   //   const videoList = valArray[0].concat(valArray[1],valArray[2])
-//   //   let str = videoList[0].artworkUrl100.replace('100x100', '800x800')
-//   //   document.querySelector('#'+id).style.backgroundImage = 'url(' + str + ')'
-//   // });
-//   //
-//   // songCover.then(function (val) {
-//   //   let str = val[0].artworkUrl100.replace('100x100', '300x300')
-//   //   document.querySelector('#cover'+id).style.backgroundImage = 'url(' + str + ')'
-//   //   //console.log(str + ', done loading')
-//   // });
-//   function color(pic) {
-//     var img = document.createElement('img');
-//     img.setAttribute('src', pic)
-//     img.crossOrigin = "Anonymous";
-
-//     // img.addEventListener('load', function() {
-//     //     var vibrant = new Vibrant(img);
-//     //     new Vibrant(
-//     //         img,
-//     //         64, /* amount of colors in initial palette from which the swatches will be generated, defaults to 64 */
-//     //         5 /* quality. 0 is highest, but takes way more processing. defaults to 5. */
-//     //     )
-//     //     var swatches = vibrant.swatches()
-//     //     for (var swatch in swatches)
-//     //     //if (swatches['DarkVibrant']) {
-//     //     //  document.querySelector('html').style.background = swatches['DarkVibrant'].getHex()
-//     //     //  //WRITE FUNCTION TO REMOVE HUE OR SATURATION WHEN TOO EXTREME
-//     //     //} else {
-//     //     //  document.querySelector('html').style.background = swatches['DarkMuted'].getHex()
-//     //     //}
-//     //     document.querySelectorAll('#palette div')[0].style.background = swatches['Vibrant'].getHex()
-//     //     document.querySelectorAll('#palette div')[1].style.background = swatches['Muted'].getHex()
-//     //     document.querySelectorAll('#palette div')[2].style.background = swatches['DarkVibrant'].getHex()
-//     //     document.querySelectorAll('#palette div')[3].style.background = swatches['DarkMuted'].getHex()
-//     //     document.querySelectorAll('#palette div')[4].style.background = swatches['LightVibrant'].getHex()
-//     // });
-//   }
-// }
 
 
 function decodeGenre(input) {
