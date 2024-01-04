@@ -1508,6 +1508,7 @@ async function browse() {
 
       setClick('#modalsongs','song','id')
       setClick('#modalsongs','artist','')
+      map(artist,'artist')
 
       var filteredDecode = combinedUnique.filter(function(item){
         var leadArtist = decode(item)[0][4].replace(re, function(matched){return mapObj1[matched]}).split("separator")
@@ -1526,7 +1527,6 @@ async function browse() {
         }
       }
 
-      map(artist,'artist')
       // pic(dfsgfeg, 'videomodal','artist')
       //pic(dfsgfeg, 'modal')
     }
