@@ -4,7 +4,7 @@ var mapObj = {' ft. ':"</a>&nbspft.&nbsp<a>",' / ':"</a>&nbsp/&nbsp<a>",', ':"</
 var mapObj1 = {' ft. ':"separator",' / ':"separator",', ':"separator"};
 var mapSeparators = [' ft. ',' / ',', '];
 var re = new RegExp(Object.keys(mapObj).join("|"),"gi");
-var genrePool = ['#de7eea','#a16fd9','#9a82c8','#c295c8','#d700ff','#854d76','#ba2c8e','#ba3d3d','#b65f5f','#603232','#1a1a1a','#413630','#935b4a','#3ca33f','#308532','#638559','#6a9d32','#8eb371','#4aca4e','#97be9d','#a4d685','#c4c800','#a7ab00','#d5eb20','#ddf3a8','#c6ccae','#ceb8ae','#7085ef','#5666b8','#4d95b8','#623aff','#73e6e0','#3eadef','#ff6900','#f6b26b','#b3997a','#d49875','#c7cc86','#ffe381','#f5d8d8']
+var genrePool = ['#ec66c6','#b479ff','#5d62da','#b17bb6','#da09c5','#933f67','#fe5c5c','#cf0a45','#a73138','#871a1a','#4b150d','#422727','#865b3c','#0ba135','#04612f','#3f6539','#537e0b','#319c5c','#21d811','#79c999','#8dea6c','#baa912','#8f845a','#e8f92d','#ddf3a8','#be8f7a','#bcbdb9','#00a3ff','#162be9','#008ea1','#7d2ffd','#1ce8e8','#5666f8','#e56000','#fe965c','#8f5a0a','#a31f0d','#c7cc86','#f8d763','#ffd4d1']
 
 homeInitialize()
 function homeInitialize() {
@@ -22,6 +22,10 @@ async function browse() {
   const api_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allYears';
   const response = await fetch(api_url);
   const data = await response.json();
+
+  const songs_url = 'https://opensheet.elk.sh/1oxsWP57qoaxOZFUpPmwQ-Dkagv0o87qurp92_-VKITQ/allSongs';
+  const songsResponse = await fetch(songs_url)
+  const songsData = await songsResponse.json()
 
   const decades = []
   const years = []
@@ -565,7 +569,7 @@ async function browse() {
     }
     group(songList).forEach((item, i) => {
       if (i == '0') {
-        pic(item.key[0], 'children-'+input.replaceAll('/','-'))
+        // pic(item.key[0], 'children-'+input.replaceAll('/','-'))
       }
     })
   }
@@ -978,7 +982,6 @@ async function browse() {
           enterIdList.push(entersId);
         }
         if(currentWeek?.['no'+y+'name'] !== lastWeek?.['no'+z+'name']){
-          //const news = currentWeek?.['no'+y+'direction']+'<div style="width:16px;height:16px;background: '+currentWeek?.['no'+y+'genre']+';"></div>'+'<a onClick="modal(`flex`,`'+currentWeek?.['no'+y+'artist']+'`,`'+currentWeek?.['no'+y+'name']+'`,`modal`)">'+currentWeek?.['no'+y+'name']+'</a>&nbsp'+"-"+"&nbsp<a>"+currentWeek?.['no'+y+'artist'].replace(re, function(matched){return mapObj[matched]})+"</a>"
           const news = currentWeek?.['no'+y+'direction']+'<div style="width:16px;height:16px;background: '+currentWeek?.['no'+y+'genre']+';"></div>'+'<a class="songname" id="'+currentWeek?.['no'+y+'id']+'">'+currentWeek?.['no'+y+'name']+"</a>&nbsp-&nbsp<div class='artistname'><a>"+currentWeek?.['no'+y+'artist'].replace(re, function(matched){return mapObj[matched]})+"</a></div>"
           const newsId = currentWeek?.['no'+y+'id']
           newList.push(news);
@@ -1256,6 +1259,7 @@ async function browse() {
     } else if (request == 'artist') {
       document.querySelectorAll(container + ' .artistname a').forEach((item, i) => {
         //item.setAttribute('href', '#')
+
         if (document.querySelector("#termSearch").value.length === 0) {
           item.addEventListener('click', function() {
             history(item.innerHTML,'artist')
@@ -1272,18 +1276,12 @@ async function browse() {
     }
   }
 
-  function modal(visibility) {
-    document.querySelector("#videomodal").style.backgroundImage = ''
-    document.querySelector("#modalsongs").innerHTML = ''
-    document.querySelector('#modalstats').innerHTML = ''
-    document.querySelector("#modal-wrapper").style.display = visibility
-  }
   var modalHistory = []
   document.querySelector('#close').onclick = function(){
     for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
       document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
     }
-    modal('none')
+    document.querySelector("#modal-wrapper").style.display = 'none'
     modalHistory = []
   }
   function history(term, request) {
@@ -1308,7 +1306,7 @@ async function browse() {
   //     for (let i = 0; i < document.querySelectorAll("#searchResults li").length; i++) {
   //       document.querySelectorAll("#searchResults li")[i].style.backgroundColor = ''
   //     }
-  //     modal('none')
+  //     document.querySelector("#modal-wrapper").style.display = 'none'
   //     modalHistory.pop()
   //     const parent = document.querySelector("#history");
   //     [...parent.children].slice(-1).forEach(parent.removeChild.bind(parent));
@@ -1381,138 +1379,167 @@ async function browse() {
     }
     return list.flat(1)
   }
+
+  async function modal(input, type) {
+    var modalTitle = document.querySelector("#modaltitle")
+    var modalDescription = document.querySelector("#modaldescription")
+    var modalStats = document.querySelector("#modalstats")
+    document.querySelector("#videomodal").style.backgroundImage = ''
+    document.querySelector("#modalsongs").innerHTML = ''
+    document.querySelector('#modalstats').innerHTML = ''
+    document.querySelector("#modal-wrapper").style.display = 'flex'
+
+    if (type == 'song') {
+      // history(id)
+      var id = input
+    
+      var artist = decode(id)[0][4]
+      var name = decode(id)[0][3]
+      var genre = decodeGenre(decode(id)[0][2])[0]
+      var peak = decode(id)[0][1]
+      var date = decode(id)[0][0]
+      modalTitle.innerHTML = name+" by <div class='artistname'><a>"+artist.replace(re, function(matched){return mapObj[matched]})+"</a></div>"
+    
+      group(dataList('week', '', 'song')).forEach((item, i) => {
+        if (item.key[1] == id) {
+          modalDescription.innerHTML = `is a ${genre} song<span class="album"> from <span class="album-name"></span></span><span class="release"> released <span class="release-date"></span></span> that peaked at #${peak} on ${decodeDate(date)} while spending ${item.count} weeks in the top 10.`
+          modalStats.innerHTML = "#"+[i+1]+" all time • #"+peak+" peak • "+item.count+" weeks • "+genre
+          return
+        }
+      })
+      for (let i = 0; i < songsData.length; i++) {
+        if (songsData[i]?.[`id`] == id) {
+          document.querySelector('#videomodal').style.backgroundImage = 'url(' + songsData[i]?.[`video`] + ')'
+          document.querySelector('#modaldescription .album-name').innerHTML = songsData[i]?.[`album`]
+          document.querySelector('#modaldescription .release-date').innerHTML = decodeDate(songsData[i]?.[`release`],'release')
+          return
+        }
+      }
+
+      group(similar(['genre','week'], [decode(id)[0][2],date.slice(0,4)], 'song')).forEach((item, i) => {
+        // console.log(item)
+      })
+      
+      setClick('#modaltitle','artist','')
+      // pic(id,'videomodal','song')
+    } 
+    else if (type == 'artist') {
+      var artist = input
+      modalTitle.innerHTML = artist
+
+      var fullList = []
+      for (let x = 1; x <= 10; x++) {
+        data.forEach((item, i) => {
+          if (item?.['no'+x+'artist'].includes(artist)) {
+            var artistCell = item?.['no'+x+'artist'].replace(re, function(matched){return mapObj1[matched]}).split("separator")
+            if (artistCell.includes(artist)) {
+              fullList.push(item?.['no'+x+'id'])
+            }
+          }
+        })
+      }
+      combinedUnique = [...new Set(fullList)]
+      var totalList = group1(fullList)[0]
+
+      var firstYear = decode(combinedUnique[0])[0][0].slice(0,4)
+      var top10Count = combinedUnique.length
+      var no1Count = 0
+      var genreList = []
+      combinedUnique.forEach((item, i) => {
+        if (decode(item)[0][1] == '01') {
+          no1Count++
+        }
+        genreList.push(decode(item)[0][2])
+        const li = document.createElement("li");
+        li.innerHTML = '#'+parseInt(decode(item)[0][1])+'<div style="width:16px;height:16px;background: '+decode(item)[0][2]+';"></div>'+'<a class="songname" id="'+item+'">'+decode(item)[0][3]+'</a>&nbsp'+"-"+"&nbsp<div class='artistname'><a>"+decode(item)[0][4].replace(re, function(matched){return mapObj[matched]})+"</a>"+decode(item)[0][0]+"</div>"
+        document.querySelector("#modalsongs").appendChild(li);
+      })
+
+      group(dataList('week', '', 'artist')).forEach((item, i) => {
+        if (item.key == artist) {
+          modalStats.innerHTML = "#"+[i+1]+" all time • "+no1Count+" #1s • "+[top10Count]+" top 10s"
+          return
+        }
+      })
+
+      artistDescription();
+
+      function artistDescription() {
+        modalDescription.innerHTML = `is a `+decodeGenre(mode(genreList))[1]+` artist that`  
+
+        if (top10Count > 1) {
+          modalDescription.innerHTML += ` first reached the top 10 in `+firstYear
+          if (no1Count > 1) {
+            modalDescription.innerHTML += ` and has since notched ${no1Count} number 1s and `
+          } else if (no1Count == 1) {
+            modalDescription.innerHTML += ` and has since collected a number 1 and `
+          } else if (no1Count == 0) {
+            modalDescription.innerHTML += ` and has since scored `
+          }
+          modalDescription.innerHTML += [top10Count]+` top 10 hits`
+          if (top10Count > 3) {
+            modalDescription.innerHTML += ` including `
+            combinedUnique.slice(0, 3).forEach((item, i) => {
+              modalDescription.innerHTML += decode(item)[0][3] + `, `
+            })
+            modalDescription.innerHTML += `and more.`
+          } else if (top10Count == 3 || top10Count == 2) {
+            modalDescription.innerHTML += ` in total—`
+            combinedUnique.slice(0, 3).forEach((item, i) => {
+              if (i == combinedUnique.slice(0, 3).length - 1) {
+                modalDescription.innerHTML += `and `
+                modalDescription.innerHTML += decode(item)[0][3] + `.`
+              } else {
+                modalDescription.innerHTML += decode(item)[0][3] + `, `
+              }
+            })
+          }
+        } else if (top10Count == 1) {
+          if (no1Count == 1) {
+            modalDescription.innerHTML += ` reached number 1 in `+firstYear
+          } else if (no1Count == 0) {
+            modalDescription.innerHTML += ` reached the top 10 in `+firstYear
+          }
+          modalDescription.innerHTML += ` with ${decode(combinedUnique[0])[0][3]}.`
+        }
+      }
+
+
+      setClick('#modalsongs','song','id')
+      setClick('#modalsongs','artist','')
+
+      var filteredDecode = combinedUnique.filter(function(item){
+        var leadArtist = decode(item)[0][4].replace(re, function(matched){return mapObj1[matched]}).split("separator")
+        if (leadArtist[0] == artist) {
+          return item !== undefined;
+        }
+      })
+      var dfsgfeg = filteredDecode.concat(combinedUnique)[0]
+      // decode(dfsgfeg).then(results => {
+      //   pic(dfsgfeg, 'modal')
+      // })
+      for (let i = 0; i < songsData.length; i++) {
+        if (songsData[i]?.[`id`] == dfsgfeg) {
+          document.querySelector('#videomodal').style.backgroundImage = 'url(' + songsData[i]?.[`video`] + ')'
+          return
+        }
+      }
+
+      map(artist,'artist')
+      // pic(dfsgfeg, 'videomodal','artist')
+      //pic(dfsgfeg, 'modal')
+    }
+  }
   
   function searchSong(id) {
-    modal(`flex`)
-    // history(id)
-    
-    var artist = decode(id)[0][4]
-    var name = decode(id)[0][3]
-    var genre = decodeGenre(decode(id)[0][2])[0]
-    var peak = decode(id)[0][1]
-    var date = decode(id)[0][0]
-    document.querySelector("#modaltitle").innerHTML = name+" by <div class='artistname'><a>"+artist.replace(re, function(matched){return mapObj[matched]})+"</a></div>"
-  
-    group(dataList('week', '', 'song')).forEach((item, i) => {
-      if (item.key[1] == id) {
-        document.querySelector("#modaldescription").innerHTML = `is a ${genre} song<span class="album"> from <span class="album-name"></span></span><span class="release"> released on <span class="release-date"></span></span> that peaked at #${peak} on ${decodeDate(date)} while spending ${item.count} weeks in the top 10.`
-        document.querySelector('#modalstats').innerHTML = "#"+[i+1]+" all time • #"+peak+" peak • "+item.count+" weeks • "+genre
-        return
-      }
-    })
-
-    group(similar(['genre','week'], [decode(id)[0][2],date.slice(0,4)], 'song')).forEach((item, i) => {
-      // console.log(item)
-    })
-    
-    setClick('#modaltitle','artist','')
-    pic(id,'videomodal')
-
+    modal(id,'song')
     
   }
 
   function searchArtist(artist) {
-    var modalTitle = document.querySelector("#modaltitle")
-    var modalDescription = document.querySelector("#modaldescription")
-    var modalStats = document.querySelector("#modalstats")
-    modal('flex')
+    modal(artist,'artist')
     // history(artist)
-    modalTitle.innerHTML = artist
-
-    var fullList = []
-    for (let x = 1; x <= 10; x++) {
-      data.forEach((item, i) => {
-        if (item?.['no'+x+'artist'].includes(artist)) {
-          var artistCell = item?.['no'+x+'artist'].replace(re, function(matched){return mapObj1[matched]}).split("separator")
-          if (artistCell.includes(artist)) {
-            fullList.push(item?.['no'+x+'id'])
-          }
-        }
-      })
-    }
-    combinedUnique = [...new Set(fullList)]
-    var totalList = group1(fullList)[0]
-
-    var firstYear = decode(combinedUnique[0])[0][0].slice(0,4)
-    var top10Count = combinedUnique.length
-    var no1Count = 0
-    var genreList = []
-    combinedUnique.forEach((item, i) => {
-      if (decode(item)[0][1] == '01') {
-        no1Count++
-      }
-      genreList.push(decode(item)[0][2])
-      const li = document.createElement("li");
-      li.innerHTML = '#'+parseInt(decode(item)[0][1])+'<div style="width:16px;height:16px;background: '+decode(item)[0][2]+';"></div>'+'<a class="songname" id="'+item+'">'+decode(item)[0][3]+'</a>&nbsp'+"-"+"&nbsp<div class='artistname'><a>"+decode(item)[0][4].replace(re, function(matched){return mapObj[matched]})+"</a>"+decode(item)[0][0]+"</div>"
-      document.querySelector("#modalsongs").appendChild(li);
-    })
-
-    group(dataList('week', '', 'artist')).forEach((item, i) => {
-      if (item.key == artist) {
-        modalStats.innerHTML = "#"+[i+1]+" all time • "+no1Count+" #1s • "+[top10Count]+" top 10s"
-        return
-      }
-    })
-
-    artistDescription();
-
-    function artistDescription() {
-      modalDescription.innerHTML = `is a `+decodeGenre(mode(genreList))[1]+` artist that`  
-
-      if (top10Count > 1) {
-        modalDescription.innerHTML += ` first reached the top 10 in `+firstYear
-        if (no1Count > 1) {
-          modalDescription.innerHTML += ` and has since notched ${no1Count} number 1s and `
-        } else if (no1Count == 1) {
-          modalDescription.innerHTML += ` and has since collected a number 1 and `
-        } else if (no1Count == 0) {
-          modalDescription.innerHTML += ` and has since scored `
-        }
-        modalDescription.innerHTML += [top10Count]+` top 10 hits`
-        if (top10Count > 3) {
-          modalDescription.innerHTML += ` including `
-          combinedUnique.slice(0, 3).forEach((item, i) => {
-            modalDescription.innerHTML += decode(item)[0][3] + `, `
-          })
-          modalDescription.innerHTML += `and more.`
-        } else if (top10Count == 3 || top10Count == 2) {
-          modalDescription.innerHTML += ` in total—`
-          combinedUnique.slice(0, 3).forEach((item, i) => {
-            if (i == combinedUnique.slice(0, 3).length - 1) {
-              modalDescription.innerHTML += `and `
-              modalDescription.innerHTML += decode(item)[0][3] + `.`
-            } else {
-              modalDescription.innerHTML += decode(item)[0][3] + `, `
-            }
-          })
-        }
-      } else if (top10Count == 1) {
-        if (no1Count == 1) {
-          modalDescription.innerHTML += ` reached number 1 in `+firstYear
-        } else if (no1Count == 0) {
-          modalDescription.innerHTML += ` reached the top 10 in `+firstYear
-        }
-        modalDescription.innerHTML += ` with ${decode(combinedUnique[0])[0][3]}.`
-      }
-    }
-
-
-    setClick('#modalsongs','song','id')
-    setClick('#modalsongs','artist','')
-
-    var filteredDecode = combinedUnique.filter(function(item){
-      var leadArtist = decode(item)[0][4].replace(re, function(matched){return mapObj1[matched]}).split("separator")
-      if (leadArtist[0] == artist) {
-        return item !== undefined;
-      }
-    })
-    var dfsgfeg = filteredDecode.concat(combinedUnique)[0]
-    // decode(dfsgfeg).then(results => {
-    //   pic(dfsgfeg, 'modal')
-    // })
-    map(artist,'artist')
-    pic(dfsgfeg, 'videomodal')
-    //pic(dfsgfeg, 'modal')
+    
   }
 
 
@@ -1703,10 +1730,8 @@ async function pic(id, location) {
     if (data[i]?.[`id`] == id) {
       console.log(location)
       document.querySelector('#'+location).style.backgroundImage = 'url(' + data[i]?.[`video`] + ')'
-      return
     }
   }
-
 }
 
 
@@ -1833,94 +1858,113 @@ async function pic(id, location) {
 
 
 function decodeGenre(input) {
-  if (input == '#de7eea') {
+  if (input == '#ec66c6') {
     output = ['Pop','pop','']
-  } else if (input == '#a16fd9') {
+  } else if (input == '#b479ff') {
     output = ['Dance-pop','pop','Synth-pop, Europop, Electropop, Dance rock, Synth rock, Dream pop, Bubblegum pop, Teen pop']
-  } else if (input == '#9a82c8') {
+  } else if (input == '#5d62da') {
     output = ['Indie','pop','Indie-pop, Indie-rock, Indie-folk, Indie-electronic, Indie-soul, Indie-dance, Indie-tronica, Indie-pop, Indie-rock, Indie-folk, Indie-electronic, Indie-soul, Indie-dance, Indie-tronica, Psychedelic, Baroque pop']
-  } else if (input == '#c295c8') {
+  } else if (input == '#b17bb6') {
     output = ['Pop rock','pop','Soft rock, Pop punk, Power pop, Garage rock']
-  } else if (input == '#d700ff') {
+  } else if (input == '#da09c5') {
     output = ['Disco','pop','Nu-Disco, Euro disco, Italo disco, Space disco, Disco polo, Disco house, Disco rap, Disco polo, Disco house, Disco rap']
-  } else if (input == '#854d76') {
+  } else if (input == '#933f67') {
     output = ['Funk','pop','Funk-pop, Boogie, Electro-funk, G-funk, P-Funk, Funktronica, Funk carioca, Funk carioca, Funk ostentação, Funk melody, Funk ousadi']
-  } else if (input == '#ba2c8e') {
+  } else if (input == '#fe5c5c') {
     output = ['Pop rap','rap','Melodic rap, Pop trap']
-  } else if (input == '#ba3d3d') {
+  } else if (input == '#cf0a45') {
     output = ['R&B','R&B','Quiet storm, Contemporary R&B']
-  } else if (input == '#b65f5f') {
+  } else if (input == '#a73138') {
     output = ['New jack','R&B','Doo-wop, Swing']
-  } else if (input == '#603232') {
+  } else if (input == '#871a1a') {
     output = ['Hip Hop','hip hop','']
-  } else if (input == '#1a1a1a') {
+  } else if (input == '#4b150d') {
     output = ['Trap','hip hop','Dirty, Southern hip hop, Crunk, Snap, Drill, Trap metal, Trap soul, Trapstep, Cloud rap, Trap rock, Trap jazz, Trap funk, Trap pop, Trapcore']
-  } else if (input == '#413630') {
+  } else if (input == '#422727') {
     output = ['Regional','hip hop','Gangsta rap, G-funk, West Coast hip hop, East Coast hip hop']
-  } else if (input == '#935b4a') {
+  } else if (input == '#865b3c') {
     output = ['Alt hip hop','hip hop','Experimental hip hop, Jazz rap, Conscious hip hop, Political hip hop, Horrorcore']
-  } else if (input == '#3ca33f') {
+  } else if (input == '#0ba135') {
     output = ['Rock','rock','']
-  } else if (input == '#308532') {
+  } else if (input == '#04612f') {
     output = ['Hard rock','rock','Metal, Heavy metal, Glam metal, Hair metal, Thrash metal, Death metal, Black metal, Doom metal, Grindcore, Metalcore, Industrial metal, Alternative metal, Nu metal']
-  } else if (input == '#638559') {
+  } else if (input == '#3f6539') {
     output = ['Grunge','rock','Post-grunge, Alternative metal, Nu grunge']
-  } else if (input == '#6a9d32') {
+  } else if (input == '#537e0b') {
     output = ['Funk rock','rock','Blues rock, Psychedelic rock, Jam rock']
-  } else if (input == '#8eb371') {
+  } else if (input == '#319c5c') {
     output = ['New Wave','rock','Punk rock, New wave, Post-punk, Ska punk, Pop punk, Emo, Hardcore punk, Skate punk']
-  } else if (input == '#4aca4e') {
+  } else if (input == '#21d811') {
     output = ['Rock and Roll','rock','Rockabilly, Surf rock, Rock and roll revival, Heartland rock', 'Roots rock']
-  } else if (input == '#97be9d') {
+  } else if (input == '#79c999') {
     output = ['Alternative Rock','rock','']
-  } else if (input == '#a4d685') {
+  } else if (input == '#8dea6c') {
     output = ['Folk Rock','rock','Folktronica, Folk pop, Folk punk, Folk metal, Folk jazz']
-  } else if (input == '#c4c800') {
+  } else if (input == '#baa912') {
     output = ['Soul','soul','Neo soul, Blue-eyed soul, Psychedelic soul, Soul jazz, Soul blues, Southern soul, Northern soul, Soul pop, Soultronica']
-  } else if (input == '#a7ab00') {
+  } else if (input == '#8f845a') {
     output = ['Blues','blues','']
-  } else if (input == '#d5eb20') {
+  } else if (input == '#e8f92d') {
     output = ['Jazz','jazz','Jazz fusion, Acid jazz, Jazz rap, Nu jazz, Jazz funk, Jazz blues, Jazz pop, Jazz rock, Jazztronica, Nu jazz']
   } else if (input == '#ddf3a8') {
     output = ['Soca','soca','Calypso, Chutney, Parang, Rapso']
-  } else if (input == '#c6ccae') {
+  } else if (input == '#be8f7a') {
     output = ['Gospel','gospel','Worship, Christian rock, Christian hip hop, Christian metal, Christian hardcore, Christian punk, Christian alternative rock']
-  } else if (input == '#ceb8ae') {
+  } else if (input == '#bcbdb9') {
     output = ['World','world','New Age, World fusion, Worldbeat']
-  } else if (input == '#7085ef') {
+  } else if (input == '#00a3ff') {
     output = ['Electronic','electronic','EDM, Club, Electro, Electro house, Electroclash, Electro swing, Electro hop, Electro funk, Electro pop, Electronicore, Electronic dance, Freestyle, Electro-hip-hop']
-  } else if (input == '#5666b8') {
+  } else if (input == '#162be9') {
     output = ['Dubstep','electronic','Brostep, Chillstep, Drumstep, Riddim, Dubstyl, Garage']
-  } else if (input == '#4d95b8') {
+  } else if (input == '#008ea1') {
     output = ['Electro Rock','electronic','Electro funk, Electronic rock, Electronicore']
-  } else if (input == '#623aff') {
+  } else if (input == '#7d2ffd') {
     output = ['Reggae','reggae','Dancehall, Afrobeats, Reggae fusion, Reggaeton, Reggae en Español, Reggae rock, Reggae pop, Reggae hip hop, Reggae metal']
-  } else if (input == '#73e6e0') {
+  } else if (input == '#1ce8e8') {
     output = ['Eurodance','electronic','Trance, Euro disco, Italo disco, Space disco, Eurobeat, Euro house, Eurotrance']
-  } else if (input == '#3eadef') {
+  } else if (input == '#5666f8') {
     output = ['House','electronic','Deep house, Tech house, Progressive house, Tropical house, Future house, Acid house, Ambient house, Balearic house, Big room house, Bouncy house, Chicago house, Deep house, Electro house, Funky house, Ghetto house, Hard house, Hip house, Latin house, Microhouse, Minimal house, Progressive house, Tech house, Tribal house, UK hard house, Vocal house']
-  } else if (input == '#ff6900') {
+  } else if (input == '#e56000') {
     output = ['Country','country','']
-  } else if (input == '#f6b26b') {
+  } else if (input == '#fe965c') {
     output = ['Country Pop','country','Folk pop']
-  } else if (input == '#b3997a') {
+  } else if (input == '#8f5a0a') {
     output = ['Country Rock','country','Southern rock, Countrycore']
-  } else if (input == '#d49875') {
+  } else if (input == '#a31f0d') {
     output = ['Country Rap','country','Trap-country, Hick hop']
   } else if (input == '#c7cc86') {
     output = ['Folk','folk','Bluegrass, Folktronica, Folk pop, Folk punk, Folk metal, Folk jazz']
-  } else if (input == '#ffe381') {
+  } else if (input == '#f8d763') {
     output = ['Latin','latin','Latin pop, Latin rock, Salsa, Banda, Cumbia, Regional mexican, Tejano, Norteño, Mariachi, Ranchera']
-  } else if (input == '#f5d8d8') {
+  } else if (input == '#ffd4d1') {
     output = ['Tango','tango','Polka, Contradanse']
   }
   return output;
 }
-function decodeDate(input) {
+function decodeDate(input, type) {
+  console.log(input)
   var months = ['January','February','March','April','May','June','July','August','September','October','November','December']
   var month = months[parseInt(input.slice(5,7)) - 1]
-  var day = parseInt(input.slice(8,10))
+  var day = input.slice(8,10)
+  if (day.slice(0,1) == '0') { 
+    day = day.slice(1,2)
+  }
   var year = input.slice(0,4)
-  return month + ' ' + day + ', ' + year
+  if (day == '1' || day == '21' || day == '31') {
+    day = day + 'st'
+  } else if (day == '2' || day == '22') {
+    day = day + 'nd'
+  } else if (day == '3' || day == '23') {
+    day = day + 'rd'
+  } else {
+    day = day + 'th'
+  }
+  if (type == 'release' && month == 'January' && day == '1st') {
+    return 'in ' + year
+  } else if (type == 'release') {
+    return 'on ' + month + ' ' + day + ', ' + year
+  } else {
+    return month + ' ' + day + ', ' + year
+  }
 }
 
