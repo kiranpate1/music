@@ -162,7 +162,7 @@ a {cursor: pointer;}
 
 #initial-genres-container, #initial-decades-container, #initial-flashback-container {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: var(--browse-grid-columns);
   width: 100%;
 }
 

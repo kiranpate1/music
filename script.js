@@ -1543,9 +1543,41 @@ async function browse() {
   async function pic(id, location) {
     for (let i = 0; i < songsData.length; i++) {
       if (songsData[i]?.[`id`] == id) {
-        document.querySelector('#'+location).style.backgroundImage = 'url(' + songsData[i]?.[`video`] + ')'
+        var img = songsData[i]?.[`video`]
+        document.querySelector('#'+location).style.backgroundImage = `url(${img})`
+        color(img)
+        return
       }
     }
+  }
+
+  function color(pic) {
+    var img = document.createElement('img');
+    img.setAttribute('src', pic)
+    img.crossOrigin = "Anonymous";
+    console.log(img)
+
+    img.addEventListener('load', function() {
+        var vibrant = new Vibrant(img);
+        new Vibrant(
+            img,
+            64, /* amount of colors in initial palette from which the swatches will be generated, defaults to 64 */
+            5 /* quality. 0 is highest, but takes way more processing. defaults to 5. */
+        )
+        var swatches = vibrant.swatches()
+        for (var swatch in swatches)
+        //if (swatches['DarkVibrant']) {
+        //  document.querySelector('html').style.background = swatches['DarkVibrant'].getHex()
+        //  //WRITE FUNCTION TO REMOVE HUE OR SATURATION WHEN TOO EXTREME
+        //} else {
+        //  document.querySelector('html').style.background = swatches['DarkMuted'].getHex()
+        //}
+        document.querySelectorAll('#palette div')[0].style.background = swatches['Vibrant'].getHex()
+        document.querySelectorAll('#palette div')[1].style.background = swatches['Muted'].getHex()
+        document.querySelectorAll('#palette div')[2].style.background = swatches['DarkVibrant'].getHex()
+        document.querySelectorAll('#palette div')[3].style.background = swatches['DarkMuted'].getHex()
+        document.querySelectorAll('#palette div')[4].style.background = swatches['LightVibrant'].getHex()
+    });
   }
 
 
@@ -1849,3 +1881,24 @@ function decodeDate(input, type) {
   }
 }
 
+//resize
+
+function breakpoints() {
+  const root = document.documentElement;
+  const currentWidth = window.innerWidth;
+
+  if (currentWidth <= 480) {
+    root.style.setProperty('--browse-grid-columns', '1fr');
+  } else if (currentWidth <= 768) {
+    root.style.setProperty('--browse-grid-columns', '1fr 1fr');
+  } else if (currentWidth <= 1024) {
+    root.style.setProperty('--browse-grid-columns', '1fr 1fr 1fr');
+  } else if (currentWidth <= 1280) {
+    root.style.setProperty('--browse-grid-columns', '1fr 1fr 1fr 1fr');
+  } else if (currentWidth > 1280) {
+    root.style.setProperty('--browse-grid-columns', '1fr 1fr 1fr 1fr 1fr');
+  }
+}
+
+window.addEventListener('DOMContentLoaded', breakpoints);
+window.addEventListener('resize', breakpoints);
