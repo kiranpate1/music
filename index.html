@@ -10,9 +10,12 @@
     <div class="parent">
       <div id="nav">
         <div class="nav-top">
-          <a onClick="homeInitialize()">home</a>
-          <a id="browse" onClick="browse()">browse</a>
-          <div style="display:flex;">
+          <div class="nav-main">
+            <a onClick="homeInitialize()">h</a>
+            <a id="browse" onClick="browse()">b</a>
+            <a id="search" onClick="search()">s</a>
+          </div>
+          <div class="search-container">
             <input type="text" id="termSearch" placeholder="Search">
             <div id="searchClose"></div>
           </div>
