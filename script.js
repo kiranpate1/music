@@ -1736,18 +1736,33 @@ async function browse() {
 
   async function list(component,component2) {
   
+    // var list = []
+    // for (let i = 1; i < songsData.length; i++) {
+    //     var separators = [' ft. ', ' / ', ', '];
+    //     if (component2) {
+    //       var tokens = songsData[i]?.[component].split(new RegExp(separators.join('|'), 'g')) + ' ' + songsData[i]?.[component2];
+    //     } else {
+    //       var tokens = songsData[i]?.[component].split(new RegExp(separators.join('|'), 'g'));
+    //     }
+    //     list.push(tokens)
+    // }
+    // var combinedList = list.flat(1)
+    // return group1(combinedList)
     var list = []
-    for (let i = 1; i < songsData.length; i++) {
+    for (let i = 1; i <= 10; i++) {
+      searchYearly(i)
+    }
+    function searchYearly(pos) {
+      data.forEach((item, i) => {
         var separators = [' ft. ', ' / ', ', '];
-        if (component2) {
-          var tokens = songsData[i]?.[component].split(new RegExp(separators.join('|'), 'g')) + ' ' + songsData[i]?.[component2];
+        if (comp2) {
+          var tokens = item?.['no'+pos+component].split(new RegExp(separators.join('|'), 'g')) + ' ' + item?.['no'+pos+comp2];
         } else {
-          var tokens = songsData[i]?.[component].split(new RegExp(separators.join('|'), 'g'));
+          var tokens = item?.['no'+pos+component].split(new RegExp(separators.join('|'), 'g'));
         }
         list.push(tokens)
+      });
     }
-    var combinedList = list.flat(1)
-    return group1(combinedList)
   }
   
   function group1(type) {
