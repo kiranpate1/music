@@ -1755,8 +1755,8 @@ async function browse() {
     function searchYearly(pos) {
       data.forEach((item, i) => {
         var separators = [' ft. ', ' / ', ', '];
-        if (comp2) {
-          var tokens = item?.['no'+pos+component].split(new RegExp(separators.join('|'), 'g')) + ' ' + item?.['no'+pos+comp2];
+        if (component2) {
+          var tokens = item?.['no'+pos+component].split(new RegExp(separators.join('|'), 'g')) + ' ' + item?.['no'+pos+component2];
         } else {
           var tokens = item?.['no'+pos+component].split(new RegExp(separators.join('|'), 'g'));
         }
