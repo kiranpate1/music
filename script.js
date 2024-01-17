@@ -1545,7 +1545,7 @@ async function browse() {
       if (songsData[i]?.[`id`] == id) {
         var img = songsData[i]?.[`video`]
         document.querySelector('#'+location).style.backgroundImage = `url(${img})`
-        color(img)
+        // color(img)
         return
       }
     }
