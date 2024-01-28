@@ -99,24 +99,30 @@ async function browse() {
     pic(data[data.length - 1].no1id, 'this-week')
 
     const thisWeekText = document.createElement("h1")
-    thisWeekText.innerHTML = "This Week - " + data[data.length - 1].week + " - " + data[data.length - 1].no1name + " by " + data[data.length - 1].no1artist + " is #1"
+    thisWeekText.innerHTML = "This Week - " + data[data.length - 1].week + "<br><span class='_50'>" + data[data.length - 1].no1name + " by " + data[data.length - 1].no1artist + " is #1</span>"
     thisWeek.appendChild(thisWeekText)
+
+    const decadesWrapper = document.createElement("div")
+    browseContainer.appendChild(decadesWrapper)
 
     const initialDecadesTitle = document.createElement("h2")
     initialDecadesTitle.innerHTML = "Decades"
-    browseContainer.appendChild(initialDecadesTitle)
+    decadesWrapper.appendChild(initialDecadesTitle)
 
     const initialDecades = document.createElement("div")
     initialDecades.setAttribute("id", 'initial-decades-container')
-    browseContainer.appendChild(initialDecades)
+    decadesWrapper.appendChild(initialDecades)
+
+    const GenresWrapper = document.createElement("div")
+    browseContainer.appendChild(GenresWrapper)
 
     const initialGenresTitle = document.createElement("h2")
     initialGenresTitle.innerHTML = "Genres"
-    browseContainer.appendChild(initialGenresTitle)
+    GenresWrapper.appendChild(initialGenresTitle)
 
     const initialGenres = document.createElement("div")
     initialGenres.setAttribute("id", 'initial-genres-container')
-    browseContainer.appendChild(initialGenres)
+    GenresWrapper.appendChild(initialGenres)
 
     const genresCount = []
     for (let i = 1; i <= 10; i++) {
@@ -141,13 +147,16 @@ async function browse() {
       initialGenres.appendChild(button)
     })
 
+    const flashBackWrapper = document.createElement("div")
+    browseContainer.appendChild(flashBackWrapper)
+
     const initialFlashbackTitle = document.createElement("h2")
     initialFlashbackTitle.innerHTML = "Flashback"
-    browseContainer.appendChild(initialFlashbackTitle)
+    flashBackWrapper.appendChild(initialFlashbackTitle)
 
     const initialFlashback = document.createElement("div")
     initialFlashback.setAttribute("id", 'initial-flashback-container')
-    browseContainer.appendChild(initialFlashback)
+    flashBackWrapper.appendChild(initialFlashback)
 
     const flashbackCount = []
     for (let i = 0; i < (uniqueYears.length / 5); i++) {
@@ -170,13 +179,16 @@ async function browse() {
       initialFlashback.appendChild(button)
     })
 
+    const goatWrapper = document.createElement("div")
+    browseContainer.appendChild(goatWrapper)
+
     const goatTitle = document.createElement("h2")
     goatTitle.innerHTML = "Greatest Of All Time"
-    browseContainer.appendChild(goatTitle)
+    goatWrapper.appendChild(goatTitle)
 
     const initialGoat = document.createElement("div")
     initialGoat.setAttribute("id", 'initial-goat-container')
-    browseContainer.appendChild(initialGoat)
+    goatWrapper.appendChild(initialGoat)
 
     const goatSongs = document.createElement("button")
     goatSongs.innerHTML = "Songs"
