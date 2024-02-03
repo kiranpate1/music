@@ -40,7 +40,10 @@
           tableBody.appendChild(tr)
         })
 
-        let index = 0;
+        //CHANGE INDEX AND UNCOMMENT LOG TO RUN
+        let index = 3053;
+        // log();
+        // const intervalId = setInterval(log, 5000);
 
         function log() {
           if (index < fullList.length) {
@@ -53,9 +56,6 @@
             console.log('Finished processing.');
           }
         }
-
-        // log();
-        // const intervalId = setInterval(log, 5000);
 
         function group(type) {
           var reducedArray = Object.values(type.reduce((hash, item) => {
