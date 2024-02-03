@@ -129,14 +129,14 @@
             .then((data) => {
               findPic()
               function findPic() {
-                for (var i = 3053; i <= 3054; i++) {
+                for (var i = 0; i < data.results.length; i++) {
                   if (termSong.includes(data.results[i].trackName.toLowerCase()))  {
                     infoList.push(data.results[i])
                     shit()
                     return
                   }
                 }
-                for (var i = 3053; i <= 3054; i++) {
+                for (var i = 0; i < data.results.length; i++) {
                   infoList.push(data.results[i])
                   shit()
                   return
@@ -149,13 +149,13 @@
               .then((data) => {
                 findPic()
                 function findPic() {
-                  for (var i = 3053; i <= 3054; i++) {
+                  for (var i = 0; i < data.results.length; i++) {
                     if (termSong.includes(data.results[i].trackName.toLowerCase()))  {
                       videoList.push(data.results[i]);
                       return
                     }
                   }
-                  for (var i = 3053; i <= 3054; i++) {
+                  for (var i = 0; i < data.results.length; i++) {
                     videoList.push(data.results[i])
                     return
                   }
