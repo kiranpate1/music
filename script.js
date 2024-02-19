@@ -814,7 +814,7 @@ async function browse() {
       score = score * 0.8
     } else if ((year >= 2019) && (year <= 2020)) {
       score = score * 0.75
-    } else if ((year >= 2021) && (year <= 2023)) {
+    } else if ((year >= 2021) && (year <= 2024)) {
       score = score * 0.65
     }
     return Math.round(score)
