@@ -41,12 +41,14 @@
         })
 
         //CHANGE INDEX AND UNCOMMENT LOG TO RUN
-        let index = 3055;
-        // log();
-        // const intervalId = setInterval(log, 5000);
+        let index = 2295;
+        let limit = fullList.length;
+        limit = index+1
+        log();
+        const intervalId = setInterval(log, 5000);
 
         function log() {
-          if (index < fullList.length) {
+          if (index < limit) {
             const item = fullList[index]
             console.log(`logging: ${item.artist} - ${item.name}`)
             info(index,item.artist, item.name)
