@@ -581,7 +581,7 @@ async function browse() {
     }
     group(songList).forEach((item, i) => {
       if (i == '0') {
-        console.log(input.replaceAll('/','-'))
+        // console.log(input.replaceAll('/','-'))
         pic(item.key[0], 'children-'+input.replaceAll('/','-'))
       }
     })
@@ -1420,6 +1420,13 @@ async function browse() {
           return
         }
       })
+      
+
+      group(similar(['genre','week'], [decode(id)[0][2],date.slice(0,4)], 'song')).forEach((item, i) => {
+        // console.log(item)
+      })
+      
+      setClick('#modaltitle','artist','')
       for (let i = 0; i < songsData.length; i++) {
         if (songsData[i]?.[`id`] == id) {
           document.querySelector('#videomodal').style.backgroundImage = 'url(' + songsData[i]?.[`video`] + ')'
@@ -1428,13 +1435,6 @@ async function browse() {
           return
         }
       }
-
-      group(similar(['genre','week'], [decode(id)[0][2],date.slice(0,4)], 'song')).forEach((item, i) => {
-        // console.log(item)
-      })
-      
-      setClick('#modaltitle','artist','')
-      // pic(id,'videomodal','song')
     } 
     else if (type == 'artist') {
       var artist = input
@@ -1567,7 +1567,6 @@ async function browse() {
     var img = document.createElement('img');
     img.setAttribute('src', pic)
     img.crossOrigin = "Anonymous";
-    console.log(img)
 
     img.addEventListener('load', function() {
         var vibrant = new Vibrant(img);
@@ -1884,7 +1883,6 @@ function decodeGenre(input) {
   return output;
 }
 function decodeDate(input, type) {
-  console.log(input)
   var months = ['January','February','March','April','May','June','July','August','September','October','November','December']
   var month = months[parseInt(input.slice(5,7)) - 1]
   var day = input.slice(8,10)
